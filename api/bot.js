@@ -4,7 +4,8 @@ export default async function handler(req, res) {
   }
 
   const BOT_TOKEN = process.env.VITE_TELEGRAM_BOT_TOKEN
-  const COMMUNITY_LINK = process.env.TELEGRAM_COMMUNITY_LINK || 'https://t.me/bangasgan'
+  const COMMUNITY_LINK = 'https://t.me/+RMYb98zNIb4xNTY1'
+  const CHANNEL_LINK = 'https://t.me/hcnbangogans'
   const SITE_URL = 'https://www.hcmboom.com'
 
   const update = req.body
@@ -35,12 +36,13 @@ export default async function handler(req, res) {
 2️⃣ 텔레그램 계정으로 1초 로그인
 3️⃣ 가입 즉시 10 포인트 지급!
 
-💬 소통방도 함께 참여하세요 👇`,
+💬 소통방 & 채널도 함께 참여하세요 👇`,
       {
         reply_markup: JSON.stringify({
           inline_keyboard: [
             [{ text: '🌐 사이트 가입하기', url: `${SITE_URL}/login` }],
-            [{ text: '💬 소통방 참여하기', url: COMMUNITY_LINK }]
+            [{ text: '💬 소통방 참여하기', url: COMMUNITY_LINK }],
+            [{ text: '📢 채널 구독하기', url: CHANNEL_LINK }]
           ]
         })
       }
