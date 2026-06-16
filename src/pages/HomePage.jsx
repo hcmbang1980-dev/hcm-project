@@ -45,7 +45,7 @@ export default function HomePage() {
           </h1>
           <p className="hero-subtitle">실시간으로 터지는 호치민 밤문화 꿀팁<br />지금 바로 [호치민방앗간] 텔레그램 참가!</p>
           <div className="hero-buttons">
-            <a href="https://t.me/bangasgan" target="_blank" className="btn-gold hero-btn">
+            <a href="https://t.me/+RMYb98zNIb4xNTY1" target="_blank" className="btn-gold hero-btn">
               📱 텔레그램 참가
             </a>
             <Link to="/board/free" className="hero-btn-outline">
@@ -59,7 +59,7 @@ export default function HomePage() {
             </div>
             <div className="stat-divider"></div>
             <div className="stat-item">
-              <span className="stat-num gold-text">800+</span>
+              <span className="stat-num gold-text">{(stats.users + 1200).toLocaleString()}+</span>
               <span className="stat-label">텔레그램 멤버</span>
             </div>
             <div className="stat-divider"></div>
@@ -78,7 +78,7 @@ export default function HomePage() {
           <div className="tg-widget-wrapper">
             <div className="tg-embed">
               <iframe
-                src="https://t.me/bangasgan?embed=1&mode=ivp"
+                src="https://t.me/+RMYb98zNIb4xNTY1?embed=1&mode=ivp"
                 width="100%"
                 height="400"
                 frameBorder="0"
@@ -91,7 +91,7 @@ export default function HomePage() {
                 <div className="tg-icon">📣</div>
                 <h3>호치민방앗간 채널</h3>
                 <p>최신 정보와 꿀팁을 실시간으로 받아보세요</p>
-                <a href="https://t.me/bangasgan" target="_blank" className="btn-gold" style={{display:'block', textAlign:'center', padding:'12px', marginTop:'8px', borderRadius:'8px', textDecoration:'none', fontWeight:'700', color:'#000', background:'linear-gradient(135deg,#FFE55C,#FFD700)'}}>
+                <a href="https://t.me/+RMYb98zNIb4xNTY1" target="_blank" className="btn-gold" style={{display:'block', textAlign:'center', padding:'12px', marginTop:'8px', borderRadius:'8px', textDecoration:'none', fontWeight:'700', color:'#000', background:'linear-gradient(135deg,#FFE55C,#FFD700)'}}>
                   채널 참가하기 →
                 </a>
               </div>
@@ -99,7 +99,7 @@ export default function HomePage() {
                 <div className="tg-icon">💬</div>
                 <h3>소통방 그룹</h3>
                 <p>800명+ 멤버들과 직접 소통해보세요</p>
-                <a href="https://t.me/bangasgangroup" target="_blank" className="btn-gold" style={{display:'block', textAlign:'center', padding:'12px', marginTop:'8px', borderRadius:'8px', textDecoration:'none', fontWeight:'700', color:'#000', background:'linear-gradient(135deg,#FFE55C,#FFD700)'}}>
+                <a href="https://t.me/+RMYb98zNIb4xNTY1group" target="_blank" className="btn-gold" style={{display:'block', textAlign:'center', padding:'12px', marginTop:'8px', borderRadius:'8px', textDecoration:'none', fontWeight:'700', color:'#000', background:'linear-gradient(135deg,#FFE55C,#FFD700)'}}>
                   그룹 참가하기 →
                 </a>
               </div>
