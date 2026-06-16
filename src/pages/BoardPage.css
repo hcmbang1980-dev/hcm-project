@@ -1,0 +1,15 @@
+.board-page { padding-top: 84px; min-height: 100vh; }
+.board-header-bar { display: flex; align-items: center; justify-content: space-between; padding: 30px 0 20px; }
+.page-title { font-size: 26px; font-weight: 900; }
+.post-list { margin: 20px 0; }
+.post-row { display: flex; padding: 14px 16px; border-bottom: 1px solid #1a1a1a; text-decoration: none; transition: background 0.15s; border-radius: 8px; }
+.post-row:hover { background: rgba(255,215,0,0.04); }
+.post-row-main { flex: 1; }
+.post-row-title { font-size: 15px; color: #eee; display: block; margin-bottom: 6px; }
+.post-row:hover .post-row-title { color: #FFD700; }
+.post-row-meta { display: flex; gap: 12px; font-size: 12px; color: #555; }
+.pagination { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 30px 0; }
+.page-btn { background: rgba(255,215,0,0.1); color: #FFD700; border: 1px solid rgba(255,215,0,0.3); padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+.page-btn:hover { background: rgba(255,215,0,0.2); }
+.page-num { color: #888; font-size: 14px; }
+.loading, .empty { text-align: center; padding: 60px; color: #555; }
