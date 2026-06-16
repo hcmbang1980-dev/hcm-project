@@ -1,0 +1,166 @@
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.logo-icon { font-size: 24px; }
+.logo-text {
+  font-size: 18px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #FFE55C, #FFD700, #B8860B);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-desktop {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.nav-dropdown { position: relative; }
+.nav-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.nav-btn:hover { color: #FFD700; background: rgba(255,215,0,0.05); }
+.nav-tg { color: #FFD700 !important; border: 1px solid rgba(255,215,0,0.3); }
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #111;
+  border: 1px solid rgba(255,215,0,0.2);
+  border-radius: 10px;
+  padding: 8px;
+  min-width: 160px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  z-index: 100;
+}
+.nav-dropdown:hover .dropdown-menu { display: flex; flex-direction: column; }
+.dropdown-menu a {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #aaa;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+.dropdown-menu a:hover { color: #FFD700; background: rgba(255,215,0,0.08); }
+
+.header-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+.btn-tg-login {
+  background: linear-gradient(135deg, #FFE55C, #FFD700);
+  color: #000;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-tg-login:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(255,215,0,0.4);
+}
+
+.user-info { display: flex; align-items: center; gap: 8px; }
+.user-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #FFD700; }
+.user-details { display: flex; flex-direction: column; }
+.user-name { font-size: 13px; font-weight: 600; }
+.user-level { font-size: 11px; font-weight: 700; }
+.btn-logout {
+  font-size: 12px;
+  color: #666;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #333;
+  cursor: pointer;
+  background: none;
+  color: #888;
+  transition: all 0.2s;
+}
+.btn-logout:hover { color: #fff; border-color: #666; }
+
+.hamburger { display: none; font-size: 22px; color: #FFD700; background: none; border: none; cursor: pointer; }
+
+.nav-mobile {
+  display: none;
+  flex-direction: column;
+  background: #111;
+  border-top: 1px solid rgba(255,215,0,0.15);
+  padding: 10px 0;
+}
+.nav-mobile a {
+  padding: 12px 24px;
+  font-size: 14px;
+  color: #ccc;
+  border-bottom: 1px solid #1a1a1a;
+}
+.nav-mobile a:hover { color: #FFD700; background: rgba(255,215,0,0.05); }
+
+/* 텔레그램 로그인 모달 */
+.tg-login-modal {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+.tg-login-box {
+  background: #111;
+  border: 1px solid rgba(255,215,0,0.3);
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+  display: flex; flex-direction: column; gap: 16px;
+  box-shadow: 0 0 40px rgba(255,215,0,0.1);
+}
+.tg-login-box h3 { font-size: 22px; }
+.tg-login-box p { color: #888; font-size: 14px; }
+.btn-close {
+  color: #666; font-size: 13px; padding: 8px; cursor: pointer;
+  background: none; border: 1px solid #333; border-radius: 6px;
+}
+
+@media (max-width: 768px) {
+  .nav-desktop { display: none; }
+  .hamburger { display: block; }
+  .nav-mobile { display: flex; }
+}
