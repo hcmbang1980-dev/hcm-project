@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import './LoginPage.css'
@@ -6,26 +6,41 @@ import './LoginPage.css'
 export default function LoginPage() {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const containerRef = useRef(null)
 
   useEffect(() => {
     if (user) {
       navigate('/')
       return
     }
-    // 텔레그램 위젯 스크립트 로드
-    const botName = import.meta.env.VITE_TELEGRAM_BOT_NAME || 'bangasgan_bot'
-    const container = document.getElementById('telegram-login-container')
-    if (container && !container.querySelector('script')) {
-      const script = document.createElement('script')
-      script.src = 'https://telegram.org/js/telegram-widget.js?22'
-      script.setAttribute('data-telegram-login', botName)
-      script.setAttribute('data-size', 'large')
-      script.setAttribute('data-onauth', 'onTelegramAuth(user)')
-      script.setAttribute('data-request-access', 'write')
-      script.async = true
-      container.appendChild(script)
-    }
   }, [user, navigate])
+
+  useEffect(() => {
+    if (user) return
+
+    const botName = import.meta.env.VITE_TELEGRAM_BOT_NAME || 'bangasgan_bot'
+    const container = containerRef.current
+    if (!container) return
+
+    // 기존 스크립트 제거
+    container.innerHTML = ''
+
+    // 텔레그램 위젯 스크립트 삽입 - body에 직접
+    const script = document.createElement('script')
+    script.src = 'https://telegram.org/js/telegram-widget.js?22'
+    script.setAttribute('data-telegram-login', botName)
+    script.setAttribute('data-size', 'large')
+    script.setAttribute('data-onauth', 'onTelegramAuth(user)')
+    script.setAttribute('data-request-access', 'write')
+    // async 없이 동기 로드로 시도
+    container.appendChild(script)
+
+    return () => {
+      container.innerHTML = ''
+    }
+  }, [user])
+
+  if (user) return null
 
   return (
     <div className="login-page">
@@ -40,7 +55,7 @@ export default function LoginPage() {
           <span>텔레그램으로 1초 로그인</span>
         </div>
 
-        <div id="telegram-login-container" className="telegram-btn-wrap"></div>
+        <div ref={containerRef} className="telegram-btn-wrap"></div>
 
         <div className="login-info">
           <p>✅ 텔레그램 계정으로 간편 로그인</p>
