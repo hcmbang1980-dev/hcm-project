@@ -22,16 +22,6 @@ export default function LoginPage() {
     loaded.current = true
     const botName = import.meta.env.VITE_TELEGRAM_BOT_NAME || 'bangasgan_bot'
 
-    // innerHTML로 script 삽입 (텔레그램 위젯이 현재 컨테이너에 iframe 생성)
-    widgetRef.current.innerHTML = `<script 
-      src="https://telegram.org/js/telegram-widget.js?22"
-      data-telegram-login="${botName}"
-      data-size="large"
-      data-onauth="onTelegramAuth(user)"
-      data-request-access="write"
-    ><\/script>`
-
-    // innerHTML로 삽입된 스크립트는 실행 안 됨 - 직접 새 script 엘리먼트 생성
     widgetRef.current.innerHTML = ''
     const script = document.createElement('script')
     script.src = `https://telegram.org/js/telegram-widget.js?22`
@@ -50,19 +40,28 @@ export default function LoginPage() {
         <div className="login-logo">
           <span className="logo-icon">🔥</span>
           <h1>호치민방앗간</h1>
-          <p>프리미엄 커뮤니티에 오신 것을 환영합니다</p>
+          <p className="logo-sub">베트남 밤문화 No.1 커뮤니티</p>
         </div>
 
         <div className="login-divider">
-          <span>텔레그램으로 1초 로그인</span>
+          <span>텔레그램으로 간편 로그인</span>
         </div>
 
         <div ref={widgetRef} className="telegram-btn-wrap" id="telegram-login-container"></div>
 
-        <div className="login-info">
-          <p>✅ 텔레그램 계정으로 간편 로그인</p>
-          <p>🏆 가입 즉시 10 포인트 지급</p>
-          <p>📱 800명+ 호치민 커뮤니티</p>
+        <div className="login-benefits">
+          <div className="benefit-item">
+            <span className="benefit-icon">✦</span>
+            <span>텔레그램 계정으로 1초 가입</span>
+          </div>
+          <div className="benefit-item">
+            <span className="benefit-icon gold">✦</span>
+            <span>가입 즉시 <strong>10 포인트</strong> 지급</span>
+          </div>
+          <div className="benefit-item">
+            <span className="benefit-icon">✦</span>
+            <span>호치민 현지 정보 무제한 열람</span>
+          </div>
         </div>
       </div>
     </div>
