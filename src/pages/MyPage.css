@@ -1,0 +1,36 @@
+.mypage { padding-top: 84px; min-height: 100vh; }
+.mypage-login { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; gap: 16px; color: #888; }
+.profile-card { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+.profile-left { display: flex; align-items: center; gap: 16px; }
+.profile-avatar { width: 72px; height: 72px; border-radius: 50%; border: 3px solid #FFD700; }
+.profile-avatar-default { width: 72px; height: 72px; border-radius: 50%; background: #222; display: flex; align-items: center; justify-content: center; font-size: 32px; border: 3px solid #FFD700; }
+.profile-name { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+.profile-level { font-size: 13px; font-weight: 700; display: block; }
+.profile-tg { font-size: 12px; color: #666; display: block; margin-top: 2px; }
+.profile-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+.points-display { text-align: right; }
+.points-label { font-size: 12px; color: #888; display: block; margin-bottom: 2px; }
+.points-value { font-size: 28px; font-weight: 900; }
+.btn-logout-my { background: none; border: 1px solid #333; color: #888; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+.btn-logout-my:hover { color: #fff; border-color: #666; }
+
+.level-card { margin-top: 20px; }
+.card-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+.levels-row { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.level-badge { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 16px; border: 1px solid #2a2a2a; border-radius: 8px; transition: all 0.2s; }
+.level-badge.active { border-color: var(--lc); background: rgba(255,215,0,0.05); }
+.level-badge-name { font-size: 13px; font-weight: 700; }
+.level-badge-pts { font-size: 11px; }
+
+.progress-bar-wrap { margin-top: 8px; }
+.progress-bar-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; }
+.progress-bar-bg { height: 8px; background: #222; border-radius: 4px; overflow: hidden; }
+.progress-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+.progress-bar-pts { font-size: 12px; color: #666; text-align: right; margin-top: 6px; }
+
+.point-guide-items { display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; color: #888; }
+
+.history-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #1a1a1a; }
+.history-reason { flex: 1; font-size: 14px; color: #ccc; }
+.history-amount { font-size: 14px; font-weight: 700; flex-shrink: 0; }
+.history-date { font-size: 12px; color: #555; flex-shrink: 0; }
