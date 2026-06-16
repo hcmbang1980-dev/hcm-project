@@ -12,7 +12,6 @@ export default function ChatRoom() {
 
   useEffect(() => {
     fetchMessages()
-
     const channel = supabase
       .channel('chat-messages')
       .on('postgres_changes', {
@@ -23,7 +22,6 @@ export default function ChatRoom() {
         setMessages(prev => [...prev, payload.new])
       })
       .subscribe()
-
     return () => supabase.removeChannel(channel)
   }, [])
 
@@ -45,7 +43,6 @@ export default function ChatRoom() {
     setSending(true)
     const text = input.trim()
     setInput('')
-
     try {
       const res = await fetch('/api/send-message', {
         method: 'POST',
@@ -57,9 +54,9 @@ export default function ChatRoom() {
           photo_url: user.telegram_photo || null,
         }),
       })
-      if (!res.ok) throw new Error('전송 실패')
+      if (!res.ok) throw new Error('send failed')
     } catch (e) {
-      alert('메시지 전송에 실패했습니다.')
+      alert('message send failed')
       setInput(text)
     } finally {
       setSending(false)
@@ -82,13 +79,13 @@ export default function ChatRoom() {
     <div className="chatroom">
       <div className="chat-messages">
         {messages.length === 0 && (
-          <div className="chat-empty">첫 메시지를 보내보세요! 텔레그램 소통방과 연동됩니다 💬</div>
+          <div className="chat-empty">no messages yet</div>
         )}
         {messages.map((msg) => {
           const isMe = msg.user_id === user?.id
           const isTelegram = msg.source === 'telegram'
           return (
-            <div key={msg.id} className={`chat-msg ${isMe ? 'mine' : 'others'}`}>
+            <div key={msg.id} className={"chat-msg " + (isMe ? 'mine' : 'others')}>
               {!isMe && (
                 <div className="chat-avatar">
                   {msg.photo_url
@@ -101,7 +98,7 @@ export default function ChatRoom() {
                 {!isMe && (
                   <div className="chat-name">
                     {isTelegram && <span className="tg-badge">TG</span>}
-                    {msg.nickname || '익명'}
+                    {msg.nickname || 'anon'}
                   </div>
                 )}
                 <div className="chat-bubble">{msg.text}</div>
@@ -112,14 +109,13 @@ export default function ChatRoom() {
         })}
         <div ref={bottomRef} />
       </div>
-
       <div className="chat-input-area">
         <textarea
           className="chat-input"
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="메시지를 입력하세요... (Enter로 전송)"
+          placeholder="type message"
           rows={1}
           disabled={sending}
         />
@@ -128,7 +124,7 @@ export default function ChatRoom() {
           onClick={sendMessage}
           disabled={sending || !input.trim()}
         >
-          {sending ? '...' : '전송'}
+          {sending ? '...' : 'send'}
         </button>
       </div>
     </div>
