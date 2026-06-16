@@ -6,38 +6,40 @@ import './LoginPage.css'
 export default function LoginPage() {
   const { user } = useAuth()
   const navigate = useNavigate()
-  const containerRef = useRef(null)
+  const widgetRef = useRef(null)
+  const loaded = useRef(false)
 
   useEffect(() => {
     if (user) {
       navigate('/')
-      return
     }
   }, [user, navigate])
 
   useEffect(() => {
-    if (user) return
+    if (user || loaded.current) return
+    if (!widgetRef.current) return
 
+    loaded.current = true
     const botName = import.meta.env.VITE_TELEGRAM_BOT_NAME || 'bangasgan_bot'
-    const container = containerRef.current
-    if (!container) return
 
-    // 기존 스크립트 제거
-    container.innerHTML = ''
+    // innerHTML로 script 삽입 (텔레그램 위젯이 현재 컨테이너에 iframe 생성)
+    widgetRef.current.innerHTML = `<script 
+      src="https://telegram.org/js/telegram-widget.js?22"
+      data-telegram-login="${botName}"
+      data-size="large"
+      data-onauth="onTelegramAuth(user)"
+      data-request-access="write"
+    ><\/script>`
 
-    // 텔레그램 위젯 스크립트 삽입 - body에 직접
+    // innerHTML로 삽입된 스크립트는 실행 안 됨 - 직접 새 script 엘리먼트 생성
+    widgetRef.current.innerHTML = ''
     const script = document.createElement('script')
-    script.src = 'https://telegram.org/js/telegram-widget.js?22'
-    script.setAttribute('data-telegram-login', botName)
-    script.setAttribute('data-size', 'large')
-    script.setAttribute('data-onauth', 'onTelegramAuth(user)')
-    script.setAttribute('data-request-access', 'write')
-    // async 없이 동기 로드로 시도
-    container.appendChild(script)
-
-    return () => {
-      container.innerHTML = ''
-    }
+    script.src = `https://telegram.org/js/telegram-widget.js?22`
+    script.dataset.telegramLogin = botName
+    script.dataset.size = 'large'
+    script.dataset.onauth = 'onTelegramAuth(user)'
+    script.dataset.requestAccess = 'write'
+    widgetRef.current.appendChild(script)
   }, [user])
 
   if (user) return null
@@ -55,7 +57,7 @@ export default function LoginPage() {
           <span>텔레그램으로 1초 로그인</span>
         </div>
 
-        <div ref={containerRef} className="telegram-btn-wrap"></div>
+        <div ref={widgetRef} className="telegram-btn-wrap" id="telegram-login-container"></div>
 
         <div className="login-info">
           <p>✅ 텔레그램 계정으로 간편 로그인</p>
