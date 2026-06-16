@@ -8,7 +8,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const stored = localStorage.getItem('tg_user')
+    const stored = localStorage.getItem('hcm_user')
     if (stored) {
       try { setUser(JSON.parse(stored)) } catch(e) {}
     }
@@ -22,58 +22,71 @@ export function AuthProvider({ children }) {
 
   const handleTelegramLogin = async (tgUser) => {
     try {
-      // users 테이블에 upsert
-      const { data, error } = await supabase
+      // telegram_id로 기존 유저 찾기
+      const { data: existing } = await supabase
         .from('users')
-        .upsert({
-          id: String(tgUser.id),
-          nickname: tgUser.username || tgUser.first_name,
-          email: null,
-          password: 'telegram_auth',
-          role: 'user',
-          telegram_id: tgUser.id,
-          telegram_username: tgUser.username,
-          telegram_first_name: tgUser.first_name,
-          telegram_photo: tgUser.photo_url,
-        }, { onConflict: 'id' })
-        .select()
+        .select('*')
+        .eq('telegram_id', tgUser.id)
         .single()
 
-      const userData = {
-        id: String(tgUser.id),
-        telegram_id: tgUser.id,
-        username: tgUser.username,
-        first_name: tgUser.first_name,
-        photo_url: tgUser.photo_url,
-        nickname: tgUser.username || tgUser.first_name,
-        role: data?.role || 'user',
-        points: data?.points || 0,
-        level: data?.level || 'Level 1',
+      let userData;
+      if (existing) {
+        // 기존 유저 정보 업데이트
+        const { data, error } = await supabase
+          .from('users')
+          .update({
+            telegram_username: tgUser.username || null,
+            telegram_first_name: tgUser.first_name || null,
+            telegram_photo: tgUser.photo_url || null,
+          })
+          .eq('telegram_id', tgUser.id)
+          .select()
+          .single()
+        userData = data
+      } else {
+        // 신규 유저 생성 (UUID 자동 생성)
+        const { data, error } = await supabase
+          .from('users')
+          .insert({
+            nickname: tgUser.username || tgUser.first_name,
+            email: null,
+            password: 'telegram_auth',
+            role: 'user',
+            level: 'Level 1',
+            telegram_id: tgUser.id,
+            telegram_username: tgUser.username || null,
+            telegram_first_name: tgUser.first_name || null,
+            telegram_photo: tgUser.photo_url || null,
+          })
+          .select()
+          .single()
+        if (!error && data) {
+          // 가입 포인트 10점 지급
+          await supabase.from('point_history').insert({
+            user_id: data.id,
+            amount: 10,
+            reason: '신규 가입'
+          })
+        }
+        userData = data
       }
 
-      setUser(userData)
-      localStorage.setItem('tg_user', JSON.stringify(userData))
-
-      // 포인트 지급 (첫 로그인)
-      if (!data || !data.points) {
-        await supabase.from('point_history').insert({
-          user_id: String(tgUser.id),
-          amount: 10,
-          reason: '첫 로그인 보너스'
-        })
+      if (userData) {
+        setUser(userData)
+        localStorage.setItem('hcm_user', JSON.stringify(userData))
       }
     } catch(err) {
-      console.error('Login error:', err)
+      console.error('Telegram login error:', err)
     }
   }
 
   const logout = () => {
     setUser(null)
-    localStorage.removeItem('tg_user')
+    localStorage.removeItem('hcm_user')
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, logout }}>
+    <AuthContext.Provider value={{ user, loading, logout, handleTelegramLogin }}>
       {children}
     </AuthContext.Provider>
   )
