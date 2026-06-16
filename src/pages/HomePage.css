@@ -154,3 +154,28 @@
   .places-grid { grid-template-columns: repeat(3, 1fr); }
   .hero-stats { gap: 16px; }
 }
+
+/* ===== 채팅 + 추천업소 2컬럼 레이아웃 ===== */
+.chat-places-section { padding: 32px 0; }
+.chat-places-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start; }
+.chat-panel { display: flex; flex-direction: column; gap: 12px; }
+.places-panel { display: flex; flex-direction: column; gap: 12px; }
+
+.places-list { background: #111; border-radius: 12px; border: 1px solid rgba(255,215,0,0.15); overflow: hidden; }
+.place-list-item { width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.05); color: #f0f0f0; padding: 14px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: background 0.15s; text-align: left; }
+.place-list-item:last-child { border-bottom: none; }
+.place-list-item:hover { background: rgba(255,215,0,0.08); }
+.place-list-item .place-icon { font-size: 20px; width: 28px; text-align: center; }
+.place-list-item .place-name { flex: 1; font-size: 14px; font-weight: 500; }
+.place-arrow { color: #FFD700; font-size: 18px; }
+
+.place-detail { background: #111; border-radius: 12px; border: 1px solid rgba(255,215,0,0.15); padding: 20px; }
+.place-back { background: transparent; border: 1px solid rgba(255,215,0,0.3); color: #FFD700; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; margin-bottom: 16px; }
+.place-back:hover { background: rgba(255,215,0,0.1); }
+.place-detail-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.place-icon-lg { font-size: 36px; }
+.place-detail-header h3 { font-size: 18px; font-weight: 700; color: #FFD700; margin: 0; }
+.place-detail-desc { color: #aaa; font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+.place-detail-btn { display: block; text-align: center; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 700; color: #000; background: linear-gradient(135deg,#FFE55C,#FFD700); }
+
+@media (max-width: 900px) { .chat-places-grid { grid-template-columns: 1fr; } }
