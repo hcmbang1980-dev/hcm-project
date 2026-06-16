@@ -1,0 +1,87 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0a;
+  padding: 20px;
+}
+
+.login-card {
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 16px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.login-logo {
+  margin-bottom: 32px;
+}
+
+.logo-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.login-logo h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #d4af37;
+  margin: 0 0 8px 0;
+  font-family: 'Noto Serif KR', serif;
+}
+
+.login-logo p {
+  color: #888;
+  font-size: 14px;
+  margin: 0;
+}
+
+.login-divider {
+  position: relative;
+  margin: 24px 0;
+  text-align: center;
+}
+
+.login-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #333;
+}
+
+.login-divider span {
+  position: relative;
+  background: #111;
+  padding: 0 16px;
+  color: #888;
+  font-size: 13px;
+}
+
+.telegram-btn-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0;
+  min-height: 48px;
+}
+
+.login-info {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #222;
+}
+
+.login-info p {
+  color: #666;
+  font-size: 13px;
+  margin: 8px 0;
+  text-align: left;
+}
