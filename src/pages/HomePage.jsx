@@ -43,11 +43,17 @@ export default function HomePage() {
             <span className="gold-text">호치민 유흥 커뮤니티</span>
             <br />NO.1
           </h1>
-          <p className="hero-subtitle">실시간으로 터지는 호치민 밤문화 꿀팁<br />지금 바로 [호치민방앗간] 텔레그램 참가!</p>
+          <p className="hero-subtitle">실시간으로 터지는 호치민 밤문화 꿀팁<br />지금 바로 [호치민방앗간] 텔레그램으로 회원가입!</p>
           <div className="hero-buttons">
-            <a href="https://t.me/+RMYb98zNIb4xNTY1" target="_blank" className="btn-gold hero-btn">
-              📱 텔레그램 참가
-            </a>
+            {!user ? (
+              <Link to="/login" className="btn-gold hero-btn">
+                🔥 텔레그램으로 회원가입
+              </Link>
+            ) : (
+              <a href="https://t.me/+RMYb98zNIb4xNTY1" target="_blank" className="btn-gold hero-btn">
+                💬 소통방 참여하기
+              </a>
+            )}
             <Link to="/board/free" className="hero-btn-outline">
               💬 커뮤니티 보기
             </Link>
