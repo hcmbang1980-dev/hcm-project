@@ -1,0 +1,49 @@
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.level-badge-sm { font-size: 12px; gap: 3px; }
+.level-badge-md { font-size: 14px; }
+.level-badge-lg { font-size: 17px; gap: 6px; }
+.grade-icon { font-size: 1.1em; }
+.grade-name {
+  font-weight: 700;
+  font-size: 0.95em;
+  letter-spacing: 0.01em;
+}
+.level-num {
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.85em;
+  color: #ccc;
+  font-weight: 600;
+}
+.exp-bar-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.exp-bar-track {
+  flex: 1;
+  height: 7px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.exp-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+  min-width: 2px;
+}
+.exp-text {
+  font-size: 11px;
+  color: #999;
+  white-space: nowrap;
+  min-width: 70px;
+}
