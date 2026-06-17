@@ -87,52 +87,54 @@ export default function HomePage() {
 
       {/* 소통방 + 추천업소 - 로그인 시에만 표시 */}
       {user && (
-        <section className="chat-places-section">
-          <div className="container">
-            <div className="chat-places-grid">
+  <section className="chat-places-section">
+    <div style={{ display: 'flex', gap: '16px', padding: '20px 0', alignItems: 'flex-start' }}>
+      
+      {/* 왼쪽 광고 여백 */}
+      <div style={{ width: '160px', minWidth: '160px', minHeight: '400px', background: 'rgba(255,255,255,0.03)', border: '1px dashed rgba(255,215,0,0.2)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.2)', fontSize: '12px' }}>
+        광고
+      </div>
 
-              {/* 채팅창 - 절반 크기 */}
-              <div className="chat-panel">
-                <h2 className="section-title">📱 실시간 소통방</h2>
-                <div style={{ height: '280px', overflow: 'hidden' }}>
-                  <ChatRoom />
-                </div>
-              </div>
+      {/* 채팅창 */}
+      <div style={{ flex: 1 }}>
+        <h2 className="section-title">📱 실시간 소통방</h2>
+        <ChatRoom />
+      </div>
 
-              {/* 추천업소 - 목록 인라인 표시, 자세히보기 클릭 시 페이지 이동 */}
-              <div className="places-panel">
-                <h2 className="section-title">🏪 추천업소</h2>
-                {!activePlace ? (
-                  <div className="places-list">
-                    {PLACES.map(item => (
-                      <button
-                        key={item.name}
-                        className="place-list-item"
-                        onClick={() => setActivePlace(item)}
-                      >
-                        <span className="place-icon">{item.icon}</span>
-                        <span className="place-name">{item.name}</span>
-                        <span className="place-arrow">›</span>
-                      </button>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="place-detail">
-                    <button className="place-back" onClick={() => setActivePlace(null)}>← 목록으로</button>
-                    <div className="place-detail-header">
-                      <span className="place-icon-lg">{activePlace.icon}</span>
-                      <h3>{activePlace.name}</h3>
-                    </div>
-                    <p className="place-detail-desc">호치민 최고의 {activePlace.name} 정보를 확인하세요.</p>
-                    <Link to={activePlace.path} className="btn-gold place-detail-btn">자세히 보기 →</Link>
-                  </div>
-                )}
-              </div>
-
-            </div>
+      {/* 추천업소 */}
+      <div style={{ width: '300px', minWidth: '300px' }}>
+        <h2 className="section-title">🏪 추천업소</h2>
+        {!activePlace ? (
+          <div className="places-list">
+            {PLACES.map(item => (
+              <button key={item.name} className="place-list-item" onClick={() => setActivePlace(item)}>
+                <span className="place-icon">{item.icon}</span>
+                <span className="place-name">{item.name}</span>
+                <span className="place-arrow">›</span>
+              </button>
+            ))}
           </div>
-        </section>
-      )}
+        ) : (
+          <div className="place-detail">
+            <button className="place-back" onClick={() => setActivePlace(null)}>← 목록으로</button>
+            <div className="place-detail-header">
+              <span className="place-icon-lg">{activePlace.icon}</span>
+              <h3>{activePlace.name}</h3>
+            </div>
+            <p className="place-detail-desc">호치민 최고의 {activePlace.name} 정보를 확인하세요.</p>
+            <Link to={activePlace.path} className="btn-gold place-detail-btn">자세히 보기 →</Link>
+          </div>
+        )}
+      </div>
+
+      {/* 오른쪽 광고 여백 */}
+      <div style={{ width: '160px', minWidth: '160px', minHeight: '400px', background: 'rgba(255,255,255,0.03)', border: '1px dashed rgba(255,215,0,0.2)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.2)', fontSize: '12px' }}>
+        광고
+      </div>
+
+    </div>
+  </section>
+)}
 
       {/* 게시판 섹션 */}
       <section className="section boards-section">
