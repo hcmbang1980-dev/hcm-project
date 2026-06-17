@@ -1,53 +1,32 @@
-export default async function handler(req, res) {
-    if (req.method !== 'POST') {
-          return res.status(200).json({ ok: true, message: 'Telegram Bot Webhook' })
-    }
+import { createClient } from '@supabase/supabase-js'
 
-  const BOT_TOKEN = process.env.VITE_TELEGRAM_BOT_TOKEN
-    const COMMUNITY_LINK = 'https://t.me/+RMYb98zNIb4xNTY1'
-    const CHANNEL_LINK = 'https://t.me/hcnbangogans'
-    const SITE_URL = 'https://www.hcmboom.com'
+export default async function handler(req, res) {
+      if (req.method !== 'POST') {
+              return res.status(200).json({ ok: true, message: 'Telegram Bot Webhook' })
+      }
+
+  const supabase = createClient(
+          process.env.VITE_SUPABASE_URL,
+          process.env.SUPABASE_SERVICE_KEY
+        )
 
   const update = req.body
-    const message = update?.message
+      const message = update?.message
 
-  if (!message) return res.status(200).json({ ok: true })
-
-  const chatId = message.chat.id
-    const text = message.text || ''
-    const firstName = message.from?.first_name || '회원'
-
-  async function sendMessage(chatId, text, options = {}) {
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', ...options })
-        })
+  if (!message || !message.text) {
+          return res.status(200).json({ ok: true })
   }
 
-  if (text === '/start') {
-        await sendMessage(chatId,
-                                `🔥 <b>호치민방앗간에 오신 것을 환영합니다!</b>
+  const text = message.text
+      const nickname = message.from?.first_name || '텔레그램유저'
+      const user_id = `tg_${message.from?.id}`
 
-                                베트남 밤문화 No.1 커뮤니티입니다.
-
-                                📌 <b>이용 방법</b>
-                                1️⃣ 아래 버튼으로 사이트 가입
-                                2️⃣ 텔레그램 계정으로 1초 로그인
-                                3️⃣ 가입 즉시 10 포인트 지급!
-
-                                💬 소통방 & 채널도 함께 참여하세요 👇`,
-                          {
-                                    reply_markup: JSON.stringify({
-                                                inline_keyboard: [
-                                                              [{ text: '🌐 사이트 가입하기', url: `${SITE_URL}/login` }],
-                                                              [{ text: '💬 소통방 참여하기', url: COMMUNITY_LINK }],
-                                                              [{ text: '📢 채널 구독하기', url: CHANNEL_LINK }]
-                                                            ]
-                                    })
-                          }
-                              )
-  }
+  await supabase.from('messages').insert({
+          text,
+          nickname,
+          user_id,
+          photo_url: null
+  })
 
   return res.status(200).json({ ok: true })
 }
