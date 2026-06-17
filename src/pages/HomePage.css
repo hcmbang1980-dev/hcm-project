@@ -208,8 +208,8 @@
 
 /* 채팅창 컬럼 - 전체 너비의 약 절반 */
 .chat-col {
-  width: 50%;
-  max-width: 50%;
+  width: 25%;
+  max-width: 25%;
   flex-shrink: 0;
   padding-right: 16px;
 }
@@ -276,21 +276,23 @@
 /* 업소 상세 - 오른쪽에 절대위치 패널 */
 .place-detail-overlay {
   position: absolute;
-  top: 0;
-  left: calc(100% + 8px);
-  width: 280px;
+  top: 100%;
+  right: 0;
+  left: auto;
+  width: 100%;
   background: #1e1e1e;
   border-radius: 12px;
   border: 1px solid rgba(255,215,0,0.25);
   padding: 16px;
   z-index: 100;
   box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-  animation: slideInRight 0.15s ease;
+  animation: slideInDown 0.15s ease;
+  margin-top: 4px;
 }
 
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(-8px); }
-  to   { opacity: 1; transform: translateX(0); }
+@keyframes slideInDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .place-back {
