@@ -90,12 +90,10 @@ export default function HomePage() {
         <section className="chat-places-section">
           <div className="chat-places-layout">
 
-            {/* 왼쪽 광고 여백 */}
-            <div className="ad-banner ad-banner-left">
-              <span>광고</span>
-            </div>
+            {/* 왼쪽 광고 여백 (투명) */}
+            <div className="ad-banner ad-banner-left"><span></span></div>
 
-            {/* 채팅창 */}
+            {/* 채팅창 - 폭 절반 */}
             <div className="chat-col">
               <h2 className="section-title">📱 실시간 소통방</h2>
               <ChatRoom />
@@ -104,19 +102,24 @@ export default function HomePage() {
             {/* 추천업소 */}
             <div className="places-col">
               <h2 className="section-title">🏪 추천업소</h2>
-              {!activePlace ? (
-                <div className="places-list">
-                  {PLACES.map(item => (
-                    <button key={item.name} className="place-list-item" onClick={() => setActivePlace(item)}>
-                      <span className="place-icon">{item.icon}</span>
-                      <span className="place-name">{item.name}</span>
-                      <span className="place-arrow">›</span>
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <div className="place-detail">
-                  <button className="place-back" onClick={() => setActivePlace(null)}>← 목록으로</button>
+              <div className="places-list">
+                {PLACES.map(item => (
+                  <button
+                    key={item.name}
+                    className={"place-list-item" + (activePlace?.name === item.name ? " active" : "")}
+                    onClick={() => setActivePlace(activePlace?.name === item.name ? null : item)}
+                  >
+                    <span className="place-icon">{item.icon}</span>
+                    <span className="place-name">{item.name}</span>
+                    <span className="place-arrow">{activePlace?.name === item.name ? '›' : '›'}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* 선택된 업소 상세 - 오른쪽에 떠오르는 패널 */}
+              {activePlace && (
+                <div className="place-detail-overlay">
+                  <button className="place-back" onClick={() => setActivePlace(null)}>← 닫기</button>
                   <div className="place-detail-header">
                     <span className="place-detail-icon">{activePlace.icon}</span>
                     <h3>{activePlace.name}</h3>
@@ -126,10 +129,8 @@ export default function HomePage() {
               )}
             </div>
 
-            {/* 오른쪽 광고 여백 */}
-            <div className="ad-banner ad-banner-right">
-              <span>광고</span>
-            </div>
+            {/* 오른쪽 광고 여백 (투명) */}
+            <div className="ad-banner ad-banner-right"><span></span></div>
 
           </div>
         </section>
