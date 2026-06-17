@@ -6,14 +6,12 @@ import ChatRoom from '../components/ChatRoom'
 import './HomePage.css'
 
 const PLACES = [
-  { icon: '🎤', name: '한 가라오케&바', path: '/places/karaoke-korean' },
-  { icon: '🎵', name: '로컬 가라오케&바', path: '/places/karaoke-local' },
-  { icon: '💆', name: '건전마사지', path: '/places/massage' },
-  { icon: '✂️', name: '이발소', path: '/places/barbershop' },
-  { icon: '🍸', name: '클럽', path: '/places/club' },
-  { icon: '🏊', name: '풀빌라', path: '/places/villa' },
-  { icon: '🏠', name: '에어비앤비', path: '/places/airbnb' },
-  { icon: '🚗', name: '렌트카&운전기사', path: '/places/rent' },
+  { icon: '🎤', name: '한가라 & 로컬 가라오케', path: '/places/karaoke' },
+  { icon: '🍸', name: '클럽 & 바', path: '/places/club' },
+  { icon: '💆', name: '건전마사지 & 이발소', path: '/places/massage' },
+  { icon: '🔥', name: '불건전마사지', path: '/places/adult-massage' },
+  { icon: '🏊', name: '풀빌라 & 에어비앤비', path: '/places/villa' },
+  { icon: '🚗', name: '렌트카 & 운전기사', path: '/places/rent' },
   { icon: '🍜', name: '맛집', path: '/places/restaurant' },
 ]
 
