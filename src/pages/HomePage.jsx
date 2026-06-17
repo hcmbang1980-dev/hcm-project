@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import ChatRoom from '../components/ChatRoom'
+import Attendance from '../components/Attendance'
+import LevelBadge from '../components/LevelBadge'
 import './HomePage.css'
 
 const PLACES = [
@@ -21,14 +23,20 @@ export default function HomePage() {
   const [posts, setPosts] = useState({ notice: [], event: [], free: [] })
   const [stats, setStats] = useState({ users: 0, posts: 0 })
   const [activePlace, setActivePlace] = useState(null)
+  const [userLevel, setUserLevel] = useState(null)
 
   useEffect(() => {
     fetchPosts()
     fetchStats()
-  }, [])
+    if (user) fetchUserLevel()
+  }, [user])
 
   const fetchPosts = async () => {
-    const { data } = await supabase.from('posts').select('*').order('created_at', { ascending: false }).limit(20)
+    const { data } = await supabase
+      .from('posts')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(30)
     if (data) {
       setPosts({
         notice: data.filter(p => p.board_type === 'notice').slice(0, 3),
@@ -46,10 +54,17 @@ export default function HomePage() {
     setStats({ users: usersRes.count || 0, posts: postsRes.count || 0 })
   }
 
+  const fetchUserLevel = async () => {
+    const { data } = await supabase
+      .from('user_levels')
+      .select('*')
+      .eq('user_id', user.id)
+      .single()
+    if (data) setUserLevel(data)
+  }
+
   return (
     <div className="home">
-
-      {/* 히어로 섹션 - 비로그인 시에만 표시 */}
       {!user && (
         <section className="hero">
           <div className="hero-bg"></div>
@@ -83,23 +98,22 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* 소통방 + 추천업소 - 로그인 시에만 표시 */}
       {user && (
         <section className="chat-places-section">
           <div className="chat-places-layout">
-
-            {/* 왼쪽 광고 여백 (투명) */}
             <div className="ad-banner ad-banner-left"><span></span></div>
-
-            {/* 채팅창 - 폭 절반 */}
             <div className="chat-col">
               <h2 className="section-title">📱 실시간 소통방</h2>
               <ChatRoom />
             </div>
-
-            {/* 추천업소 */}
             <div className="places-col">
-              <h2 className="section-title">🏪 추천업소</h2>
+              <Attendance />
+              {userLevel && (
+                <div className="user-level-card">
+                  <LevelBadge exp={userLevel.exp} showBar={true} size="lg" />
+                </div>
+              )}
+              <h2 className="section-title" style={{marginTop:'16px'}}>🏪 추천업소</h2>
               <div className="places-list">
                 {PLACES.map(item => (
                   <button
@@ -109,12 +123,10 @@ export default function HomePage() {
                   >
                     <span className="place-icon">{item.icon}</span>
                     <span className="place-name">{item.name}</span>
-                    <span className="place-arrow">{activePlace?.name === item.name ? '›' : '›'}</span>
+                    <span className="place-arrow">›</span>
                   </button>
                 ))}
               </div>
-
-              {/* 선택된 업소 상세 - 오른쪽에 떠오르는 패널 */}
               {activePlace && (
                 <div className="place-detail-overlay">
                   <button className="place-back" onClick={() => setActivePlace(null)}>← 닫기</button>
@@ -126,15 +138,11 @@ export default function HomePage() {
                 </div>
               )}
             </div>
-
-            {/* 오른쪽 광고 여백 (투명) */}
             <div className="ad-banner ad-banner-right"><span></span></div>
-
           </div>
         </section>
       )}
 
-      {/* 게시판 섹션 */}
       <section className="board-section">
         <div className="board-grid">
           <div className="board-card">
@@ -143,7 +151,7 @@ export default function HomePage() {
               {posts.notice.length === 0 && <li className="board-empty">게시글이 없습니다</li>}
               {posts.notice.map(p => (
                 <li key={p.id}>
-                  <Link to={`/post/${p.id}`} className="board-link">{p.title}</Link>
+                  <Link to={'/post/' + p.id} className="board-link">{p.title}</Link>
                 </li>
               ))}
             </ul>
@@ -155,7 +163,7 @@ export default function HomePage() {
               {posts.event.length === 0 && <li className="board-empty">게시글이 없습니다</li>}
               {posts.event.map(p => (
                 <li key={p.id}>
-                  <Link to={`/post/${p.id}`} className="board-link">{p.title}</Link>
+                  <Link to={'/post/' + p.id} className="board-link">{p.title}</Link>
                 </li>
               ))}
             </ul>
@@ -167,7 +175,7 @@ export default function HomePage() {
               {posts.free.length === 0 && <li className="board-empty">게시글이 없습니다</li>}
               {posts.free.map(p => (
                 <li key={p.id}>
-                  <Link to={`/post/${p.id}`} className="board-link">{p.title}</Link>
+                  <Link to={'/post/' + p.id} className="board-link">{p.title}</Link>
                 </li>
               ))}
             </ul>
@@ -175,7 +183,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
     </div>
   )
 }
