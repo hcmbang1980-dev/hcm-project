@@ -87,97 +87,92 @@ export default function HomePage() {
 
       {/* 소통방 + 추천업소 - 로그인 시에만 표시 */}
       {user && (
-  <section className="chat-places-section">
-    <div style={{ display: 'flex', gap: '16px', padding: '20px 0', alignItems: 'flex-start' }}>
-      
-      {/* 왼쪽 광고 여백 */}
-      <div style={{ width: '160px', minWidth: '160px', minHeight: '400px', background: 'rgba(255,255,255,0.03)', border: '1px dashed rgba(255,215,0,0.2)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.2)', fontSize: '12px' }}>
-        광고
-      </div>
+        <section className="chat-places-section">
+          <div className="chat-places-layout">
 
-      {/* 채팅창 */}
-      <div style={{ flex: 1 }}>
-        <h2 className="section-title">📱 실시간 소통방</h2>
-        <ChatRoom />
-      </div>
-
-      {/* 추천업소 */}
-      <div style={{ width: '300px', minWidth: '300px' }}>
-        <h2 className="section-title">🏪 추천업소</h2>
-        {!activePlace ? (
-          <div className="places-list">
-            {PLACES.map(item => (
-              <button key={item.name} className="place-list-item" onClick={() => setActivePlace(item)}>
-                <span className="place-icon">{item.icon}</span>
-                <span className="place-name">{item.name}</span>
-                <span className="place-arrow">›</span>
-              </button>
-            ))}
-          </div>
-        ) : (
-          <div className="place-detail">
-            <button className="place-back" onClick={() => setActivePlace(null)}>← 목록으로</button>
-            <div className="place-detail-header">
-              <span className="place-icon-lg">{activePlace.icon}</span>
-              <h3>{activePlace.name}</h3>
+            {/* 왼쪽 광고 여백 */}
+            <div className="ad-banner ad-banner-left">
+              <span>광고</span>
             </div>
-            <p className="place-detail-desc">호치민 최고의 {activePlace.name} 정보를 확인하세요.</p>
-            <Link to={activePlace.path} className="btn-gold place-detail-btn">자세히 보기 →</Link>
+
+            {/* 채팅창 */}
+            <div className="chat-col">
+              <h2 className="section-title">📱 실시간 소통방</h2>
+              <ChatRoom />
+            </div>
+
+            {/* 추천업소 */}
+            <div className="places-col">
+              <h2 className="section-title">🏪 추천업소</h2>
+              {!activePlace ? (
+                <div className="places-list">
+                  {PLACES.map(item => (
+                    <button key={item.name} className="place-list-item" onClick={() => setActivePlace(item)}>
+                      <span className="place-icon">{item.icon}</span>
+                      <span className="place-name">{item.name}</span>
+                      <span className="place-arrow">›</span>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="place-detail">
+                  <button className="place-back" onClick={() => setActivePlace(null)}>← 목록으로</button>
+                  <div className="place-detail-header">
+                    <span className="place-detail-icon">{activePlace.icon}</span>
+                    <h3>{activePlace.name}</h3>
+                  </div>
+                  <p className="place-detail-desc">준비 중입니다. 곧 업데이트될 예정입니다.</p>
+                </div>
+              )}
+            </div>
+
+            {/* 오른쪽 광고 여백 */}
+            <div className="ad-banner ad-banner-right">
+              <span>광고</span>
+            </div>
+
           </div>
-        )}
-      </div>
-
-      {/* 오른쪽 광고 여백 */}
-      <div style={{ width: '160px', minWidth: '160px', minHeight: '400px', background: 'rgba(255,255,255,0.03)', border: '1px dashed rgba(255,215,0,0.2)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.2)', fontSize: '12px' }}>
-        광고
-      </div>
-
-    </div>
-  </section>
-)}
+        </section>
+      )}
 
       {/* 게시판 섹션 */}
-      <section className="section boards-section">
-        <div className="container">
-          <div className="boards-grid">
-            <div className="board-col card">
-              <div className="board-header">
-                <span>📢 공지사항</span>
-                <Link to="/notice" className="see-more-sm">더보기 +</Link>
-              </div>
-              {posts.notice.length > 0 ? posts.notice.map(p => (
-                <Link to={"/post/"+p.id} key={p.id} className="post-item">
-                  <span className="post-title">{p.title}</span>
-                  <span className="post-date">{new Date(p.created_at).toLocaleDateString('ko')}</span>
-                </Link>
-              )) : <p className="empty-text">등록된 게시글이 없습니다.</p>}
-            </div>
-
-            <div className="board-col card">
-              <div className="board-header">
-                <span>🎁 방앗간 이벤트</span>
-                <Link to="/event" className="see-more-sm">더보기 +</Link>
-              </div>
-              {posts.event.length > 0 ? posts.event.map(p => (
-                <Link to={"/post/"+p.id} key={p.id} className="post-item">
-                  <span className="post-title">{p.title}</span>
-                  <span className="post-date">{new Date(p.created_at).toLocaleDateString('ko')}</span>
-                </Link>
-              )) : <p className="empty-text">등록된 게시글이 없습니다.</p>}
-            </div>
-
-            <div className="board-col card">
-              <div className="board-header">
-                <span>💬 자유게시판</span>
-                <Link to="/board/free" className="see-more-sm">더보기 +</Link>
-              </div>
-              {posts.free.length > 0 ? posts.free.map(p => (
-                <Link to={"/post/"+p.id} key={p.id} className="post-item">
-                  <span className="post-title">{p.title}</span>
-                  <span className="post-date">{new Date(p.created_at).toLocaleDateString('ko')}</span>
-                </Link>
-              )) : <p className="empty-text">등록된 게시글이 없습니다.</p>}
-            </div>
+      <section className="board-section">
+        <div className="board-grid">
+          <div className="board-card">
+            <h3 className="board-card-title">📢 공지사항</h3>
+            <ul className="board-list">
+              {posts.notice.length === 0 && <li className="board-empty">게시글이 없습니다</li>}
+              {posts.notice.map(p => (
+                <li key={p.id}>
+                  <Link to={`/post/${p.id}`} className="board-link">{p.title}</Link>
+                </li>
+              ))}
+            </ul>
+            <Link to="/board/notice" className="board-more">더보기 →</Link>
+          </div>
+          <div className="board-card">
+            <h3 className="board-card-title">🎉 이벤트</h3>
+            <ul className="board-list">
+              {posts.event.length === 0 && <li className="board-empty">게시글이 없습니다</li>}
+              {posts.event.map(p => (
+                <li key={p.id}>
+                  <Link to={`/post/${p.id}`} className="board-link">{p.title}</Link>
+                </li>
+              ))}
+            </ul>
+            <Link to="/board/event" className="board-more">더보기 →</Link>
+          </div>
+          <div className="board-card">
+            <h3 className="board-card-title">💬 자유게시판</h3>
+            <ul className="board-list">
+              {posts.free.length === 0 && <li className="board-empty">게시글이 없습니다</li>}
+              {posts.free.map(p => (
+                <li key={p.id}>
+                  <Link to={`/post/${p.id}`} className="board-link">{p.title}</Link>
+                </li>
+              ))}
+            </ul>
+            <Link to="/board/free" className="board-more">더보기 →</Link>
           </div>
         </div>
       </section>
