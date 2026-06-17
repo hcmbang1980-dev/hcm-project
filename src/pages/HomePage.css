@@ -181,57 +181,55 @@
 @media (max-width: 900px) { .chat-places-grid { grid-template-columns: 1fr; } }
 
 
-/* ===== 채팅+추천업소 레이아웃 [광고][채팅][업소][광고] ===== */
+/* ===== 채팅+추천업소 레이아웃 [광고공간][채팅][업소][광고공간] ===== */
 .chat-places-section {
   padding: 20px 0;
 }
 
 .chat-places-layout {
   display: flex;
-  gap: 16px;
+  gap: 0;
   align-items: flex-start;
-  max-width: 100%;
-  padding: 0 0;
+  width: 100%;
 }
 
-/* 광고 배너 (좌/우) */
+/* 광고 여백 - 완전 투명, 표시 없음 */
 .ad-banner {
   width: 160px;
   min-width: 160px;
-  min-height: 300px;
-  background: rgba(255,255,255,0.02);
-  border: 1px dashed rgba(255,215,0,0.2);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255,255,255,0.15);
-  font-size: 12px;
   flex-shrink: 0;
+  background: transparent;
+  border: none;
 }
 
-/* 채팅창 컬럼 */
+.ad-banner span {
+  display: none;
+}
+
+/* 채팅창 컬럼 - 전체 너비의 약 절반 */
 .chat-col {
+  width: 50%;
+  max-width: 50%;
+  flex-shrink: 0;
+  padding-right: 16px;
+}
+
+/* 추천업소 컬럼 - 채팅 바로 오른쪽 */
+.places-col {
   flex: 1;
   min-width: 0;
-}
-
-/* 추천업소 컬럼 */
-.places-col {
-  width: 280px;
-  min-width: 280px;
-  flex-shrink: 0;
+  position: relative;
 }
 
 /* 추천업소 목록 */
 .places-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0;
   background: #1a1a1a;
   border-radius: 12px;
   border: 1px solid rgba(255,215,0,0.15);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .place-list-item {
@@ -246,6 +244,7 @@
   width: 100%;
   text-align: left;
   transition: background 0.15s;
+  position: relative;
 }
 
 .place-list-item:last-child {
@@ -274,12 +273,24 @@
   flex-shrink: 0;
 }
 
-/* 업소 상세 */
-.place-detail {
-  background: #1a1a1a;
+/* 업소 상세 - 오른쪽에 절대위치 패널 */
+.place-detail-overlay {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 8px);
+  width: 280px;
+  background: #1e1e1e;
   border-radius: 12px;
-  border: 1px solid rgba(255,215,0,0.15);
+  border: 1px solid rgba(255,215,0,0.25);
   padding: 16px;
+  z-index: 100;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  animation: slideInRight 0.15s ease;
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
 .place-back {
@@ -306,6 +317,68 @@
 .place-detail-header h3 { font-size: 18px; font-weight: 700; color: #FFD700; }
 .place-detail-desc { color: #888; font-size: 14px; line-height: 1.5; }
 
+/* 게시판 섹션 */
+.board-section {
+  padding: 40px 0;
+}
+
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.board-card {
+  background: #1a1a1a;
+  border: 1px solid rgba(255,215,0,0.15);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.board-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #FFD700;
+}
+
+.board-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.board-link {
+  color: #ddd;
+  text-decoration: none;
+  font-size: 13px;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.board-link:hover { color: #FFD700; }
+
+.board-empty {
+  color: #555;
+  font-size: 13px;
+}
+
+.board-more {
+  color: #FFD700;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.board-more:hover { text-decoration: underline; }
+
 /* 반응형 */
 @media (max-width: 900px) {
   .chat-places-layout {
@@ -314,8 +387,20 @@
   .ad-banner {
     display: none;
   }
+  .chat-col {
+    width: 100%;
+    max-width: 100%;
+    padding-right: 0;
+  }
   .places-col {
     width: 100%;
-    min-width: unset;
+  }
+  .place-detail-overlay {
+    position: static;
+    width: 100%;
+    margin-top: 8px;
+  }
+  .board-grid {
+    grid-template-columns: 1fr;
   }
 }
