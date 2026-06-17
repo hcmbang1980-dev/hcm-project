@@ -6,9 +6,18 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ ok: false, error: 'Method not allowed' });
-  }
+  // GET 요청 시 webhook 자동 등록
+if (req.method === 'GET') {
+  const token = process.env.VITE_TELEGRAM_BOT_TOKEN;
+  const webhookUrl = 'https://www.hcmboom.com/api/telegram-webhook';
+  const setRes = await fetch(`https://api.telegram.org/bot${token}/setWebhook?url=${webhookUrl}`);
+  const setBody = await setRes.json();
+  return res.status(200).json(setBody);
+}
+
+if (req.method !== 'POST') {
+  return res.status(405).json({ ok: false, error: 'Method not allowed' });
+}
 
   try {
     const update = req.body;
