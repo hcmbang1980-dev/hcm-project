@@ -2,6 +2,31 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
+const SHEET_WEBHOOK = import.meta.env.VITE_GOOGLE_SHEET_WEBHOOK
+
+async function logToSheet(userData, tgUser, ip, userAgent, isNew) {
+  if (!SHEET_WEBHOOK) return
+  try {
+    await fetch(SHEET_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        created_at: new Date().toISOString(),
+        telegram_id: tgUser.id || '',
+        telegram_username: tgUser.username || '',
+        first_name: tgUser.first_name || '',
+        nickname: userData.nickname || '',
+        photo_url: tgUser.photo_url || '',
+        ip: ip || '',
+        user_agent: userAgent || '',
+        login_type: isNew ? '신규가입' : '로그인',
+        uuid: userData.id || '',
+      }),
+    })
+  } catch (e) {
+    console.error('sheet log error:', e)
+  }
+}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
@@ -13,8 +38,6 @@ export function AuthProvider({ children }) {
       try { setUser(JSON.parse(stored)) } catch(e) {}
     }
     setLoading(false)
-
-    // 텔레그램 로그인 콜백 등록
     window.onTelegramAuth = async (tgUser) => {
       await handleTelegramLogin(tgUser)
     }
@@ -22,17 +45,25 @@ export function AuthProvider({ children }) {
 
   const handleTelegramLogin = async (tgUser) => {
     try {
-      // telegram_id로 기존 유저 찾기
+      let ip = ''
+      const userAgent = navigator.userAgent || ''
+      try {
+        const ipRes = await fetch('https://api.ipify.org?format=json')
+        const ipData = await ipRes.json()
+        ip = ipData.ip || ''
+      } catch(e) {}
+
       const { data: existing } = await supabase
         .from('users')
         .select('*')
         .eq('telegram_id', tgUser.id)
         .single()
 
-      let userData;
+      let userData
+      let isNew = false
+
       if (existing) {
-        // 기존 유저 정보 업데이트
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from('users')
           .update({
             telegram_username: tgUser.username || null,
@@ -44,7 +75,7 @@ export function AuthProvider({ children }) {
           .single()
         userData = data
       } else {
-        // 신규 유저 생성 (UUID 자동 생성)
+        isNew = true
         const { data, error } = await supabase
           .from('users')
           .insert({
@@ -61,7 +92,6 @@ export function AuthProvider({ children }) {
           .select()
           .single()
         if (!error && data) {
-          // 가입 포인트 10점 지급
           await supabase.from('point_history').insert({
             user_id: data.id,
             amount: 10,
@@ -74,6 +104,7 @@ export function AuthProvider({ children }) {
       if (userData) {
         setUser(userData)
         localStorage.setItem('hcm_user', JSON.stringify(userData))
+        logToSheet(userData, tgUser, ip, userAgent, isNew)
       }
     } catch(err) {
       console.error('Telegram login error:', err)
