@@ -186,3 +186,41 @@
   border-radius: 4px;
   background: rgba(255,255,255,0.08);
 }
+
+
+/* 텔레그램 로그인 오버레이 (화면 전체 덮는 방식 - 헤더에 잘리지 않게) */
+.tg-login-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+.tg-login-popup {
+  background: #111;
+  border: 1px solid rgba(255,215,0,0.3);
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 0 40px rgba(255,215,0,0.1);
+}
+
+.tg-login-popup h2 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.tg-login-popup p {
+  color: #888;
+  font-size: 14px;
+  margin: 0;
+}
