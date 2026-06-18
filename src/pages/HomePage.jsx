@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import ChatRoom from '../components/ChatRoom'
-import Attendance from '../components/Attendance'
 import LevelBadge from '../components/LevelBadge'
 import './HomePage.css'
 
@@ -107,12 +106,18 @@ export default function HomePage() {
               <ChatRoom />
             </div>
             <div className="places-col">
-              <Attendance />
-              {userLevel && (
-                <div className="user-level-card">
-                  <LevelBadge exp={userLevel.exp} showBar={true} size="lg" />
+              {/* 레벨 미니 카드 - 출석/마이페이지 링크 포함 */}
+              <div className="level-mini-card">
+                {userLevel ? (
+                  <LevelBadge exp={userLevel.exp} showBar={true} size="sm" />
+                ) : (
+                  <div className="level-mini-empty">Lv.1 새싹</div>
+                )}
+                <div className="level-mini-links">
+                  <Link to="/attendance" className="mini-link-btn">📅 출석체크</Link>
+                  <Link to="/mypage" className="mini-link-btn">👤 내 정보</Link>
                 </div>
-              )}
+              </div>
               <h2 className="section-title" style={{marginTop:'16px'}}>🏪 추천업소</h2>
               <div className="places-list">
                 {PLACES.map(item => (
