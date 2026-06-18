@@ -25,6 +25,12 @@ export default function Header() {
     }
 
     useEffect(() => {
+        if (user && showTgLogin) {
+            handleCloseModal()
+        }
+    }, [user])
+
+    useEffect(() => {
         if (!showTgLogin || widgetLoaded.current || !widgetRef.current) return
         widgetLoaded.current = true
         const botName = import.meta.env.VITE_TELEGRAM_BOT_NAME || 'bangasgan_bot'
@@ -42,6 +48,11 @@ export default function Header() {
     const handleCloseModal = () => {
         setShowTgLogin(false)
         widgetLoaded.current = false
+    }
+
+    const handleLoginClick = () => {
+        if (user) return
+        setShowTgLogin(true)
     }
 
     return (
@@ -110,7 +121,7 @@ export default function Header() {
                             <button className="btn-logout" onClick={logout}>로그아웃</button>
                         </div>
                     ) : (
-                        <button className="btn-tg-login" onClick={() => setShowTgLogin(true)}>
+                        <button className="btn-tg-login" onClick={handleLoginClick}>
                             <span>텔레그램 로그인</span>
                         </button>
                     )}
@@ -118,12 +129,12 @@ export default function Header() {
                 </div>
             </div>
 
-            {showTgLogin && (
-                <div className="tg-login-modal" onClick={handleCloseModal}>
-                    <div className="tg-login-box" onClick={e => e.stopPropagation()}>
+            {!user && showTgLogin && (
+                <div className="tg-login-overlay" onClick={handleCloseModal}>
+                    <div className="tg-login-popup" onClick={e => e.stopPropagation()}>
                         <h2 className="gold-text">텔레그램으로 로그인</h2>
                         <p>텔레그램 계정으로 간편하게 로그인하세요</p>
-                        <div ref={widgetRef} style={{ margin: '16px 0', minHeight: '48px', display: 'flex', justifyContent: 'center' }}></div>
+                        <div ref={widgetRef} style={{ margin: '16px 0', minHeight: '60px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}></div>
                         <button className="btn-close" onClick={handleCloseModal}>x 닫기</button>
                     </div>
                 </div>
