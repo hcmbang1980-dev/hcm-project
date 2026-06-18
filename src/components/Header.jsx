@@ -43,85 +43,85 @@ export default function Header() {
         <header className="header">
               <div className="header-inner">
                       <Link to="/" className="logo">
-                                <span className="logo-icon">🔥</span>span>
-                                <span className="logo-text">호치민방앗간</span>span>
-                      </Link>Link>
+                                <span className="logo-icon">🔥</span>
+                                <span className="logo-text">호치민방앗간</span>
+                      </Link>
               
                       <nav className="nav-desktop">
                                 <div className="nav-dropdown">
-                                            <button className="nav-btn">호치민 방앗간 ▾</button>button>
+                                            <button className="nav-btn">호치민 방앗간 ▾</button>
                                             <div className="dropdown-menu">
-                        <Link to="/notice">공지사항</Link>Link>
-                                                          <Link to="/event">방앗간 이벤트</Link>Link>
-                                                          <Link to="/intro">가입인사</Link>Link>
-                                            </div>div>
-                                </div>div>
+                        <Link to="/notice">공지사항</Link>
+                                                          <Link to="/event">방앗간 이벤트</Link>
+                                                          <Link to="/intro">가입인사</Link>
+                                            </div>
+                                </div>
                       
                                 <div className="nav-dropdown">
-                                            <button className="nav-btn">추천업소 ▾</button>button>
+                                            <button className="nav-btn">추천업소 ▾</button>
                                             <div className="dropdown-menu">
                                                           <Link to="/places/karaoke">한가라 & 로컬 가라오케</Link>
-                                                          <Link to="/places/club">클럽 & 바</Link>Link>
-                                                          <Link to="/places/massage">건전마사지 & 이발소</Link>Link>
-                                                          <Link to="/places/adult-massage">불건전마사지</Link>Link>
-                                                          <Link to="/places/villa">풀빌라 & 에어비앤비</Link>Link>
-                                                          <Link to="/places/rent">렌트카 & 운전기사</Link>Link>
-                                                          <Link to="/places/restaurant">맛집</Link>Link>
-                                            </div>div>
-                                </div>div>
+                                                          <Link to="/places/club">클럽 & 바</Link>
+                                                          <Link to="/places/massage">건전마사지 & 이발소</Link>
+                                                          <Link to="/places/adult-massage">불건전마사지</Link>
+                                                          <Link to="/places/villa">풀빌라 & 에어비앤비</Link>
+                                                          <Link to="/places/rent">렌트카 & 운전기사</Link>
+                                                          <Link to="/places/restaurant">맛집</Link>
+                                            </div>
+                                </div>
                       
                                 <div className="nav-dropdown">
                                             <button className="nav-btn">게시판 ▾</button>
                                             <div className="dropdown-menu">
-                                                          <Link to="/board/free">자유게시판</Link>Link>
+                                                          <Link to="/board/free">자유게시판</Link>
                                                                           <Link to="/board/review">후기게시판</Link>
-                          <Link to="/board/qna">질문답변</Link>Link>
-                                            </div>div>
-          </div>div>
+                          <Link to="/board/qna">질문답변</Link>
+                                            </div>
+          </div>
                       
-                                <a href="https://t.me/bangasgan" target="_blank" rel="noopener" className="nav-btn nav-tg">제휴문의 ↗</a>a>
-                      </nav>nav>
+                                <a href="https://t.me/bangasgan" target="_blank" rel="noopener" className="nav-btn nav-tg">제휴문의 ↗</a>
+                      </nav>
               
                       <div className="header-right">
                         {user ? (
                       <div className="user-info">
                         {user.photo_url && <img src={user.photo_url} alt="" className="user-avatar" />}
                                     <div className="user-details">
-                                                    <span className="user-name">{user.nickname}</span>span>
+                                                    <span className="user-name">{user.nickname}</span>
                                                     <span className="user-level" style={{ color: levels[user.level]?.color || '#FFD700' }}>
                                                       {levels[user.level]?.name || '새싹'}
-                                                    </span>span>
-                                    </div>div>
-                                    <button className="btn-logout" onClick={logout}>로그아웃</button>button>
-                      </div>div>
+                                                    </span>
+                                    </div>
+                                    <button className="btn-logout" onClick={logout}>로그아웃</button>
+                      </div>
                     ) : (
                       <button className="btn-tg-login" onClick={() => setShowTgLogin(true)}>
-                                    <span>텔레그램 로그인</span>span>
-                      </button>button>
+                                    <span>텔레그램 로그인</span>
+                      </button>
                                 )}
-                                <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>≡</button>button>
-                      </div>div>
-              </div>div>
+                                <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>≡</button>
+                      </div>
+              </div>
         
           {showTgLogin && (
                   <div className="tg-login-modal" onClick={handleCloseModal}>
                             <div className="tg-login-box" onClick={e => e.stopPropagation()}>
-                                        <h2 className="gold-text">텔레그램으로 로그인</h2>h2>
-                                        <p>텔레그램 계정으로 간편하게 로그인하세요</p>p>
-                                        <div ref={widgetRef} style={{ margin: '16px 0', minHeight: '48px', display: 'flex', justifyContent: 'center' }}></div>div>
-                                        <button className="btn-close" onClick={handleCloseModal}>✕ 닫기</button>button>
-                            </div>div>
-                  </div>div>
+                                        <h2 className="gold-text">텔레그램으로 로그인</h2>
+                                        <p>텔레그램 계정으로 간편하게 로그인하세요</p>
+                                        <div ref={widgetRef} style={{ margin: '16px 0', minHeight: '48px', display: 'flex', justifyContent: 'center' }}></div>
+                                        <button className="btn-close" onClick={handleCloseModal}>✕ 닫기</button>
+                            </div>
+                  </div>
               )}
         
           {menuOpen && (
                   <nav className="nav-mobile">
-                            <Link to="/notice" onClick={() => setMenuOpen(false)}>공지사항</Link>Link>
-                            <Link to="/event" onClick={() => setMenuOpen(false)}>방앗간 이벤트</Link>Link>
-                            <Link to="/board/free" onClick={() => setMenuOpen(false)}>자유게시판</Link>Link>
-                            <Link to="/places/karaoke" onClick={() => setMenuOpen(false)}>추천업소</Link>Link>
-                  </nav>nav>
+                            <Link to="/notice" onClick={() => setMenuOpen(false)}>공지사항</Link>
+                            <Link to="/event" onClick={() => setMenuOpen(false)}>방앗간 이벤트</Link>
+                            <Link to="/board/free" onClick={() => setMenuOpen(false)}>자유게시판</Link>
+                            <Link to="/places/karaoke" onClick={() => setMenuOpen(false)}>추천업소</Link>
+                  </nav>
               )}
-        </header>header>
+        </header>
       )
-}</header>
+}
