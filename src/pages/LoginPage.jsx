@@ -25,9 +25,7 @@ export default function LoginPage() {
   }
 
   useEffect(() => {
-    if (!user) {
-      loadWidget()
-    }
+    loadWidget()
   }, [])
 
   useEffect(() => {
@@ -53,14 +51,16 @@ export default function LoginPage() {
         <div className="login-logo">
           <span className="logo-icon">🔥</span>
           <h1>호치민방앗간</h1>
-          <p className="logo-sub">베트남 밤문화 No.1 커뮤니티</p>
+          <p className="logo-sub">베트남 밑문화 No.1 커뮤니티</p>
         </div>
 
         <div className="login-divider">
           <span>텔레그램으로 간편 로그인</span>
         </div>
 
-        {user && !showOther ? (
+        <div ref={widgetRef} className="telegram-btn-wrap" id="telegram-login-container"></div>
+
+        {user && !showOther && (
           <div className="login-already">
             <div className="already-account">
               {user.telegram_photo && (
@@ -75,8 +75,6 @@ export default function LoginPage() {
               다른 텔레그램 계정으로 로그인
             </button>
           </div>
-        ) : (
-          <div ref={widgetRef} className="telegram-btn-wrap" id="telegram-login-container"></div>
         )}
 
         <div className="login-benefits">
