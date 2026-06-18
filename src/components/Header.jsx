@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import './Header.css'
@@ -55,104 +56,108 @@ export default function Header() {
         setShowTgLogin(true)
     }
 
-    return (
-        <header className="header">
-            <div className="header-inner">
-                <Link to="/" className="logo">
-                    <span className="logo-icon">🔥</span>
-                    <span className="logo-text">호치민방앗간</span>
-                </Link>
-
-                <nav className="nav-desktop">
-                    <div className="nav-dropdown">
-                        <button className="nav-btn">호치민 방앗간 ▾</button>
-                        <div className="dropdown-menu">
-                            <Link to="/notice">공지사항</Link>
-                            <Link to="/event">방앗간 이벤트</Link>
-                            <Link to="/intro">가입인사</Link>
-                        </div>
-                    </div>
-
-                    <div className="nav-dropdown">
-                        <button className="nav-btn">추천업소 ▾</button>
-                        <div className="dropdown-menu">
-                            <Link to="/places/karaoke">한가라 & 로컬 가라오케</Link>
-                            <Link to="/places/club">클럽 & 바</Link>
-                            <Link to="/places/massage">건전마사지 & 이발소</Link>
-                            <Link to="/places/adult-massage">불건전마사지</Link>
-                            <Link to="/places/villa">풀빌라 & 에어비앤비</Link>
-                            <Link to="/places/rent">렌트카 & 운전기사</Link>
-                            <Link to="/places/restaurant">맛집</Link>
-                        </div>
-                    </div>
-
-                    <div className="nav-dropdown">
-                        <button className="nav-btn">게시판 ▾</button>
-                        <div className="dropdown-menu">
-                            <Link to="/board/free">자유게시판</Link>
-                            <Link to="/board/review">후기게시판</Link>
-                            <Link to="/board/qna">질문답변</Link>
-                        </div>
-                    </div>
-
-                    <a href="https://t.me/bangasgan" target="_blank" rel="noopener" className="nav-btn nav-tg">제휴문의 ↗</a>
-
-                    {user && user.role === 'admin' && (
-                        <Link to="/admin" className="nav-btn nav-admin">관리자</Link>
-                    )}
-                </nav>
-
-                <div className="header-right">
-                    {user ? (
-                        <div className="user-info">
-                            {user.photo_url && <img src={user.photo_url} alt="" className="user-avatar" />}
-                            <div className="user-details">
-                                <span className="user-name">{user.nickname}</span>
-                                {ROLE_BADGE[user.role] ? (
-                                    <span className="user-role-badge" style={{ color: ROLE_BADGE[user.role].color }}>
-                                        {ROLE_BADGE[user.role].label}
-                                    </span>
-                                ) : (
-                                    <span className="user-level" style={{ color: levels[user.level]?.color || '#FFD700' }}>
-                                        {levels[user.level]?.name || '새싹'}
-                                    </span>
-                                )}
-                            </div>
-                            <button className="btn-logout" onClick={logout}>로그아웃</button>
-                        </div>
-                    ) : (
-                        <button className="btn-tg-login" onClick={handleLoginClick}>
-                            <span>텔레그램 로그인</span>
-                        </button>
-                    )}
-                    <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>≡</button>
-                </div>
+    const tgModal = !user && showTgLogin ? createPortal(
+        <div className="tg-login-overlay" onClick={handleCloseModal}>
+            <div className="tg-login-popup" onClick={e => e.stopPropagation()}>
+                <h2 className="gold-text">텔레그램으로 로그인</h2>
+                <p>텔레그램 계정으로 간편하게 로그인하세요</p>
+                <div ref={widgetRef} style={{ margin: '16px 0', minHeight: '60px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}></div>
+                <button className="btn-close" onClick={handleCloseModal}>x 닫기</button>
             </div>
+        </div>,
+        document.body
+    ) : null
 
-            {!user && showTgLogin && (
-                <div className="tg-login-overlay" onClick={handleCloseModal}>
-                    <div className="tg-login-popup" onClick={e => e.stopPropagation()}>
-                        <h2 className="gold-text">텔레그램으로 로그인</h2>
-                        <p>텔레그램 계정으로 간편하게 로그인하세요</p>
-                        <div ref={widgetRef} style={{ margin: '16px 0', minHeight: '60px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}></div>
-                        <button className="btn-close" onClick={handleCloseModal}>x 닫기</button>
+    return (
+        <>
+            <header className="header">
+                <div className="header-inner">
+                    <Link to="/" className="logo">
+                        <span className="logo-icon">🔥</span>
+                        <span className="logo-text">호치민방앗간</span>
+                    </Link>
+
+                    <nav className="nav-desktop">
+                        <div className="nav-dropdown">
+                            <button className="nav-btn">호치민 방앗간 ▾</button>
+                            <div className="dropdown-menu">
+                                <Link to="/notice">공지사항</Link>
+                                <Link to="/event">방앗간 이벤트</Link>
+                                <Link to="/intro">가입인사</Link>
+                            </div>
+                        </div>
+
+                        <div className="nav-dropdown">
+                            <button className="nav-btn">추천업소 ▾</button>
+                            <div className="dropdown-menu">
+                                <Link to="/places/karaoke">한가라 & 로컬 가라오케</Link>
+                                <Link to="/places/club">클럽 & 바</Link>
+                                <Link to="/places/massage">건전마사지 & 이발소</Link>
+                                <Link to="/places/adult-massage">불건전마사지</Link>
+                                <Link to="/places/villa">풀빌라 & 에어비앤비</Link>
+                                <Link to="/places/rent">렌트카 & 운전기사</Link>
+                                <Link to="/places/restaurant">맛집</Link>
+                            </div>
+                        </div>
+
+                        <div className="nav-dropdown">
+                            <button className="nav-btn">게시판 ▾</button>
+                            <div className="dropdown-menu">
+                                <Link to="/board/free">자유게시판</Link>
+                                <Link to="/board/review">후기게시판</Link>
+                                <Link to="/board/qna">질문답변</Link>
+                            </div>
+                        </div>
+
+                        <a href="https://t.me/bangasgan" target="_blank" rel="noopener" className="nav-btn nav-tg">제휴문의 ↗</a>
+
+                        {user && user.role === 'admin' && (
+                            <Link to="/admin" className="nav-btn nav-admin">관리자</Link>
+                        )}
+                    </nav>
+
+                    <div className="header-right">
+                        {user ? (
+                            <div className="user-info">
+                                {user.photo_url && <img src={user.photo_url} alt="" className="user-avatar" />}
+                                <div className="user-details">
+                                    <span className="user-name">{user.nickname}</span>
+                                    {ROLE_BADGE[user.role] ? (
+                                        <span className="user-role-badge" style={{ color: ROLE_BADGE[user.role].color }}>
+                                            {ROLE_BADGE[user.role].label}
+                                        </span>
+                                    ) : (
+                                        <span className="user-level" style={{ color: levels[user.level]?.color || '#FFD700' }}>
+                                            {levels[user.level]?.name || '새싹'}
+                                        </span>
+                                    )}
+                                </div>
+                                <button className="btn-logout" onClick={logout}>로그아웃</button>
+                            </div>
+                        ) : (
+                            <button className="btn-tg-login" onClick={handleLoginClick}>
+                                <span>텔레그램 로그인</span>
+                            </button>
+                        )}
+                        <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>≡</button>
                     </div>
                 </div>
-            )}
 
-            {menuOpen && (
-                <nav className="nav-mobile">
-                    <Link to="/notice" onClick={() => setMenuOpen(false)}>공지사항</Link>
-                    <Link to="/event" onClick={() => setMenuOpen(false)}>방앗간 이벤트</Link>
-                    <Link to="/intro" onClick={() => setMenuOpen(false)}>가입인사</Link>
-                    <Link to="/board/free" onClick={() => setMenuOpen(false)}>자유게시판</Link>
-                    <Link to="/board/review" onClick={() => setMenuOpen(false)}>후기게시판</Link>
-                    <Link to="/board/qna" onClick={() => setMenuOpen(false)}>질문답변</Link>
-                    {user && user.role === 'admin' && (
-                        <Link to="/admin" onClick={() => setMenuOpen(false)} style={{ color: '#ff4444', fontWeight: 700 }}>관리자 페이지</Link>
-                    )}
-                </nav>
-            )}
-        </header>
+                {menuOpen && (
+                    <nav className="nav-mobile">
+                        <Link to="/notice" onClick={() => setMenuOpen(false)}>공지사항</Link>
+                        <Link to="/event" onClick={() => setMenuOpen(false)}>방앗간 이벤트</Link>
+                        <Link to="/intro" onClick={() => setMenuOpen(false)}>가입인사</Link>
+                        <Link to="/board/free" onClick={() => setMenuOpen(false)}>자유게시판</Link>
+                        <Link to="/board/review" onClick={() => setMenuOpen(false)}>후기게시판</Link>
+                        <Link to="/board/qna" onClick={() => setMenuOpen(false)}>질문답변</Link>
+                        {user && user.role === 'admin' && (
+                            <Link to="/admin" onClick={() => setMenuOpen(false)} style={{ color: '#ff4444', fontWeight: 700 }}>관리자 페이지</Link>
+                        )}
+                    </nav>
+                )}
+            </header>
+            {tgModal}
+        </>
     )
 }
