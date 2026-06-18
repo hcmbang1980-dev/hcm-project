@@ -409,3 +409,46 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ===== 레벨 미니카드 (홈 사이드) ===== */
+.level-mini-card {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 1px solid #d4af37;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+.level-mini-empty {
+  color: #d4af37;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  padding: 6px 0;
+}
+.level-mini-links {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.mini-link-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 7px 4px;
+  background: rgba(212,175,55,0.12);
+  border: 1px solid rgba(212,175,55,0.4);
+  border-radius: 8px;
+  color: #d4af37;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+.mini-link-btn:hover {
+  background: rgba(212,175,55,0.25);
+  border-color: #d4af37;
+  color: #f5d060;
+}
