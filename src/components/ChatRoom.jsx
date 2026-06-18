@@ -44,7 +44,19 @@ export default function ChatRoom() {
     const text = input.trim()
     setInput('')
     try {
-      const res = await fetch('/api/send-message', {
+      const { error: dbErr } = await supabase.from('messages').insert({
+        text,
+        user_id: user.id,
+        nickname: user.nickname || '회원',
+        photo_url: user.telegram_photo || null,
+        source: 'site'
+      })
+      if (dbErr) {
+        console.error('DB insert error:', dbErr)
+        setInput(text)
+        return
+      }
+      fetch('/api/send-message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -52,11 +64,11 @@ export default function ChatRoom() {
           user_id: user.id,
           nickname: user.nickname,
           photo_url: user.telegram_photo || null,
+          tg_only: true
         }),
-      })
-      if (!res.ok) throw new Error('send failed')
+      }).catch(e => console.warn('TG send failed (ignored):', e))
     } catch (e) {
-      alert('message send failed')
+      console.error('send error:', e)
       setInput(text)
     } finally {
       setSending(false)
