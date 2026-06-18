@@ -118,3 +118,72 @@
   color: #d4af37;
   font-weight: 500;
 }
+
+
+/* 이미 로그인된 상태 UI */
+.login-already {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.already-account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(212,175,55,0.2);
+  border-radius: 12px;
+  padding: 10px 20px;
+}
+
+.already-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.already-name {
+  font-weight: 700;
+  color: #d4af37;
+  font-size: 1rem;
+}
+
+.btn-current-login {
+  width: 100%;
+  background: linear-gradient(135deg, #FFE55C, #FFD700, #B8860B);
+  color: #000;
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 14px 24px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-current-login:hover {
+  opacity: 0.9;
+}
+
+.btn-other-account {
+  width: 100%;
+  background: transparent;
+  color: #888;
+  font-size: 0.85rem;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #333;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.btn-other-account:hover {
+  border-color: #555;
+  color: #aaa;
+  background: rgba(255,255,255,0.03);
+}
