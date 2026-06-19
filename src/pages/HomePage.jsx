@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import ChatRoom from '../components/ChatRoom'
-import LevelBadge from '../components/LevelBadge'
 import './HomePage.css'
 
 const PLACES = [
@@ -22,12 +21,10 @@ export default function HomePage() {
   const [posts, setPosts] = useState({ notice: [], event: [], free: [] })
   const [stats, setStats] = useState({ users: 0, posts: 0 })
   const [activePlace, setActivePlace] = useState(null)
-  const [userLevel, setUserLevel] = useState(null)
 
   useEffect(() => {
     fetchPosts()
     fetchStats()
-    if (user) fetchUserLevel()
   }, [user])
 
   const fetchPosts = async () => {
@@ -51,15 +48,6 @@ export default function HomePage() {
       supabase.from('posts').select('id', { count: 'exact', head: true }),
     ])
     setStats({ users: usersRes.count || 0, posts: postsRes.count || 0 })
-  }
-
-  const fetchUserLevel = async () => {
-    const { data } = await supabase
-      .from('user_levels')
-      .select('*')
-      .eq('user_id', user.id)
-      .single()
-    if (data) setUserLevel(data)
   }
 
   return (
@@ -106,19 +94,7 @@ export default function HomePage() {
               <ChatRoom />
             </div>
             <div className="places-col">
-              {/* 레벨 미니 카드 - 출석/마이페이지 링크 포함 */}
-              <div className="level-mini-card">
-                {userLevel ? (
-                  <LevelBadge exp={userLevel.exp} showBar={true} size="sm" />
-                ) : (
-                  <div className="level-mini-empty">Lv.1 새싹</div>
-                )}
-                <div className="level-mini-links">
-                  <Link to="/attendance" className="mini-link-btn">📅 출석체크</Link>
-                  <Link to="/mypage" className="mini-link-btn">👤 내 정보</Link>
-                </div>
-              </div>
-              <h2 className="section-title" style={{marginTop:'16px'}}>🏪 추천업소</h2>
+              <h2 className="section-title">🏪 추천업소</h2>
               <div className="places-list">
                 {PLACES.map(item => (
                   <button
