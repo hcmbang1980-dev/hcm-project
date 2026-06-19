@@ -68,11 +68,23 @@ export default function Header() {
     setShowTgLogin(true)
   }
 
-  const handleLogout = () => {
-    setUserDropOpen(false)
-    logout()
-    navigate('/')
-  }
+  const handleSwitchAccount = () => {
+  setUserDropOpen(false)
+
+  logout()
+
+  localStorage.clear()
+  sessionStorage.clear()
+
+  window.open(
+    'https://oauth.telegram.org/logout',
+    '_blank'
+  )
+
+  setTimeout(() => {
+    window.location.href = '/login'
+  }, 1000)
+}
 
   const tgModal = !user && showTgLogin ? createPortal(
     <div className="tg-login-overlay" onClick={handleCloseModal}>
@@ -159,24 +171,28 @@ export default function Header() {
 
                 {userDropOpen && (
                   <div className="user-dropdown">
-                    <Link to="/mypage" className="user-drop-item" onClick={() => setUserDropOpen(false)}>
-                      👤 내 정보
-                    </Link>
-                    <Link to="/attendance" className="user-drop-item" onClick={() => setUserDropOpen(false)}>
-                      📅 출석체크
-                    </Link>
-                    <button className="user-drop-item user-drop-logout" onClick={handleLogout}>
-                      🚪 로그아웃
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <button className="btn-tg-login" onClick={handleLoginClick}>
-                텔레그램 로그인
-              </button>
-            )}
-          </div>
+  <Link to="/mypage" className="user-drop-item">
+    👤 내 정보
+  </Link>
+
+  <Link to="/attendance" className="user-drop-item">
+    📅 출석체크
+  </Link>
+
+  <button
+    className="user-drop-item"
+    onClick={handleSwitchAccount}
+  >
+    🔄 계정 변경
+  </button>
+
+  <button
+    className="user-drop-item user-drop-logout"
+    onClick={handleLogout}
+  >
+    🚪 로그아웃
+  </button>
+</div>
 
           <button className="hamburger" onClick={() => setMenuOpen(v => !v)}>☰</button>
         </div>
