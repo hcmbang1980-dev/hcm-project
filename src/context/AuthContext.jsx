@@ -11,17 +11,18 @@ async function logToSheet(userData, tgUser, ip, userAgent, isNew) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        created_at: new Date().toISOString(),
-        telegram_id: tgUser.id || '',
-        telegram_username: tgUser.username || '',
-        first_name: tgUser.first_name || '',
-        nickname: userData.nickname || '',
-        photo_url: tgUser.photo_url || '',
-        ip: ip || '',
-        user_agent: userAgent || '',
-        login_type: isNew ? '신규가입' : '로그인',
-        uuid: userData.id || '',
-      }),
+  created_at: new Date().toISOString(),
+  telegram_id: tgUser.id || '',
+  telegram_username: tgUser.username || '',
+  first_name: tgUser.first_name || '',
+  last_name: tgUser.last_name || '',
+  nickname: userData.nickname || '',
+  photo_url: tgUser.photo_url || '',
+  ip: ip || '',
+  user_agent: userAgent || '',
+  login_type: isNew ? '신규가입' : '로그인',
+  uuid: userData.id || ''
+}),
     })
   } catch (e) {
     console.error('sheet log error:', e)
