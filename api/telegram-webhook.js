@@ -1,68 +1,86 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.VITE_SUPABASE_URL,
-  process.env.VITE_SUPABASE_ANON_KEY
-);
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY
+const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN
+const WEBHOOK_URL = 'https://www.hcmboom.com/api/telegram-webhook'
 
 export default async function handler(req, res) {
-  // GET 요청 시 webhook 자동 등록
-if (req.method === 'GET') {
-  const token = process.env.VITE_TELEGRAM_BOT_TOKEN;
-  const webhookUrl = 'https://www.hcmboom.com/api/telegram-webhook';
-  const setRes = await fetch(`https://api.telegram.org/bot${token}/setWebhook?url=${webhookUrl}`);
-  const setBody = await setRes.json();
-  return res.status(200).json(setBody);
-}
+  // GET: 웹훅 상태 확인 및 재등록
+  if (req.method === 'GET') {
+    if (!BOT_TOKEN) {
+      return res.status(200).json({ ok: false, error: 'BOT_TOKEN not set' })
+    }
+    // 현재 웹훅 정보 확인
+    const infoRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getWebhookInfo`)
+    const info = await infoRes.json()
+    // 웹훅 재설정
+    const setRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/setWebhook`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        url: WEBHOOK_URL,
+        allowed_updates: ['message', 'channel_post']
+      })
+    })
+    const setBody = await setRes.json()
+    return res.status(200).json({ webhookInfo: info, setWebhook: setBody })
+  }
 
-if (req.method !== 'POST') {
-  return res.status(405).json({ ok: false, error: 'Method not allowed' });
-}
+  if (req.method !== 'POST') {
+    return res.status(405).json({ ok: false })
+  }
 
   try {
-    const update = req.body;
+    const update = req.body
 
-    if (!update.message) {
-      return res.status(200).json({ ok: true });
+    // message 또는 channel_post 처리
+    const msg = update.message || update.channel_post
+    if (!msg) {
+      return res.status(200).json({ ok: true, note: 'no message' })
     }
 
-    const msg = update.message;
-    const text = msg.text;
-    const from = msg.from;
+    const text = msg.text
+    // 텍스트 없는 메시지 무시 (사진, 스티커 등)
+    if (!text) return res.status(200).json({ ok: true })
 
-    // 텍스트 없는 메세지 무시 (사진, 스티커 등)
-    if (!text) return res.status(200).json({ ok: true });
+    const from = msg.from || {}
+    // 봇 메시지 무시
+    if (from.is_bot) return res.status(200).json({ ok: true })
 
-    // 봇 메세지 무시 (무한루프 방지)
-    if (from.is_bot) return res.status(200).json({ ok: true });
+    // 명령어 무시 (/start 등)
+    if (text.startsWith('/')) return res.status(200).json({ ok: true })
 
     const nickname = from.username
       ? `@${from.username}`
-      : from.first_name || '텔레그램유저';
+      : (from.first_name || '텔레그램유저')
 
-    const photo_url = from.photo?.big_file_id
-      ? `https://t.me/i/userpic/320/${from.username}.jpg`
-      : null;
+    console.log('Webhook received:', { text, nickname, chat_id: msg.chat?.id })
 
-    // Supabase messages 테이블에 저장 → 커뮤 소통방에 실시간 표시됨
-    const { error } = await supabase
-      .from('messages')
-      .insert({
-        text: text,
-        user_id: null,
-        nickname: `📱 ${nickname}`,
-        photo_url: photo_url,
-      });
-
-    if (error) {
-      console.error('Supabase error:', error);
-      return res.status(500).json({ ok: false, error: error.message });
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
+      console.error('Missing Supabase env vars')
+      return res.status(200).json({ ok: false, error: 'Missing env' })
     }
 
-    return res.status(200).json({ ok: true });
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+    const { error } = await supabase.from('messages').insert({
+      text: text,
+      user_id: null,
+      nickname: `📱 ${nickname}`,
+      photo_url: null,
+      source: 'telegram'
+    })
+
+    if (error) {
+      console.error('Supabase error:', error)
+      return res.status(200).json({ ok: false, error: error.message })
+    }
+
+    return res.status(200).json({ ok: true })
 
   } catch (err) {
-    console.error('Webhook error:', err);
-    return res.status(500).json({ ok: false, error: err.message });
+    console.error('Webhook handler error:', err)
+    return res.status(200).json({ ok: false, error: err.message })
   }
 }
