@@ -9,20 +9,24 @@ export default function Header() {
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
   const [showTgLogin, setShowTgLogin] = useState(false)
+  const [userDropOpen, setUserDropOpen] = useState(false)
   const widgetRef = useRef(null)
   const widgetLoaded = useRef(false)
+  const dropRef = useRef(null)
 
-  const levels = {
-    'Level 1': { name: '새싹', color: '#90EE90' },
-    'Level 2': { name: '단골', color: '#00BFFF' },
-    'Level 3': { name: '고수', color: '#9370DB' },
-    'Level 4': { name: '전설', color: '#FFD700' },
-    'Level 5': { name: 'VIP', color: '#FF6347' },
-  }
+  const GRADE_INFO = [
+    { grade: '새싹',   icon: '🌱', minLv: 1,   maxLv: 9   },
+    { grade: '견습',   icon: '🪴', minLv: 10,  maxLv: 19  },
+    { grade: '일반',   icon: '⚔️', minLv: 20,  maxLv: 29  },
+    { grade: '고수',   icon: '🥋', minLv: 30,  maxLv: 49  },
+    { grade: '전문가', icon: '🎖️', minLv: 50,  maxLv: 69  },
+    { grade: '영웅',   icon: '🏆', minLv: 70,  maxLv: 99  },
+    { grade: '전설',   icon: '👑', minLv: 100, maxLv: 129 },
+    { grade: '최고',   icon: '💎', minLv: 130, maxLv: 150 },
+  ]
 
-  const ROLE_BADGE = {
-    admin: { label: '관리자', color: '#ff4444' },
-    moderator: { label: '커뮤니티 관리자', color: '#d4af37' },
+  const getUserGrade = (lv) => {
+    return GRADE_INFO.find(g => lv >= g.minLv && lv <= g.maxLv) || GRADE_INFO[0]
   }
 
   useEffect(() => {
@@ -44,6 +48,16 @@ export default function Header() {
     widgetRef.current.appendChild(script)
   }, [showTgLogin])
 
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (dropRef.current && !dropRef.current.contains(e.target)) {
+        setUserDropOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
   const handleCloseModal = () => {
     setShowTgLogin(false)
     widgetLoaded.current = false
@@ -52,6 +66,12 @@ export default function Header() {
   const handleLoginClick = () => {
     if (user) return
     setShowTgLogin(true)
+  }
+
+  const handleLogout = () => {
+    setUserDropOpen(false)
+    logout()
+    navigate('/')
   }
 
   const tgModal = !user && showTgLogin ? createPortal(
@@ -65,6 +85,8 @@ export default function Header() {
     </div>,
     document.body
   ) : null
+
+  const grade = user ? getUserGrade(user.level_num || 1) : null
 
   return (
     <>
@@ -116,49 +138,62 @@ export default function Header() {
 
           <div className="header-right">
             {user ? (
-              <div className="user-info">
-                {user.photo_url && <img src={user.photo_url} alt="" className="user-avatar" />}
-                <div className="user-details">
-                  <span className="user-name">{user.nickname}</span>
-                  {ROLE_BADGE[user.role] ? (
-                    <span className="user-role-badge" style={{ color: ROLE_BADGE[user.role].color }}>
-                      {ROLE_BADGE[user.role].label}
+              <div className="user-info" ref={dropRef}>
+                <button
+                  className="user-info-btn"
+                  onClick={() => setUserDropOpen(v => !v)}
+                  title="내 정보"
+                >
+                  {user.photo_url
+                    ? <img src={user.photo_url} alt="" className="user-avatar" />
+                    : <span className="user-avatar-default">👤</span>
+                  }
+                  <div className="user-details">
+                    <span className="user-name">{user.nickname}</span>
+                    <span className="user-level" style={{ color: '#d4af37' }}>
+                      {grade ? grade.icon + ' ' + grade.grade : '🌱 새싹'}
                     </span>
-                  ) : (
-                    <span className="user-level" style={{ color: levels[user.level]?.color || '#FFD700' }}>
-                      {levels[user.level]?.name || '새싹'}
-                    </span>
-                  )}
-                </div>
-                <Link to="/attendance" className="btn-attendance" title="출석체크">📅</Link>
-                <Link to="/mypage" className="btn-mypage" title="마이페이지">👤</Link>
-                <button className="btn-logout" onClick={logout}>로그아웃</button>
+                  </div>
+                  <span className="user-drop-arrow">{userDropOpen ? '▲' : '▼'}</span>
+                </button>
+
+                {userDropOpen && (
+                  <div className="user-dropdown">
+                    <Link to="/mypage" className="user-drop-item" onClick={() => setUserDropOpen(false)}>
+                      👤 내 정보
+                    </Link>
+                    <Link to="/attendance" className="user-drop-item" onClick={() => setUserDropOpen(false)}>
+                      📅 출석체크
+                    </Link>
+                    <button className="user-drop-item user-drop-logout" onClick={handleLogout}>
+                      🚪 로그아웃
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <button className="btn-tg-login" onClick={handleLoginClick}>
-                <span>텔레그램 로그인</span>
+                텔레그램 로그인
               </button>
             )}
-            <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>≡</button>
           </div>
+
+          <button className="hamburger" onClick={() => setMenuOpen(v => !v)}>☰</button>
         </div>
 
         {menuOpen && (
           <nav className="nav-mobile">
-            <Link to="/notice" onClick={() => setMenuOpen(false)}>공지사항</Link>
-            <Link to="/event" onClick={() => setMenuOpen(false)}>방앗간 이벤트</Link>
-            <Link to="/intro" onClick={() => setMenuOpen(false)}>가입인사</Link>
-            <Link to="/board/free" onClick={() => setMenuOpen(false)}>자유게시판</Link>
-            <Link to="/board/review" onClick={() => setMenuOpen(false)}>후기게시판</Link>
-            <Link to="/board/qna" onClick={() => setMenuOpen(false)}>질문답변</Link>
+            <Link to="/" onClick={() => setMenuOpen(false)}>🏠 홈</Link>
+            <Link to="/notice" onClick={() => setMenuOpen(false)}>📢 공지사항</Link>
+            <Link to="/event" onClick={() => setMenuOpen(false)}>🎉 방앗간 이벤트</Link>
+            <Link to="/board/free" onClick={() => setMenuOpen(false)}>💬 자유게시판</Link>
+            <Link to="/board/review" onClick={() => setMenuOpen(false)}>📝 후기게시판</Link>
+            <Link to="/board/qna" onClick={() => setMenuOpen(false)}>❓ 질문답변</Link>
             {user && (
               <>
-                <Link to="/attendance" onClick={() => setMenuOpen(false)} style={{ color: '#d4af37', fontWeight: 700 }}>📅 출석체크</Link>
-                <Link to="/mypage" onClick={() => setMenuOpen(false)} style={{ color: '#d4af37' }}>👤 마이페이지</Link>
+                <Link to="/attendance" onClick={() => setMenuOpen(false)}>📅 출석체크</Link>
+                <Link to="/mypage" onClick={() => setMenuOpen(false)}>👤 마이페이지</Link>
               </>
-            )}
-            {user && user.role === 'admin' && (
-              <Link to="/admin" onClick={() => setMenuOpen(false)} style={{ color: '#ff4444', fontWeight: 700 }}>관리자 페이지</Link>
             )}
           </nav>
         )}
