@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import './LoginPage.css'
@@ -8,7 +8,6 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const widgetRef = useRef(null)
   const widgetLoaded = useRef(false)
-  const [showOther, setShowOther] = useState(false)
 
   const loadWidget = () => {
     if (widgetLoaded.current || !widgetRef.current) return
@@ -25,24 +24,46 @@ export default function LoginPage() {
   }
 
   useEffect(() => {
-    loadWidget()
-  }, [])
+    if (!user) { loadWidget() }
+  }, [user])
 
   useEffect(() => {
-    if (showOther) {
-      widgetLoaded.current = false
-      loadWidget()
-    }
-  }, [showOther])
+    if (user) { navigate('/') }
+  }, [user])
 
   const handleOtherAccount = () => {
     logout()
-    setShowOther(true)
     widgetLoaded.current = false
+    setTimeout(() => loadWidget(), 100)
   }
 
-  const goHome = () => {
-    navigate('/')
+  if (user) {
+    return (
+      <div className="login-page">
+        <div className="login-card">
+          <div className="login-logo">
+            <span className="logo-icon">🔥</span>
+            <h1>호치민방앗간</h1>
+            <p className="logo-sub">베트남 밑문화 No.1 커뮤니티</p>
+          </div>
+          <div className="login-already">
+            {user.photo_url && (
+              <img src={user.photo_url} alt="" className="already-avatar" />
+            )}
+            <div className="already-info">
+              <p className="already-name">{user.nickname}</p>
+              <p className="already-sub">로그인 상태입니다</p>
+            </div>
+            <button className="btn-current-login" onClick={() => navigate('/')}>
+              홈으로 이동
+            </button>
+            <button className="btn-other-account" onClick={handleOtherAccount}>
+              다른 계정으로 로그인
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -59,23 +80,6 @@ export default function LoginPage() {
         </div>
 
         <div ref={widgetRef} className="telegram-btn-wrap" id="telegram-login-container"></div>
-
-        {user && !showOther && (
-          <div className="login-already">
-            <div className="already-account">
-              {user.telegram_photo && (
-                <img src={user.telegram_photo} alt="" className="already-avatar" />
-              )}
-              <span className="already-name">{user.nickname}</span>
-            </div>
-            <button className="btn-current-login" onClick={goHome}>
-              {user.nickname} 으로 로그인
-            </button>
-            <button className="btn-other-account" onClick={handleOtherAccount}>
-              다른 텔레그램 계정으로 로그인
-            </button>
-          </div>
-        )}
 
         <div className="login-benefits">
           <div className="benefit-item">
