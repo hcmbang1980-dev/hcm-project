@@ -15,7 +15,9 @@ export default function LoginPage() {
     const botName = import.meta.env.VITE_TELEGRAM_BOT_NAME || 'bangasgan_bot'
     widgetRef.current.innerHTML = ''
     const script = document.createElement('script')
-    script.src = 'https://telegram.org/js/telegram-widget.js?22'
+    script.src =
+  'https://telegram.org/js/telegram-widget.js?' +
+  Date.now()
     script.dataset.telegramLogin = botName
     script.dataset.size = 'large'
     script.dataset.onauth = 'onTelegramAuth(user)'
