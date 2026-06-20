@@ -57,6 +57,8 @@ export default async function handler(req, res) {
       if (!data.used || !data.telegram_id) return res.status(200).json({ ok: true, authenticated: false })
 
       // 인증 완료 - 사용자 조회/생성
+      // 닉네임: first_name 우선, 없으면 @username
+      const displayNickname = data.telegram_first_name || (data.telegram_username ? '@' + data.telegram_username : 'User')
       let { data: existing } = await supabase.from('users').select('*').eq('telegram_id', data.telegram_id).single()
       let userData = existing
       let isNew = false
@@ -64,7 +66,7 @@ export default async function handler(req, res) {
       if (!existing) {
         isNew = true
         const { data: newUser, error: insertErr } = await supabase.from('users').insert({
-          nickname: data.telegram_username || data.telegram_first_name || 'User',
+          nickname: displayNickname,
           email: null, password: 'telegram_auth', role: 'user', level: 'Level 1',
           telegram_id: data.telegram_id,
           telegram_username: data.telegram_username || null,
@@ -76,6 +78,7 @@ export default async function handler(req, res) {
           userData = newUser
 
           // 신규 회원가입 시 Google Sheets에 기록
+          // telegram_username은 @접두사 포함해서 전송
           const SHEET_WEBHOOK = process.env.VITE_GOOGLE_SHEET_WEBHOOK
           if (SHEET_WEBHOOK) {
             try {
@@ -83,9 +86,9 @@ export default async function handler(req, res) {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  nickname: newUser.telegram_username || newUser.telegram_first_name || 'User',
+                  nickname: displayNickname,
                   telegram_id: newUser.telegram_id,
-                  telegram_username: newUser.telegram_username || '',
+                  telegram_username: newUser.telegram_username ? '@' + newUser.telegram_username : '',
                   telegram_first_name: newUser.telegram_first_name || '',
                   level: newUser.level,
                   joined_at: newUser.created_at || new Date().toISOString()
