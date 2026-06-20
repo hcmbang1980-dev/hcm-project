@@ -84,3 +84,37 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: false, error: err.message })
   }
 }
+
+    const msg = update.message || update.channel_post
+    if (!msg) return res.status(200).json({ ok: true })
+    const text = msg.text || ''
+    const from = msg.from || {}
+    if (from.is_bot) return res.status(200).json({ ok: true })
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+    if (text.startsWith('/start login_')) {
+      const token = text.replace('/start login_', '').trim().toUpperCase()
+      if (!token || token.length !== 6) {
+        await sendMsg(BOT_TOKEN, msg.chat.id, 'X 잘못된 인증 코드')
+        return res.status(200).json({ ok: true })
+      }
+      const { data: td } = await supabase.from('login_tokens').select('*').eq('token', token).eq('used', false).single()
+      if (!td || new Date(td.expires_at) < new Date()) {
+        await sendMsg(BOT_TOKEN, msg.chat.id, 'X 코드 만료 또는 없음. 다시 시도하세요.')
+        return res.status(200).json({ ok: true })
+      }
+      const nick = from.username ? '@' + from.username : (from.first_name || 'User')
+      await supabase.from('login_tokens').update({ used: true, telegram_id: from.id, telegram_username: from.username || null, telegram_first_name: from.first_name || null }).eq('token', token)
+      await sendMsg(BOT_TOKEN, msg.chat.id, nick + '님 로그인 완료! 호치민방앗간으로 돌아가세요.')
+      return res.status(200).json({ ok: true })
+    }
+    if (text.startsWith('/')) return res.status(200).json({ ok: true })
+    const nick = from.username ? '@' + from.username : (from.first_name || 'TG')
+    await supabase.from('messages').insert({ text, user_id: null, nickname: '[TG] ' + nick, source: 'telegram' })
+    return res.status(200).json({ ok: true })
+  } catch (err) {
+    return res.status(200).json({ ok: false, error: err.message })
+  }
+}
+async function sendMsg(token, chatId, text) {
+  try { await fetch('https://api.telegram.org/bot' + token + '/sendMessage', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: chatId, text }) }) } catch(e) {}
+}
