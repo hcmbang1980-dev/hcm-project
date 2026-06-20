@@ -11,7 +11,6 @@ function genToken() {
   return t
 }
 
-// 날짜를 YY/MM/DD 형식으로 변환
 function formatDate(dateStr) {
   const d = new Date(dateStr || new Date())
   const yy = String(d.getFullYear()).slice(2)
@@ -35,15 +34,11 @@ export default async function handler(req, res) {
     try {
       const token = genToken()
       const expires = new Date(Date.now() + 10 * 60 * 1000).toISOString()
-
       await supabase.from('login_tokens').delete().lt('expires_at', new Date().toISOString())
-
       const { error } = await supabase.from('login_tokens').insert({ token, used: false, expires_at: expires })
-
       if (error) {
         return res.status(500).json({ ok: false, error: error.message, code: error.code, hint: error.hint, keyPrefix })
       }
-
       const botLink = 'https://t.me/' + BOT_NAME + '?start=login_' + token
       return res.status(200).json({ ok: true, token, botLink })
     } catch (e) {
@@ -57,7 +52,6 @@ export default async function handler(req, res) {
 
     try {
       const { data, error } = await supabase.from('login_tokens').select('*').eq('token', token).single()
-
       if (error || !data) return res.status(404).json({ ok: false, error: 'Token not found' })
       if (new Date(data.expires_at) < new Date()) {
         await supabase.from('login_tokens').delete().eq('token', token)
@@ -79,21 +73,20 @@ export default async function handler(req, res) {
           telegram_id: data.telegram_id,
           telegram_username: data.telegram_username || null,
           telegram_first_name: data.telegram_first_name || null,
-          telegram_last_name: data.telegram_last_name || null,
           telegram_photo: data.telegram_photo || null,
         }).select().single()
+
         if (!insertErr && newUser) {
           await supabase.from('point_history').insert({ user_id: newUser.id, amount: 10, reason: '신규 가입' })
           userData = newUser
 
-          // 신규 회원가입 시 Google Sheets에 기록
-          // 항목 순서: 가입일 | 순번(자동) | 텔레그램고유번호 | 유저명(@) | 이름(first+last)
+          // 신규 가입 시 Google Sheets 기록
+          // 항목 순서: 가입일 | 순번 | 텔레그램고유번호 | 유저명(@) | 이름
           const SHEET_WEBHOOK = process.env.VITE_GOOGLE_SHEET_WEBHOOK
           if (SHEET_WEBHOOK) {
             try {
-              // 현재 총 회원수로 순번 계산
               const { count } = await supabase.from('users').select('*', { count: 'exact', head: true })
-              const fullName = [newUser.telegram_first_name, newUser.telegram_last_name].filter(Boolean).join(' ') || displayNickname
+              const name = newUser.telegram_first_name || displayNickname
               await fetch(SHEET_WEBHOOK, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -102,7 +95,7 @@ export default async function handler(req, res) {
                   seq: count || 1,
                   telegram_id: newUser.telegram_id,
                   telegram_username: newUser.telegram_username ? '@' + newUser.telegram_username : '',
-                  name: fullName
+                  name: name
                 })
               })
             } catch(e) {
@@ -114,7 +107,6 @@ export default async function handler(req, res) {
         const { data: upd } = await supabase.from('users').update({
           telegram_username: data.telegram_username || null,
           telegram_first_name: data.telegram_first_name || null,
-          telegram_last_name: data.telegram_last_name || null,
         }).eq('telegram_id', data.telegram_id).select().single()
         if (upd) userData = upd
       }
