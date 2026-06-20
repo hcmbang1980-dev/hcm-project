@@ -5,7 +5,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: 'Method not allowed' })
   }
 
-  const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN
+  // 채팅봇 토큰 우선 사용 (로그인봇과 별개)
+  const CHAT_BOT_TOKEN = process.env.TELEGRAM_CHAT_BOT_TOKEN
+  const BOT_TOKEN = CHAT_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN
   const GROUP_ID = process.env.TELEGRAM_GROUP_ID
   const SUPABASE_URL = process.env.VITE_SUPABASE_URL
   const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY
@@ -32,7 +34,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // 텔레그램으로 전송
+  // 텔레그램 소통방으로 전송 (채팅봇 사용)
   if (BOT_TOKEN && GROUP_ID) {
     try {
       const tgRes = await fetch(
