@@ -3,6 +3,8 @@ import { createClient } from '@supabase/supabase-js'
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN
+// 채팅 전달용 봇 토큰 (로그인봇과 별개의 채팅봇)
+const CHAT_BOT_TOKEN = process.env.TELEGRAM_CHAT_BOT_TOKEN || BOT_TOKEN
 const WEBHOOK_URL = 'https://www.hcmboom.com/api/telegram-webhook'
 
 async function sendMsg(token, chatId, text) {
@@ -39,7 +41,7 @@ export default async function handler(req, res) {
     const msg = update.message || update.channel_post
     if (!msg) return res.status(200).json({ ok: true, note: 'no message' })
 
-    // 텍스트 또는 캐프션 (사진에 붙은 텍스트) 사용
+    // 텍스트 또는 캡션 (사진에 붙은 텍스트) 사용
     const text = msg.text || msg.caption || ''
     const from = msg.from || {}
 
@@ -71,7 +73,8 @@ export default async function handler(req, res) {
         await sendMsg(BOT_TOKEN, msg.chat.id, '❌ 코드가 만료되었거나 없습니다. 사이트에서 다시 시도하세요.')
         return res.status(200).json({ ok: true })
       }
-      const nick = from.username ? '@' + from.username : (from.first_name || 'User')
+      // 닉네임: first_name 우선, 없으면 @username
+      const nick = from.first_name || (from.username ? '@' + from.username : 'User')
       await supabase.from('login_tokens').update({
         used: true,
         telegram_id: from.id,
@@ -95,14 +98,16 @@ export default async function handler(req, res) {
     // 텍스트가 없는 메시지 (media 등) 무시
     if (!text.trim()) return res.status(200).json({ ok: true, note: 'no text' })
 
-    // 일반 메시지 -> 소통방에 저장
-    const nickname = from.username ? `@${from.username}` : (from.first_name || '텔레그램유저')
-    console.log('Chat message:', { text, nickname, chat_id: msg.chat?.id })
+    // 닉네임: first_name(텔레그램 표시이름) 우선, 없으면 @username
+    const displayName = from.first_name || (from.username ? '@' + from.username : '텔레그램유저')
+    console.log('Chat message from Telegram:', { text, displayName, chat_id: msg.chat?.id })
 
+    // 일반 메시지 -> 커뮤니티 채팅(Supabase)에 저장
+    // 소통방 채팅은 구글시트에 기록하지 않음
     const { error } = await supabase.from('messages').insert({
       text: text,
       user_id: null,
-      nickname: `📱 ${nickname}`,
+      nickname: `📱 ${displayName}`,
       photo_url: null,
       source: 'telegram'
     })
@@ -111,29 +116,10 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: false, error: error.message })
     }
 
-    // Google Sheets 웹훅으로 데이터 전송
-    const SHEET_WEBHOOK = process.env.VITE_GOOGLE_SHEET_WEBHOOK
-    if (SHEET_WEBHOOK) {
-      try {
-        await fetch(SHEET_WEBHOOK, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            text: text,
-            nickname: nickname,
-            chat_id: msg.chat?.id,
-            timestamp: new Date().toISOString()
-          })
-        })
-      } catch(e) {
-        console.error('Google Sheets webhook error:', e)
-      }
-    }
-
     return res.status(200).json({ ok: true })
 
   } catch (err) {
     console.error('Webhook handler error:', err)
     return res.status(200).json({ ok: false, error: err.message })
   }
-      }
+}
