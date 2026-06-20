@@ -91,7 +91,13 @@ export default async function handler(req, res) {
                   telegram_username: newUser.telegram_username ? '@' + newUser.telegram_username : '',
                   telegram_first_name: newUser.telegram_first_name || '',
                   level: newUser.level,
-                  joined_at: newUser.created_at || new Date().toISOString()
+                  joined_at: (() => {
+  const d = new Date(newUser.created_at || new Date())
+  const yy = String(d.getFullYear()).slice(2)
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  return `${yy}/${mm}/${dd}`
+})()
                 })
               })
             } catch(e) {
