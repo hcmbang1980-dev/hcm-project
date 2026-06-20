@@ -110,6 +110,26 @@ export default async function handler(req, res) {
       console.error('Supabase error:', error)
       return res.status(200).json({ ok: false, error: error.message })
     }
+
+    // Google Sheets 웹훅으로 데이터 전송
+    const SHEET_WEBHOOK = process.env.VITE_GOOGLE_SHEET_WEBHOOK
+    if (SHEET_WEBHOOK) {
+      try {
+        await fetch(SHEET_WEBHOOK, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: text,
+            nickname: nickname,
+            chat_id: msg.chat?.id,
+            timestamp: new Date().toISOString()
+          })
+        })
+      } catch(e) {
+        console.error('Google Sheets webhook error:', e)
+      }
+    }
+
     return res.status(200).json({ ok: true })
 
   } catch (err) {
