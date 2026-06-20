@@ -30,15 +30,20 @@ export default async function handler(req, res) {
     return res.status(200).json({ webhookInfo: info, setWebhook: setBody })
   }
 
-  if (req.method !== 'POST') return res.status(405).json({ ok: false })
+  if (req.method !== 'POST') return res.status(200).json({ ok: true })
 
   try {
     const update = req.body
+    if (!update) return res.status(200).json({ ok: true })
+
     const msg = update.message || update.channel_post
     if (!msg) return res.status(200).json({ ok: true, note: 'no message' })
 
-    const text = msg.text || ''
+    // 텍스트 또는 캐프션 (사진에 붙은 텍스트) 사용
+    const text = msg.text || msg.caption || ''
     const from = msg.from || {}
+
+    // 봇 메시지 무시
     if (from.is_bot) return res.status(200).json({ ok: true })
 
     if (!SUPABASE_URL || !SUPABASE_KEY) {
@@ -87,6 +92,9 @@ export default async function handler(req, res) {
     // 다른 명령어 무시
     if (text.startsWith('/')) return res.status(200).json({ ok: true })
 
+    // 텍스트가 없는 메시지 (media 등) 무시
+    if (!text.trim()) return res.status(200).json({ ok: true, note: 'no text' })
+
     // 일반 메시지 -> 소통방에 저장
     const nickname = from.username ? `@${from.username}` : (from.first_name || '텔레그램유저')
     console.log('Chat message:', { text, nickname, chat_id: msg.chat?.id })
@@ -108,4 +116,4 @@ export default async function handler(req, res) {
     console.error('Webhook handler error:', err)
     return res.status(200).json({ ok: false, error: err.message })
   }
-}
+      }
