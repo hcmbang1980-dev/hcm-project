@@ -11,6 +11,15 @@ function genToken() {
   return t
 }
 
+// 날짜를 YY/MM/DD 형식으로 변환
+function formatDate(dateStr) {
+  const d = new Date(dateStr || new Date())
+  const yy = String(d.getFullYear()).slice(2)
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  return `${yy}/${mm}/${dd}`
+}
+
 export default async function handler(req, res) {
   const hasUrl = !!SUPABASE_URL
   const hasKey = !!SUPABASE_KEY
@@ -56,7 +65,6 @@ export default async function handler(req, res) {
       }
       if (!data.used || !data.telegram_id) return res.status(200).json({ ok: true, authenticated: false })
 
-      // 인증 완료 - 사용자 조회/생성
       // 닉네임: first_name 우선, 없으면 @username
       const displayNickname = data.telegram_first_name || (data.telegram_username ? '@' + data.telegram_username : 'User')
       let { data: existing } = await supabase.from('users').select('*').eq('telegram_id', data.telegram_id).single()
@@ -71,6 +79,7 @@ export default async function handler(req, res) {
           telegram_id: data.telegram_id,
           telegram_username: data.telegram_username || null,
           telegram_first_name: data.telegram_first_name || null,
+          telegram_last_name: data.telegram_last_name || null,
           telegram_photo: data.telegram_photo || null,
         }).select().single()
         if (!insertErr && newUser) {
@@ -78,26 +87,22 @@ export default async function handler(req, res) {
           userData = newUser
 
           // 신규 회원가입 시 Google Sheets에 기록
-          // telegram_username은 @접두사 포함해서 전송
+          // 항목 순서: 가입일 | 순번(자동) | 텔레그램고유번호 | 유저명(@) | 이름(first+last)
           const SHEET_WEBHOOK = process.env.VITE_GOOGLE_SHEET_WEBHOOK
           if (SHEET_WEBHOOK) {
             try {
+              // 현재 총 회원수로 순번 계산
+              const { count } = await supabase.from('users').select('*', { count: 'exact', head: true })
+              const fullName = [newUser.telegram_first_name, newUser.telegram_last_name].filter(Boolean).join(' ') || displayNickname
               await fetch(SHEET_WEBHOOK, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  nickname: displayNickname,
+                  joined_at: formatDate(newUser.created_at),
+                  seq: count || 1,
                   telegram_id: newUser.telegram_id,
                   telegram_username: newUser.telegram_username ? '@' + newUser.telegram_username : '',
-                  telegram_first_name: newUser.telegram_first_name || '',
-                  level: newUser.level,
-                  joined_at: (() => {
-  const d = new Date(newUser.created_at || new Date())
-  const yy = String(d.getFullYear()).slice(2)
-  const mm = String(d.getMonth() + 1).padStart(2, '0')
-  const dd = String(d.getDate()).padStart(2, '0')
-  return `${yy}/${mm}/${dd}`
-})()
+                  name: fullName
                 })
               })
             } catch(e) {
@@ -109,6 +114,7 @@ export default async function handler(req, res) {
         const { data: upd } = await supabase.from('users').update({
           telegram_username: data.telegram_username || null,
           telegram_first_name: data.telegram_first_name || null,
+          telegram_last_name: data.telegram_last_name || null,
         }).eq('telegram_id', data.telegram_id).select().single()
         if (upd) userData = upd
       }
