@@ -1,6 +1,6 @@
 .home { padding-top: 64px; }
 
-/* Hero */
+/* Hero - PC와 모바일 동일한 비율 유지 */
 .hero {
   position: relative;
   min-height: 500px;
@@ -10,13 +10,14 @@
 }
 .hero-bg {
   position: absolute; inset: 0;
-      background: 
-                radial-gradient(ellipse at 50% 0%, rgba(255,215,0,0.12) 0%, rgba(10,10,10,0) 70%),
-                      radial-gradient(ellipse at 80% 50%, rgba(255,140,0,0.06) 0%, transparent 50%),
-                              linear-gradient(180deg, rgba(10,10,10,0.80) 0%, rgba(15,12,0,0.72) 50%, rgba(10,10,10,0.80) 100%),
-                                            url('/hero-bg.jpg') center/cover no-repeat;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255,215,0,0.12) 0%, rgba(10,10,10,0) 70%),
+    radial-gradient(ellipse at 80% 50%, rgba(255,140,0,0.06) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(10,10,10,0.80) 0%, rgba(15,12,0,0.72) 50%, rgba(10,10,10,0.80) 100%),
+    url('/hero-bg.jpg') center/cover no-repeat;
+  background-attachment: scroll;
 }
-  
+
 .hero::before {
   content: '';
   position: absolute; inset: 0;
@@ -35,6 +36,7 @@
   margin: 0 auto;
   padding: 80px 20px;
   text-align: center;
+  width: 100%;
 }
 .hero-title {
   font-size: clamp(32px, 6vw, 64px);
@@ -76,7 +78,7 @@
 }
 .hero-btn-outline:hover { background: rgba(255,215,0,0.08); }
 
-.hero-stats { display: flex; align-items: center; justify-content: center; gap: 32px; }
+.hero-stats { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; }
 .stat-item { text-align: center; }
 .stat-num { font-size: 28px; font-weight: 900; display: block; }
 .stat-label { font-size: 12px; color: #666; margin-top: 2px; display: block; }
@@ -155,7 +157,9 @@
   .tg-widget-wrapper { grid-template-columns: 1fr; }
   .boards-grid { grid-template-columns: 1fr; }
   .places-grid { grid-template-columns: repeat(3, 1fr); }
-  .hero-stats { gap: 16px; }
+  .hero-stats { gap: 12px; }
+  .stat-divider { display: none; }
+  .stat-num { font-size: 22px; }
 }
 
 /* ===== 채팅 + 추천업소 2컬럼 레이아웃 ===== */
@@ -182,7 +186,6 @@
 .place-detail-btn { display: block; text-align: center; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 700; color: #000; background: linear-gradient(135deg,#FFE55C,#FFD700); }
 
 @media (max-width: 900px) { .chat-places-grid { grid-template-columns: 1fr; } }
-
 
 /* ===== 채팅+추천업소 레이아웃 [광고공간][채팅][업소][광고공간] ===== */
 .chat-places-section {
@@ -295,7 +298,7 @@
 
 @keyframes slideInDown {
   from { opacity: 0; transform: translateY(-8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .place-back {
@@ -410,6 +413,19 @@
   }
 }
 
+@media (max-width: 480px) {
+  .hero {
+    min-height: 400px;
+  }
+  .hero-content {
+    padding: 60px 16px;
+  }
+  .hero-stats {
+    gap: 10px;
+  }
+  .stat-num { font-size: 20px; }
+  .stat-label { font-size: 11px; }
+}
 
 /* ===== 레벨 미니카드 (홈 사이드) ===== */
 .level-mini-card {
