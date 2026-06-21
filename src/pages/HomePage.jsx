@@ -7,17 +7,25 @@ import PopupModal from '../components/PopupModal'
 import './HomePage.css'
 
 const PLACES = [
-  { icon: '🎤', name: '한가라 & 로컬 가라오케', path: '/places/karaoke', key: 'karaoke' },
-  { icon: '🍸', name: '클럽 & 바', path: '/places/club', key: 'club' },
-  { icon: '💆', name: '건전마사지 & 이발소', path: '/places/massage', key: 'massage' },
-  { icon: '🔥', name: '불건전마사지', path: '/places/adult-massage', key: 'adult' },
-  { icon: '🏊', name: '풀빌라 & 에어비앤비', path: '/places/villa', key: 'villa' },
+  { icon: '🎤', name: '핫가라 & 트월 가라오케', path: '/places/karaoke', key: 'karaoke' },
+  { icon: '🍺', name: '클럽 & 바', path: '/places/club', key: 'club' },
+  { icon: '💆', name: '전견마사지 & 이발소', path: '/places/massage', key: 'massage' },
+  { icon: '💋', name: '전견마사지', path: '/places/adult-massage', key: 'adult' },
+  { icon: '🏠', name: '풀빌라 & 에어비앤비', path: '/places/villa', key: 'villa' },
   { icon: '🚗', name: '렌트카 & 운전기사', path: '/places/rent', key: 'rent' },
   { icon: '🍜', name: '맛집', path: '/places/restaurant', key: 'food' },
 ]
 
 const DEFAULT_STATS = { members: 330, online: 15, todayVisits: 70, totalVisits: 7000 }
 const DEFAULT_LABELS = { members: '가입인원', online: '실시간 접속', todayVisits: '당일 방문자', totalVisits: '누적방문자수' }
+
+// 채팅창 위치 스타일 매핑
+const CHAT_POSITION_STYLES = {
+  'bottom-right': { position: 'fixed', bottom: '20px', right: '20px', zIndex: 1000 },
+  'bottom-left':  { position: 'fixed', bottom: '20px', left: '20px', zIndex: 1000 },
+  'top-right':    { position: 'fixed', top: '80px', right: '20px', zIndex: 1000 },
+  'top-left':     { position: 'fixed', top: '80px', left: '20px', zIndex: 1000 },
+}
 
 export default function HomePage() {
   const { user } = useAuth()
@@ -29,9 +37,21 @@ export default function HomePage() {
   const [placeImages, setPlaceImages] = useState([])
   const visitTrackedRef = useRef(false)
 
+  // UI 설정 상태
+  const [uiSettings, setUiSettings] = useState({
+    chat_position: 'bottom-right',
+    chat_visible: true,
+    hero_layout: 'default',
+    stats_visible: true,
+    notice_visible: true,
+    banner_visible: true,
+    main_sections_order: 'hero,stats,notice,board,banner'
+  })
+
   useEffect(() => {
     fetchPosts()
     fetchStats()
+    fetchUiSettings()
     if (user && !visitTrackedRef.current) {
       visitTrackedRef.current = true
       trackVisit()
@@ -49,11 +69,17 @@ export default function HomePage() {
     return () => supabase.removeChannel(channel)
   }, [])
 
+  // UI 설정 불러오기
+  const fetchUiSettings = async () => {
+    try {
+      const { data } = await supabase.from('site_settings').select('*').eq('id', 1).single()
+      if (data) setUiSettings(data)
+    } catch (e) {}
+  }
+
   useEffect(() => {
     if (activePlace) {
       fetchPlaceImages(activePlace.key)
-    } else {
-      setPlaceImages([])
     }
   }, [activePlace])
 
@@ -62,7 +88,7 @@ export default function HomePage() {
       .from('place_images')
       .select('*')
       .eq('place_key', placeKey)
-      .order('created_at', { ascending: false })
+      .order('created_at', { ascending: true })
       .limit(12)
     setPlaceImages(data || [])
   }
@@ -90,28 +116,11 @@ export default function HomePage() {
         .from('visitor_stats')
         .select('total_visits')
         .eq('date', today)
-        .single()
-
+      
       if (existing) {
-        await supabase.from('visitor_stats').update({ total_visits: existing.total_visits + 1 }).eq('date', today)
-      } else {
-        await supabase.from('visitor_stats').insert({ date: today, total_visits: DEFAULT_STATS.todayVisits + 1 })
+        await supabase.from('visitor_stats').upsert({ date: today, total_visits: (existing[0]?.total_visits || 0) + 1 })
       }
-
-      const { data: siteData } = await supabase.from('site_stats').select('total_visitors').eq('id', 1).single()
-      if (siteData) {
-        await supabase.from('site_stats').update({ total_visitors: siteData.total_visitors + 1, updated_at: new Date().toISOString() }).eq('id', 1)
-      }
-      fetchVisitorStats()
-    } catch (e) {
-      console.error('trackVisit error:', e)
-    }
-  }
-
-  const fetchVisitorStats = async () => {
-    const today = new Date().toISOString().split('T')[0]
-    const { data } = await supabase.from('visitor_stats').select('total_visits').eq('date', today).single()
-    if (data) setStats(prev => ({ ...prev, todayVisits: data.total_visits }))
+    } catch (e) {}
   }
 
   const fetchPosts = async () => {
@@ -140,18 +149,26 @@ export default function HomePage() {
           members: siteData.base_members || DEFAULT_STATS.members,
           totalVisits: siteData.total_visitors || DEFAULT_STATS.totalVisits,
         }))
+
+        const baseMembers = siteData?.base_members || DEFAULT_STATS.members
+        const { count: userCount } = await supabase
+          .from('users')
+          .select('*', { count: 'exact', head: true })
+        setStats(prev => ({ ...prev, members: baseMembers + (userCount || 0) }))
+
+        const today = new Date().toISOString().split('T')[0]
+        const { data: todayData } = await supabase
+          .from('visitor_stats')
+          .select('total_visits')
+          .eq('date', today)
+          .single()
+        if (todayData) setStats(prev => ({ ...prev, todayVisits: todayData.total_visits }))
       }
-      const { count: userCount } = await supabase.from('users').select('*', { count: 'exact', head: true })
-      const baseMembers = siteData?.base_members || DEFAULT_STATS.members
-      setStats(prev => ({ ...prev, members: baseMembers + (userCount || 0) }))
-      fetchVisitorStats()
-    } catch (e) {
-      console.error('fetchStats error:', e)
-    }
+    } catch (e) {}
   }
 
   const renderStats = () => (
-    <div className="hero-stats">
+    <div className="stats-bar">
       <div className="stat-item">
         <span className="stat-num gold-text">{stats.members.toLocaleString()}+</span>
         <span className="stat-label">{labels.members}</span>
@@ -174,43 +191,33 @@ export default function HomePage() {
     </div>
   )
 
-  return (
-    <div className="home">
-      <PopupModal />
+  // 섹션 순서에 따라 렌더링
+  const sectionOrder = (uiSettings.main_sections_order || 'hero,stats,notice,board,banner').split(',').map(s => s.trim())
 
-      {!user && (
-        <section className="hero">
-          <div className="hero-bg"></div>
-          <div className="hero-content">
-            <h1 className="hero-title">
-              <span className="gold-text">호치민 유흥 커뮤니티</span>
-              <br />NO.1
-            </h1>
-            <p className="hero-subtitle">실시간으로 터지는 호치민 밤문화 핫딜<br />지금 바로 [호치민밤양관] 텔레그램으로 회원가입!</p>
-            <div className="hero-buttons">
-              <Link to="/login" className="btn-gold hero-btn">🔥 텔레그램으로 회원가입</Link>
-              <Link to="/board/free" className="hero-btn-outline">👀 커뮤니티 보기</Link>
-            </div>
-            {renderStats()}
+  const sectionMap = {
+    hero: !user && (
+      <section key="hero" className={`hero hero-${uiSettings.hero_layout || 'default'}`}>
+        <div className="hero-bg"></div>
+        <div className="hero-content">
+          <h1 className="hero-title">
+            <span className="gold-text">호치민 동룡 커뮤니티</span>
+            <br />NO.1
+          </h1>
+          <p className="hero-subtitle">실시간으로 만나는 호치민 발로뛰 핫링<br />지금 바로 [호치민발양관] 텔레그렇으로 회회가입!</p>
+          <div className="hero-buttons">
+            <Link to="/login" className="btn-gold hero-btn">🔥 텔레그렇으로 회회가입</Link>
+            <Link to="/board/free" className="hero-btn-outline">🔥 커뮤니티 보기</Link>
           </div>
-        </section>
-      )}
-
-      {user && (
-        <section className="hero hero-logged-in">
-          <div className="hero-bg"></div>
-          <div className="hero-content">
-            <h1 className="hero-title">
-              <span className="gold-text">호치민 유흥 커뮤니티</span>
-              <br />NO.1
-            </h1>
-            {renderStats()}
-          </div>
-        </section>
-      )}
-
-      <section className="places-section">
-        <h2 className="section-title gold-text">추천 업소 카테고리</h2>
+        </div>
+      </section>
+    ),
+    stats: uiSettings.stats_visible !== false && (
+      <div key="stats">
+        {renderStats()}
+      </div>
+    ),
+    notice: uiSettings.notice_visible !== false && (
+      <section key="notice" className="places-section">
         <div className="places-grid">
           {PLACES.map(place => (
             <div
@@ -223,6 +230,7 @@ export default function HomePage() {
             </div>
           ))}
         </div>
+
         {activePlace && (
           <div className="place-images-section">
             <h3 className="place-images-title">{activePlace.name} 사진</h3>
@@ -241,9 +249,10 @@ export default function HomePage() {
           </div>
         )}
       </section>
-
-      <section className="board-section">
-        <div className="board-columns">
+    ),
+    board: (
+      <section key="board" className="board-section">
+        <div className="board-grid">
           <div className="board-col">
             <div className="board-col-header">
               <h3>📢 공지사항</h3>
@@ -282,8 +291,24 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+    ),
+    banner: uiSettings.banner_visible !== false && (
+      <div key="banner" />
+    ),
+  }
 
-      {user && <ChatRoom />}
+  return (
+    <div className="home">
+      <PopupModal />
+
+      {sectionOrder.map(key => sectionMap[key] || null)}
+
+      {/* 채팅창 - site_settings의 chat_visible, chat_position 적용 */}
+      {uiSettings.chat_visible !== false && (
+        <div style={CHAT_POSITION_STYLES[uiSettings.chat_position] || CHAT_POSITION_STYLES['bottom-right']}>
+          <ChatRoom />
+        </div>
+      )}
     </div>
   )
 }
