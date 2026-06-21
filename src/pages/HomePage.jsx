@@ -6,13 +6,13 @@ import ChatRoom from '../components/ChatRoom'
 import './HomePage.css'
 
 const PLACES = [
-  { icon: '🎤', name: '한가라 & 로컬 가라오케', path: '/places/karaoke' },
-  { icon: '🍸', name: '클럽 & 바', path: '/places/club' },
-  { icon: '💆', name: '건전마사지 & 이발소', path: '/places/massage' },
-  { icon: '🔥', name: '불건전마사지', path: '/places/adult-massage' },
-  { icon: '🏊', name: '풀빌라 & 에어비앤비', path: '/places/villa' },
-  { icon: '🚗', name: '렌트카 & 운전기사', path: '/places/rent' },
-  { icon: '🍜', name: '맛집', path: '/places/restaurant' },
+  { icon: '🎤', name: '한가라 & 로컈 가라오케', path: '/places/karaoke', key: 'karaoke' },
+  { icon: '🍸', name: '클럽 & 바', path: '/places/club', key: 'club' },
+  { icon: '💆', name: '건전마사지 & 이발소', path: '/places/massage', key: 'massage' },
+  { icon: '🔥', name: '불건전마사지', path: '/places/adult-massage', key: 'adult' },
+  { icon: '🏊', name: '풀빌라 & 에어비앤비', path: '/places/villa', key: 'villa' },
+  { icon: '🚗', name: '렌트카 & 운전기사', path: '/places/rent', key: 'rent' },
+  { icon: '🍜', name: '맛집', path: '/places/restaurant', key: 'food' },
 ]
 
 const BASE_MEMBERS = 30
@@ -26,6 +26,7 @@ export default function HomePage() {
   const [posts, setPosts] = useState({ notice: [], event: [], free: [] })
   const [stats, setStats] = useState({ members: BASE_MEMBERS, online: BASE_ONLINE, todayVisits: BASE_TODAY, totalVisits: BASE_TOTAL })
   const [activePlace, setActivePlace] = useState(null)
+  const [placeImages, setPlaceImages] = useState([])
   const visitTrackedRef = useRef(false)
 
   useEffect(() => {
@@ -47,6 +48,24 @@ export default function HomePage() {
     fetchOnlineCount()
     return () => supabase.removeChannel(channel)
   }, [])
+
+  useEffect(() => {
+    if (activePlace) {
+      fetchPlaceImages(activePlace.key)
+    } else {
+      setPlaceImages([])
+    }
+  }, [activePlace])
+
+  const fetchPlaceImages = async (placeKey) => {
+    const { data } = await supabase
+      .from('place_images')
+      .select('*')
+      .eq('place_key', placeKey)
+      .order('created_at', { ascending: false })
+      .limit(12)
+    setPlaceImages(data || [])
+  }
 
   const fetchOnlineCount = async () => {
     const threshold = new Date(Date.now() - 10 * 60 * 1000).toISOString()
@@ -149,7 +168,7 @@ export default function HomePage() {
               <span className="gold-text">호치민 유흥 커뮤니티</span>
               <br />NO.1
             </h1>
-            <p className="hero-subtitle">실시간으로 터지는 호치민 밤문화 꿀팁<br />지금 바로 [호치민방앗간] 텔레그램으로 회원가입!</p>
+            <p className="hero-subtitle">실시간으로 터지는 호치민 밤문화 꿼팁<br />지금 바로 [호치민방앙간] 텔레그램으로 회원가입!</p>
             <div className="hero-buttons">
               <Link to="/login" className="btn-gold hero-btn">🔥 텔레그램으로 회원가입</Link>
               <Link to="/board/free" className="hero-btn-outline">💬 커뮤니티 보기</Link>
@@ -209,7 +228,19 @@ export default function HomePage() {
                     <span className="place-detail-icon">{activePlace.icon}</span>
                     <h3>{activePlace.name}</h3>
                   </div>
-                  <p className="place-detail-desc">준비 중입니다. 곧 업데이트될 예정입니다.</p>
+                  {placeImages.length > 0 ? (
+                    <div className="place-image-grid">
+                      {placeImages.map((img, idx) => (
+                        <div key={img.id || idx} className="place-img-card">
+                          <img src={img.image_url} alt={img.title || activePlace.name} className="place-img"
+                            onError={e => { e.target.style.display='none' }} />
+                          {img.title && <div className="place-img-title">{img.title}</div>}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="place-detail-desc">준비 중입니다. 곷 업데이트될 예정입니다.</p>
+                  )}
                 </div>
               )}
             </div>
