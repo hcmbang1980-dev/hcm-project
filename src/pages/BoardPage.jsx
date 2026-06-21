@@ -11,7 +11,10 @@ const BOARD_NAMES = {
   notice: '공지사항',
   event: '방앗간 이벤트',
   intro: '가입인사',
+  gallery: '👁 안구정화 게시판',
 }
+
+const GALLERY_MODE = ['gallery']
 
 export default function BoardPage() {
   const { type } = useParams()
@@ -21,6 +24,7 @@ export default function BoardPage() {
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
   const PER_PAGE = 20
+  const isGallery = GALLERY_MODE.includes(type)
 
   useEffect(() => {
     fetchPosts()
@@ -54,24 +58,45 @@ export default function BoardPage() {
         </div>
         <div className="gold-divider"></div>
 
-        <div className="post-list">
-          {loading ? (
-            <div className="loading">로딩 중...</div>
-          ) : posts.length === 0 ? (
-            <div className="empty">등록된 게시글이 없습니다.</div>
-          ) : posts.map(post => (
-            <Link to={"/post/"+post.id} key={post.id} className="post-row">
-              <div className="post-row-main">
-                <span className="post-row-title">{post.title}</span>
-                <div className="post-row-meta">
-                  <span>👤 {post.users?.nickname || '익명'}</span>
-                  <span>👁 {post.views}</span>
-                  <span>{new Date(post.created_at).toLocaleDateString('ko')}</span>
+        {isGallery ? (
+          <div className="post-gallery">
+            {loading ? (
+              <div className="loading">로딩 중...</div>
+            ) : posts.length === 0 ? (
+              <div className="empty">등록된 게시글이 없습니다.</div>
+            ) : posts.map(post => (
+              <Link to={"/post/"+post.id} key={post.id} className="gallery-card">
+                {post.image_url ? (
+                  <img src={post.image_url} alt={post.title} className="gallery-img" />
+                ) : (
+                  <div className="gallery-img-placeholder">📷</div>
+                )}
+                <div className="gallery-card-info">
+                  <span className="gallery-card-title">{post.title}</span>
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="post-list">
+            {loading ? (
+              <div className="loading">로딩 중...</div>
+            ) : posts.length === 0 ? (
+              <div className="empty">등록된 게시글이 없습니다.</div>
+            ) : posts.map(post => (
+              <Link to={"/post/"+post.id} key={post.id} className="post-row">
+                <div className="post-row-main">
+                  <span className="post-row-title">{post.title}</span>
+                  <div className="post-row-meta">
+                    <span>👤 {post.users?.nickname || '익명'}</span>
+                    <span>👁 {post.views}</span>
+                    <span>{new Date(post.created_at).toLocaleDateString('ko')}</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
 
         <div className="pagination">
           {page > 1 && <button onClick={() => setPage(p => p-1)} className="page-btn">← 이전</button>}
