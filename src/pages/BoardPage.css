@@ -13,3 +13,60 @@
 .page-btn:hover { background: rgba(255,215,0,0.2); }
 .page-num { color: #888; font-size: 14px; }
 .loading, .empty { text-align: center; padding: 60px; color: #555; }
+
+/* 갤러리 모드 (안구정화 게시판) */
+.post-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+  padding: 0 4px;
+}
+.gallery-card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #1a1a1a;
+  border: 1px solid rgba(255,215,0,0.15);
+  transition: transform 0.2s, border-color 0.2s;
+}
+.gallery-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255,215,0,0.4);
+}
+.gallery-img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  display: block;
+}
+.gallery-img-placeholder {
+  width: 100%;
+  aspect-ratio: 4/3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  background: #222;
+  color: #444;
+}
+.gallery-card-info {
+  padding: 10px 12px;
+}
+.gallery-card-title {
+  font-size: 13px;
+  color: #ccc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .post-gallery {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
