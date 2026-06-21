@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
@@ -15,17 +15,106 @@ const PLACES = [
   { icon: '🍜', name: '맛집', path: '/places/restaurant' },
 ]
 
+const BASE_MEMBERS = 30
+const BASE_ONLINE = 15
+const BASE_TODAY = 70
+const BASE_TOTAL = 13000
+
 export default function HomePage() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const [posts, setPosts] = useState({ notice: [], event: [], free: [] })
-  const [stats, setStats] = useState({ users: 0, posts: 0 })
+  const [stats, setStats] = useState({ members: BASE_MEMBERS, online: BASE_ONLINE, todayVisits: BASE_TODAY, totalVisits: BASE_TOTAL })
   const [activePlace, setActivePlace] = useState(null)
+  const visitTrackedRef = useRef(false)
 
   useEffect(() => {
     fetchPosts()
     fetchStats()
+    if (user && !visitTrackedRef.current) {
+      visitTrackedRef.current = true
+      trackVisit()
+    }
   }, [user])
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('online-users')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'online_sessions' }, () => {
+        fetchOnlineCount()
+      })
+      .subscribe()
+    fetchOnlineCount()
+    return () => supabase.removeChannel(channel)
+  }, [])
+
+  const fetchOnlineCount = async () => {
+    const threshold = new Date(Date.now() - 10 * 60 * 1000).toISOString()
+    const { count } = await supabase
+      .from('online_sessions')
+      .select('*', { count: 'exact', head: true })
+      .gte('last_seen', threshold)
+    setStats(prev => ({ ...prev, online: BASE_ONLINE + (count || 0) }))
+  }
+
+  const trackVisit = async () => {
+    if (!user) return
+    try {
+      await supabase.from('online_sessions').upsert({
+        user_id: user.id,
+        last_seen: new Date().toISOString(),
+        nickname: user.nickname || user.telegram_first_name || '회원'
+      }, { onConflict: 'user_id' })
+
+      const today = new Date().toISOString().split('T')[0]
+      const { data: existing } = await supabase
+        .from('visitor_stats')
+        .select('total_visits')
+        .eq('date', today)
+        .single()
+
+      if (existing) {
+        await supabase
+          .from('visitor_stats')
+          .update({ total_visits: existing.total_visits + 1 })
+          .eq('date', today)
+      } else {
+        await supabase
+          .from('visitor_stats')
+          .insert({ date: today, total_visits: BASE_TODAY + 1 })
+      }
+
+      const { data: siteData } = await supabase
+        .from('site_stats')
+        .select('total_visitors')
+        .eq('id', 1)
+        .single()
+
+      if (siteData) {
+        await supabase
+          .from('site_stats')
+          .update({ total_visitors: siteData.total_visitors + 1, updated_at: new Date().toISOString() })
+          .eq('id', 1)
+      }
+
+      fetchVisitorStats()
+    } catch (e) {
+      console.error('trackVisit error:', e)
+    }
+  }
+
+  const fetchVisitorStats = async () => {
+    const today = new Date().toISOString().split('T')[0]
+    const [todayRes, totalRes] = await Promise.all([
+      supabase.from('visitor_stats').select('total_visits').eq('date', today).single(),
+      supabase.from('site_stats').select('total_visitors').eq('id', 1).single()
+    ])
+    setStats(prev => ({
+      ...prev,
+      todayVisits: todayRes.data?.total_visits || BASE_TODAY,
+      totalVisits: totalRes.data?.total_visitors || BASE_TOTAL
+    }))
+  }
 
   const fetchPosts = async () => {
     const { data } = await supabase
@@ -43,11 +132,11 @@ export default function HomePage() {
   }
 
   const fetchStats = async () => {
-    const [usersRes, postsRes] = await Promise.all([
-      supabase.from('users').select('id', { count: 'exact', head: true }),
-      supabase.from('posts').select('id', { count: 'exact', head: true }),
-    ])
-    setStats({ users: usersRes.count || 0, posts: postsRes.count || 0 })
+    const { count: userCount } = await supabase
+      .from('users')
+      .select('*', { count: 'exact', head: true })
+    setStats(prev => ({ ...prev, members: BASE_MEMBERS + (userCount || 0) }))
+    fetchVisitorStats()
   }
 
   return (
@@ -67,18 +156,23 @@ export default function HomePage() {
             </div>
             <div className="hero-stats">
               <div className="stat-item">
-                <span className="stat-num gold-text">{stats.users.toLocaleString()}+</span>
+                <span className="stat-num gold-text">{stats.members.toLocaleString()}+</span>
                 <span className="stat-label">회원</span>
               </div>
               <div className="stat-divider"></div>
               <div className="stat-item">
-                <span className="stat-num gold-text">{(stats.users + 1200).toLocaleString()}+</span>
-                <span className="stat-label">텔레그램 멤버</span>
+                <span className="stat-num gold-text">{stats.online.toLocaleString()}+</span>
+                <span className="stat-label">실시간 접속</span>
               </div>
               <div className="stat-divider"></div>
               <div className="stat-item">
-                <span className="stat-num gold-text">{stats.posts.toLocaleString()}+</span>
-                <span className="stat-label">게시글</span>
+                <span className="stat-num gold-text">{stats.todayVisits.toLocaleString()}+</span>
+                <span className="stat-label">당일 방문자</span>
+              </div>
+              <div className="stat-divider"></div>
+              <div className="stat-item">
+                <span className="stat-num gold-text">{stats.totalVisits.toLocaleString()}+</span>
+                <span className="stat-label">전체 방문자</span>
               </div>
             </div>
           </div>
@@ -90,7 +184,7 @@ export default function HomePage() {
           <div className="chat-places-layout">
             <div className="ad-banner ad-banner-left"><span></span></div>
             <div className="chat-col">
-              <h2 className="section-title">📱 실시간 소통방</h2>
+              <h2 className="section-title">🔥 호치민 실시간 방앗간</h2>
               <ChatRoom />
             </div>
             <div className="places-col">
