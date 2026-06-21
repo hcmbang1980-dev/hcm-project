@@ -12,9 +12,11 @@ export default function ChatRoom() {
   const channelRef = useRef(null)
 
   const fetchMessages = useCallback(async () => {
+    const since = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString()
     const { data } = await supabase
       .from('messages')
       .select('*')
+      .gte('created_at', since)
       .order('created_at', { ascending: true })
       .limit(100)
     if (data) setMessages(data)
@@ -22,37 +24,24 @@ export default function ChatRoom() {
   }, [])
 
   useEffect(() => {
-    // 기존 채널이 있으면 제거
     if (channelRef.current) {
       supabase.removeChannel(channelRef.current)
       channelRef.current = null
     }
-
-    // 메시지 로드 후 실시간 구독 시작
     fetchMessages().then(() => {
       const channel = supabase
         .channel('public:messages:chat')
-        .on(
-          'postgres_changes',
-          {
-            event: 'INSERT',
-            schema: 'public',
-            table: 'messages',
-          },
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' },
           (payload) => {
             setMessages(prev => {
-              // 중복 방지: 같은 id 메시지가 있으면 추가 안 함
               if (prev.some(m => m.id === payload.new.id)) return prev
               return [...prev, payload.new]
             })
           }
         )
-        .subscribe((status) => {
-          console.log('Realtime subscription status:', status)
-        })
+        .subscribe()
       channelRef.current = channel
     })
-
     return () => {
       if (channelRef.current) {
         supabase.removeChannel(channelRef.current)
@@ -71,43 +60,22 @@ export default function ChatRoom() {
     const text = input.trim()
     setInput('')
     try {
-      const { data: inserted, error: dbErr } = await supabase.from('messages').insert({
-        text,
-        user_id: user.id,
+      const { error: dbErr } = await supabase.from('messages').insert({
+        text, user_id: user.id,
         nickname: user.nickname || user.telegram_first_name || '회원',
         photo_url: user.telegram_photo || null,
         source: 'site'
       }).select().single()
-      if (dbErr) {
-        console.error('DB insert error:', dbErr)
-        setInput(text)
-        return
-      }
-      // 텔레그램 소통방으로 전달 (채팅봇 사용)
+      if (dbErr) { setInput(text); return }
       fetch('/api/send-message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text,
-          user_id: user.id,
-          nickname: user.nickname || user.telegram_first_name || '회원',
-          photo_url: user.telegram_photo || null,
-          tg_only: true
-        }),
-      }).catch(e => console.warn('TG send failed (ignored):', e))
-    } catch (e) {
-      console.error('send error:', e)
-      setInput(text)
-    } finally {
-      setSending(false)
-    }
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, user_id: user.id, nickname: user.nickname || user.telegram_first_name || '회원', photo_url: user.telegram_photo || null, tg_only: true }),
+      }).catch(e => console.warn('TG send failed:', e))
+    } catch (e) { setInput(text) } finally { setSending(false) }
   }
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      sendMessage()
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage() }
   }
 
   const formatTime = (ts) => {
@@ -118,9 +86,7 @@ export default function ChatRoom() {
   return (
     <div className="chatroom">
       <div className="chat-messages">
-        {messages.length === 0 && (
-          <div className="chat-empty">no messages yet</div>
-        )}
+        {messages.length === 0 && <div className="chat-empty">최근 48시간 메시지가 없습니다</div>}
         {messages.map((msg) => {
           const isMe = msg.user_id === user?.id
           const isTelegram = msg.source === 'telegram'
@@ -128,19 +94,11 @@ export default function ChatRoom() {
             <div key={msg.id} className={"chat-msg " + (isMe ? 'mine' : 'others')}>
               {!isMe && (
                 <div className="chat-avatar">
-                  {msg.photo_url
-                    ? <img src={msg.photo_url} alt="" />
-                    : <span>{(msg.nickname || '?')[0]}</span>
-                  }
+                  {msg.photo_url ? <img src={msg.photo_url} alt="" /> : <span>{(msg.nickname || '?')[0]}</span>}
                 </div>
               )}
               <div className="chat-bubble-wrap">
-                {!isMe && (
-                  <div className="chat-name">
-                    {isTelegram && <span className="tg-badge">TG</span>}
-                    {msg.nickname || 'anon'}
-                  </div>
-                )}
+                {!isMe && <div className="chat-name">{isTelegram && <span className="tg-badge">TG</span>}{msg.nickname || 'anon'}</div>}
                 <div className="chat-bubble">{msg.text}</div>
                 <div className="chat-time">{formatTime(msg.created_at)}</div>
               </div>
@@ -150,22 +108,8 @@ export default function ChatRoom() {
         <div ref={bottomRef} />
       </div>
       <div className="chat-input-area">
-        <textarea
-          className="chat-input"
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="type message"
-          rows={1}
-          disabled={sending}
-        />
-        <button
-          className="chat-send-btn"
-          onClick={sendMessage}
-          disabled={sending || !input.trim()}
-        >
-          {sending ? '...' : 'send'}
-        </button>
+        <textarea className="chat-input" value={input} onChange={e => setInput(e.target.value)} onKeyDown={handleKeyDown} placeholder="type message" rows={1} disabled={sending} />
+        <button className="chat-send-btn" onClick={sendMessage} disabled={sending || !input.trim()}>{sending ? '...' : 'send'}</button>
       </div>
     </div>
   )
