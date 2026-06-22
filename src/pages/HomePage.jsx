@@ -169,8 +169,8 @@ const getChatStyle = () => {
                                           <h1 className="hero-title"><span className="gold-text">호치민 동룡 커뮤니티</span><br />NO.1</h1>
                                           <p className="hero-subtitle">실시간으로 만나는 호치민 발로뛰 핫링<br />지금 바로 [호치민발양관] 텔레그렇으로 회회가입!</p>
                                           <div className="hero-buttons">
-                                                      <Link to="/login" className="btn-gold hero-btn">🔥 텔레그렇으로 회회가입</Link>Link>
-                                                      <Link to="/board/free" className="hero-btn-outline">🔥 커뮤니티 보기</Link>Link>
+                                                      <Link to="/login" className="btn-gold hero-btn">🔥 텔레그렇으로 회회가입</Link>
+                                                      <Link to="/board/free" className="hero-btn-outline">🔥 커뮤니티 보기</Link>
                                           </div>
                                 </div>
                         </section>
@@ -207,16 +207,16 @@ const getChatStyle = () => {
                         <section key="board" className="board-section">
                                 <div className="board-grid">
                                           <div className="board-col">
-                                                      <div className="board-col-header"><h3>📢 공지사항</h3><Link to="/board/notice" className="more-link">더보기</Link>Link></div>
-                                            {posts.notice.map(p => <Link key={p.id} to={`/post/${p.id}`} className="post-item"><span className="post-title">{p.title}</span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span></Link>Link>)}
+                                                      <div className="board-col-header"><h3>📢 공지사항</h3><Link to="/board/notice" className="more-link">더보기</Link></div>
+                                            {posts.notice.map(p => <Link key={p.id} to={`/post/${p.id}`} className="post-item"><span className="post-title">{p.title}</span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span></Link>)}
                                           </div>
                                           <div className="board-col">
-                                                      <div className="board-col-header"><h3>🎉 이벤트</h3><Link to="/board/event" className="more-link">더보기</Link>Link></div>
-                                            {posts.event.map(p => <Link key={p.id} to={`/post/${p.id}`} className="post-item"><span className="post-title">{p.title}</span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span></Link>Link>)}
+                                                      <div className="board-col-header"><h3>🎉 이벤트</h3><Link to="/board/event" className="more-link">더보기</Link></div>
+                                            {posts.event.map(p => <Link key={p.id} to={`/post/${p.id}`} className="post-item"><span className="post-title">{p.title}</span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span></Link>)}
                                           </div>
                                           <div className="board-col">
-                                                      <div className="board-col-header"><h3>💬 자유게시판</h3><Link to="/board/free" className="more-link">더보기</Link>Link></div>
-                                            {posts.free.map(p => <Link key={p.id} to={`/post/${p.id}`} className="post-item"><span className="post-title">{p.title}</span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span></Link>Link>)}
+                                                      <div className="board-col-header"><h3>💬 자유게시판</h3><Link to="/board/free" className="more-link">더보기</Link></div>
+                                            {posts.free.map(p => <Link key={p.id} to={`/post/${p.id}`} className="post-item"><span className="post-title">{p.title}</span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span></Link>)}
                                           </div>
                                 </div>
                         </section>
