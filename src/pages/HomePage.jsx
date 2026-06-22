@@ -149,14 +149,14 @@ const getChatStyle = () => {
 
   const renderStats = () => (
         <div className="stats-bar">
-              <div className="stat-item"><span className="stat-num gold-text">{stats.members.toLocaleString()}+</span>span><span className="stat-label">{labels.members}</span>span></div>div>
-              <div className="stat-divider"></div>div>
-              <div className="stat-item"><span className="stat-num gold-text">{stats.online.toLocaleString()}+</span>span><span className="stat-label">{labels.online}</span>span></div>div>
-              <div className="stat-divider"></div>div>
-              <div className="stat-item"><span className="stat-num gold-text">{stats.todayVisits.toLocaleString()}+</span>span><span className="stat-label">{labels.todayVisits}</span>span></div>div>
-              <div className="stat-divider"></div>div>
-              <div className="stat-item"><span className="stat-num gold-text">{stats.totalVisits.toLocaleString()}+</span>span><span className="stat-label">{labels.totalVisits}</span>span></div>div>
-        </div>div>
+              <div className="stat-item"><span className="stat-num gold-text">{stats.members.toLocaleString()}+</span><span className="stat-label">{labels.members}</span></div>
+              <div className="stat-divider"></div>
+              <div className="stat-item"><span className="stat-num gold-text">{stats.online.toLocaleString()}+</span><span className="stat-label">{labels.online}</span></div>
+              <div className="stat-divider"></div>
+              <div className="stat-item"><span className="stat-num gold-text">{stats.todayVisits.toLocaleString()}+</span><span className="stat-label">{labels.todayVisits}</span></div>
+              <div className="stat-divider"></div>
+              <div className="stat-item"><span className="stat-num gold-text">{stats.totalVisits.toLocaleString()}+</span><span className="stat-label">{labels.totalVisits}</span></div>
+        </div>
       )
     
       const sectionOrder = (settings.main_sections_order || 'hero,stats,notice,board,banner').split(',').map(s => s.trim())
@@ -164,62 +164,62 @@ const getChatStyle = () => {
           const sectionMap = {
                 hero: !user && (
                         <section key="hero" className={`hero hero-${settings.hero_layout || 'default'}`}>
-                                <div className="hero-bg"></div>div>
+                                <div className="hero-bg"></div>
                                 <div className="hero-content">
-                                          <h1 className="hero-title"><span className="gold-text">호치민 동룡 커뮤니티</span>span><br />NO.1</h1>h1>
-                                          <p className="hero-subtitle">실시간으로 만나는 호치민 발로뛰 핫링<br />지금 바로 [호치민발양관] 텔레그렇으로 회회가입!</p>p>
+                                          <h1 className="hero-title"><span className="gold-text">호치민 동룡 커뮤니티</span><br />NO.1</h1>
+                                          <p className="hero-subtitle">실시간으로 만나는 호치민 발로뛰 핫링<br />지금 바로 [호치민발양관] 텔레그렇으로 회회가입!</p>
                                           <div className="hero-buttons">
                                                       <Link to="/login" className="btn-gold hero-btn">🔥 텔레그렇으로 회회가입</Link>Link>
                                                       <Link to="/board/free" className="hero-btn-outline">🔥 커뮤니티 보기</Link>Link>
-                                          </div>div>
-                                </div>div>
-                        </section>section>
+                                          </div>
+                                </div>
+                        </section>
                       ),
-                stats: settings.stats_visible !== 'false' && <div key="stats">{renderStats()}</div>div>,
+                stats: settings.stats_visible !== 'false' && <div key="stats">{renderStats()}</div>,
                 notice: settings.notice_visible !== 'false' && (
                         <section key="notice" className="places-section">
                                 <div className="places-grid">
                                   {PLACES.map(place => (
                                       <div key={place.key} className={`place-card${activePlace?.key === place.key ? ' active' : ''}`} onClick={() => setActivePlace(activePlace?.key === place.key ? null : place)}>
-                                                    <span className="place-icon">{place.icon}</span>span>
-                                                    <span className="place-name">{place.name}</span>span>
-                                      </div>div>
+                                                    <span className="place-icon">{place.icon}</span>
+                                                    <span className="place-name">{place.name}</span>
+                                      </div>
                                     ))}
-                                </div>div>
+                                </div>
                           {activePlace && (
                                     <div className="place-images-section">
-                                                <h3 className="place-images-title">{activePlace.name} 사진</h3>h3>
+                                                <h3 className="place-images-title">{activePlace.name} 사진</h3>
                                       {placeImages.length > 0 ? (
                                                     <div className="place-images-grid">
                                                       {placeImages.map(img => (
                                                                         <div key={img.id} className="place-image-card">
                                                                                             <img src={img.image_url} alt={img.caption || activePlace.name} />
-                                                                          {img.caption && <p className="place-image-caption">{img.caption}</p>p>}
-                                                                        </div>div>
+                                                                          {img.caption && <p className="place-image-caption">{img.caption}</p>}
+                                                                        </div>
                                                                       ))}
-                                                    </div>div>
-                                                  ) : <p className="no-images">등록된 사진이 없습니다.</p>p>}
-                                    </div>div>
+                                                    </div>
+                                                  ) : <p className="no-images">등록된 사진이 없습니다.</p>}
+                                    </div>
                                 )}
-                        </section>section>
+                        </section>
                       ),
                 board: (
                         <section key="board" className="board-section">
                                 <div className="board-grid">
                                           <div className="board-col">
-                                                      <div className="board-col-header"><h3>📢 공지사항</h3>h3><Link to="/board/notice" className="more-link">더보기</Link>Link></div>div>
-                                            {posts.notice.map(p => <Link key={p.id} to={`/post/${p.id}`} className="post-item"><span className="post-title">{p.title}</span>span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span>span></Link>Link>)}
-                                          </div>div>
+                                                      <div className="board-col-header"><h3>📢 공지사항</h3><Link to="/board/notice" className="more-link">더보기</Link>Link></div>
+                                            {posts.notice.map(p => <Link key={p.id} to={`/post/${p.id}`} className="post-item"><span className="post-title">{p.title}</span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span></Link>Link>)}
+                                          </div>
                                           <div className="board-col">
-                                                      <div className="board-col-header"><h3>🎉 이벤트</h3>h3><Link to="/board/event" className="more-link">더보기</Link>Link></div>div>
-                                            {posts.event.map(p => <Link key={p.id} to={`/post/${p.id}`} className="post-item"><span className="post-title">{p.title}</span>span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span>span></Link>Link>)}
-                                          </div>div>
+                                                      <div className="board-col-header"><h3>🎉 이벤트</h3><Link to="/board/event" className="more-link">더보기</Link>Link></div>
+                                            {posts.event.map(p => <Link key={p.id} to={`/post/${p.id}`} className="post-item"><span className="post-title">{p.title}</span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span></Link>Link>)}
+                                          </div>
                                           <div className="board-col">
-                                                      <div className="board-col-header"><h3>💬 자유게시판</h3>h3><Link to="/board/free" className="more-link">더보기</Link>Link></div>div>
-                                            {posts.free.map(p => <Link key={p.id} to={`/post/${p.id}`} className="post-item"><span className="post-title">{p.title}</span>span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span>span></Link>Link>)}
-                                          </div>div>
-                                </div>div>
-                        </section>section>
+                                                      <div className="board-col-header"><h3>💬 자유게시판</h3><Link to="/board/free" className="more-link">더보기</Link>Link></div>
+                                            {posts.free.map(p => <Link key={p.id} to={`/post/${p.id}`} className="post-item"><span className="post-title">{p.title}</span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span></Link>Link>)}
+                                          </div>
+                                </div>
+                        </section>
                       ),
                 banner: settings.banner_visible !== 'false' && <div key="banner" />,
           }
@@ -231,8 +231,8 @@ const getChatStyle = () => {
                       {settings.chat_enabled !== 'false' && (
                                 <div style={getChatStyle()}>
                                               <ChatRoom />
-                                </div>div>
+                                </div>
                               )}
-                    </div>div>
+                    </div>
                   )
 }</div>
