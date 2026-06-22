@@ -232,12 +232,12 @@ export default function Header() {
                                             <>
                                                             <Link to="/attendance" onClick={() => setMenuOpen(false)}>📅 출석체크</Link>
                                                             <Link to="/mypage" onClick={() => setMenuOpen(false)}>👤 마이페이지</Link>
-                                            </>>
+                                            </>
                                           )}
                             </nav>
                               )}
                       </header>
                   {tgModal}
-                </>>
+                </>
               )
 }</></></h2>
