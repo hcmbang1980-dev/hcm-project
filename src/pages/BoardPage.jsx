@@ -106,7 +106,7 @@ export default function BoardPage() {
                                                                                           💬 {post.commentCount} · 👁 {post.views || 0}
                                                                       </span>
                                                     </div>
-                                    </Link>Link>
+                                    </Link>
                                   ))}
                     </div>
                   ) : (
@@ -132,7 +132,7 @@ export default function BoardPage() {
                                                                                           <span>{new Date(post.created_at).toLocaleDateString('ko')}</span>
                                                                       </div>
                                                     </div>
-                                    </Link>Link>
+                                    </Link>
                                   ))}
                     </div>
                       )}
