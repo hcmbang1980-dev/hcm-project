@@ -78,10 +78,10 @@ function AdminPinGate({ onSuccess }) {
         <div style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ background: '#1a1a1a', border: '2px solid #d4af37', borderRadius: '16px', padding: '48px 40px', width: '100%', maxWidth: '380px', boxShadow: '0 20px 60px rgba(0,0,0,0.8)' }}>
                           <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-                                      <div style={{ fontSize: '48px', marginBottom: '12px' }}>🔐</div>div>
-                                      <h1 style={{ color: '#d4af37', fontSize: '22px', fontWeight: 'bold', marginBottom: '8px' }}>관리자 인증</h1>h1>
-                                      <p style={{ color: '#666', fontSize: '14px' }}>관리자 PIN을 입력하세요</p>p>
-                          </div>div>
+                                      <div style={{ fontSize: '48px', marginBottom: '12px' }}>🔐</div>
+                                      <h1 style={{ color: '#d4af37', fontSize: '22px', fontWeight: 'bold', marginBottom: '8px' }}>관리자 인증</h1>
+                                      <p style={{ color: '#666', fontSize: '14px' }}>관리자 PIN을 입력하세요</p>
+                          </div>
                           <form onSubmit={handleSubmit}>
                                       <input
                                                     type="password"
@@ -93,14 +93,14 @@ function AdminPinGate({ onSuccess }) {
                                                     style={{ width: '100%', padding: '14px 16px', background: '#222', color: '#fff', border: error ? '2px solid #ff4444' : '2px solid #444', borderRadius: '8px', fontSize: '18px', letterSpacing: '4px', textAlign: 'center', marginBottom: '16px', boxSizing: 'border-box', outline: 'none' }}
                                                     autoFocus
                                                   />
-                            {error && <div style={{ background: '#2a1010', border: '1px solid #ff4444', borderRadius: '8px', padding: '10px 14px', color: '#ff6666', fontSize: '13px', marginBottom: '16px', textAlign: 'center' }}>{error}</div>div>}
-                            {locked && <div style={{ color: '#ff9944', textAlign: 'center', marginBottom: '12px', fontSize: '14px' }}>잠금 해제까지: {Math.floor(lockTimer/60)}:{String(lockTimer%60).padStart(2,'0')}</div>div>}
+                            {error && <div style={{ background: '#2a1010', border: '1px solid #ff4444', borderRadius: '8px', padding: '10px 14px', color: '#ff6666', fontSize: '13px', marginBottom: '16px', textAlign: 'center' }}>{error}</div>}
+                            {locked && <div style={{ color: '#ff9944', textAlign: 'center', marginBottom: '12px', fontSize: '14px' }}>잠금 해제까지: {Math.floor(lockTimer/60)}:{String(lockTimer%60).padStart(2,'0')}</div>}
                                       <button type="submit" disabled={locked || loading} style={{ width: '100%', padding: '14px', background: locked ? '#333' : '#d4af37', color: locked ? '#666' : '#000', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold', cursor: locked ? 'not-allowed' : 'pointer' }}>
                                         {loading ? '확인 중...' : locked ? '잠금됨' : '확인'}
-                                      </button>button>
-                          </form>form>
-                </div>div>
-        </div>div>
+                                      </button>
+                          </form>
+                </div>
+        </div>
       )
 }
 
@@ -315,32 +315,32 @@ export default function AdminPage() {
           {toast && (
                   <div style={{ position: 'fixed', top: '20px', right: '20px', zIndex: 9999, background: toast.type === 'error' ? '#ff4444' : '#22c55e', color: '#fff', padding: '12px 20px', borderRadius: '8px', fontWeight: 'bold', boxShadow: '0 4px 12px rgba(0,0,0,0.4)' }}>
                     {toast.msg}
-                  </div>div>
+                  </div>
               )}
               <div className="admin-header">
-                      <h1>🔧 관리자 페이지</h1>h1>
-                      <p>사이트 전체를 관리하세요</p>p>
-              </div>div>
+                      <h1>🔧 관리자 페이지</h1>
+                      <p>사이트 전체를 관리하세요</p>
+              </div>
               <div className="admin-tabs">
                 {TABS.map(tab => (
                     <button key={tab.key} className={`admin-tab-btn ${activeTab === tab.key ? 'active' : ''}`} onClick={() => setActiveTab(tab.key)}>
                       {tab.label}
-                    </button>button>
+                    </button>
                   ))}
-              </div>div>
+              </div>
               <div className="admin-content">
               
                 {/* ===== 회원 관리 탭 ===== */}
                 {activeTab === 'members' && (
                     <div>
-                                <h2>👥 회원 관리</h2>h2>
+                                <h2>👥 회원 관리</h2>
                                 <div className="member-filter-counts" style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
                                   {[['all', '전체', adminCounts.all], ['admin', '관리자', adminCounts.admin], ['moderator', '커뮤니티관리자', adminCounts.moderator], ['user', '일반유저', adminCounts.user]].map(([key, label, count]) => (
                                       <button key={key} onClick={() => setFilterRole(key)} style={{ padding: '8px 16px', background: filterRole === key ? '#d4af37' : '#222', color: filterRole === key ? '#000' : '#d4af37', border: '1px solid #d4af37', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>
                                         {count} {label}
-                                      </button>button>
+                                      </button>
                                     ))}
-                                </div>div>
+                                </div>
                                 <input
                                                 value={searchQuery}
                                                 onChange={e => setSearchQuery(e.target.value)}
@@ -357,7 +357,7 @@ export default function AdminPage() {
                                                                                                     <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>레벨</th>th>
                                                                                                     <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>가입일</th>th>
                                                                                                     <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>저장</th>th>
-                                                                                </tr>tr>
+                                                                                </tr>
                                                               </thead>thead>
                                                               <tbody>
                                                                 {filteredUsers.map(u => (
@@ -369,16 +369,16 @@ export default function AdminPage() {
                                                                 />
                                         ))}
                                                               </tbody>tbody>
-                                              </table>table>
-                                </div>div>
-                    </div>div>
+                                              </table>
+                                </div>
+                    </div>
                       )}
               
                 {/* ===== 통계 수치 탭 ===== */}
                 {activeTab === 'stats' && (
                     <div>
-                                <h2>📊 통계 수치 관리</h2>h2>
-                                <p style={{ color: '#888', marginBottom: '20px' }}>표시 텍스트</p>p>
+                                <h2>📊 통계 수치 관리</h2>
+                                <p style={{ color: '#888', marginBottom: '20px' }}>표시 텍스트</p>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                                   {[
                                       ['members_label', 'members_base', '가입인원'],
@@ -387,137 +387,137 @@ export default function AdminPage() {
                                       ['total_label', 'total_base', '누적방문자수'],
                                     ].map(([labelKey, baseKey, placeholder]) => (
                                                       <div key={labelKey} style={{ background: '#1a1a1a', padding: '16px', borderRadius: '8px', border: '1px solid #333' }}>
-                                                                        <label style={{ color: '#888', fontSize: '12px', display: 'block', marginBottom: '6px' }}>표시 텍스트</label>label>
+                                                                        <label style={{ color: '#888', fontSize: '12px', display: 'block', marginBottom: '6px' }}>표시 텍스트</label>
                                                                         <input
                                                                                               value={siteStats[labelKey] || ''}
                                                                                               onChange={e => setSiteStats(prev => ({ ...prev, [labelKey]: e.target.value }))}
                                                                                               placeholder={placeholder}
                                                                                               style={{ width: '100%', padding: '8px 12px', background: '#222', border: '1px solid #444', color: '#fff', borderRadius: '6px', boxSizing: 'border-box', marginBottom: '8px' }}
                                                                                             />
-                                                                        <label style={{ color: '#888', fontSize: '12px', display: 'block', marginBottom: '6px' }}>기본 수치</label>label>
+                                                                        <label style={{ color: '#888', fontSize: '12px', display: 'block', marginBottom: '6px' }}>기본 수치</label>
                                                                         <input
                                                                                               type="number"
                                                                                               value={siteStats[baseKey] || 0}
                                                                                               onChange={e => setSiteStats(prev => ({ ...prev, [baseKey]: e.target.value }))}
                                                                                               style={{ width: '100%', padding: '8px 12px', background: '#222', border: '1px solid #444', color: '#d4af37', borderRadius: '6px', boxSizing: 'border-box' }}
                                                                                             />
-                                                      </div>div>
+                                                      </div>
                                                     ))}
-                                </div>div>
+                                </div>
                                 <button onClick={saveSiteStats} style={{ background: '#d4af37', color: '#000', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', fontSize: '15px' }}>
                                               💾 저장
-                                </button>button>
-                    </div>div>
+                                </button>
+                    </div>
                       )}
               
                 {/* ===== 팝업 관리 탭 ===== */}
                 {activeTab === 'popups' && (
                     <div>
-                                <h2>🪟 팝업 관리</h2>h2>
+                                <h2>🪟 팝업 관리</h2>
                                 <div style={{ background: '#1a1a1a', padding: '20px', borderRadius: '10px', border: '1px solid #333', marginBottom: '24px' }}>
-                                              <h3 style={{ color: '#d4af37', marginBottom: '16px' }}>새 팝업 추가</h3>h3>
+                                              <h3 style={{ color: '#d4af37', marginBottom: '16px' }}>새 팝업 추가</h3>
                                               <input value={newPopup.title} onChange={e => setNewPopup(p => ({ ...p, title: e.target.value }))} placeholder="팝업 제목" style={{ width: '100%', padding: '8px 12px', background: '#222', border: '1px solid #444', color: '#fff', borderRadius: '6px', boxSizing: 'border-box', marginBottom: '10px' }} />
                                               <textarea value={newPopup.content} onChange={e => setNewPopup(p => ({ ...p, content: e.target.value }))} placeholder="팝업 내용" rows={4} style={{ width: '100%', padding: '8px 12px', background: '#222', border: '1px solid #444', color: '#fff', borderRadius: '6px', boxSizing: 'border-box', marginBottom: '10px', resize: 'vertical' }} />
                                               <input value={newPopup.link_url} onChange={e => setNewPopup(p => ({ ...p, link_url: e.target.value }))} placeholder="링크 URL (선택)" style={{ width: '100%', padding: '8px 12px', background: '#222', border: '1px solid #444', color: '#fff', borderRadius: '6px', boxSizing: 'border-box', marginBottom: '10px' }} />
-                                              <button onClick={addPopup} style={{ background: '#d4af37', color: '#000', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>+ 팝업 추가</button>button>
-                                </div>div>
+                                              <button onClick={addPopup} style={{ background: '#d4af37', color: '#000', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>+ 팝업 추가</button>
+                                </div>
                       {popups.map(p => (
                                     <div key={p.id} style={{ background: '#1a1a1a', padding: '16px', borderRadius: '8px', border: '1px solid #333', marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                     <div>
-                                                                      <div style={{ fontWeight: 'bold', color: '#fff', marginBottom: '4px' }}>{p.title}</div>div>
-                                                                      <div style={{ color: '#888', fontSize: '13px' }}>{p.content?.substring(0, 60)}...</div>div>
-                                                    </div>div>
+                                                                      <div style={{ fontWeight: 'bold', color: '#fff', marginBottom: '4px' }}>{p.title}</div>
+                                                                      <div style={{ color: '#888', fontSize: '13px' }}>{p.content?.substring(0, 60)}...</div>
+                                                    </div>
                                                     <div style={{ display: 'flex', gap: '8px' }}>
-                                                                      <button onClick={() => togglePopup(p.id, p.is_active)} style={{ background: p.is_active ? '#22c55e' : '#555', color: '#fff', border: 'none', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>{p.is_active ? '활성' : '비활성'}</button>button>
-                                                                      <button onClick={() => deletePopup(p.id)} style={{ background: '#ff4444', color: '#fff', border: 'none', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>삭제</button>button>
-                                                    </div>div>
-                                    </div>div>
+                                                                      <button onClick={() => togglePopup(p.id, p.is_active)} style={{ background: p.is_active ? '#22c55e' : '#555', color: '#fff', border: 'none', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>{p.is_active ? '활성' : '비활성'}</button>
+                                                                      <button onClick={() => deletePopup(p.id)} style={{ background: '#ff4444', color: '#fff', border: 'none', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>삭제</button>
+                                                    </div>
+                                    </div>
                                   ))}
-                      {popups.length === 0 && <p style={{ color: '#888', textAlign: 'center', padding: '40px' }}>등록된 팝업이 없습니다.</p>p>}
-                    </div>div>
+                      {popups.length === 0 && <p style={{ color: '#888', textAlign: 'center', padding: '40px' }}>등록된 팝업이 없습니다.</p>}
+                    </div>
                       )}
               
                 {/* ===== 광고 관리 탭 ===== */}
                 {activeTab === 'ads' && (
                     <div>
-                                <h2>📢 광고 관리</h2>h2>
+                                <h2>📢 광고 관리</h2>
                                 <div style={{ background: '#1a1a1a', padding: '20px', borderRadius: '10px', border: '1px solid #333', marginBottom: '24px' }}>
-                                              <h3 style={{ color: '#d4af37', marginBottom: '16px' }}>새 광고 추가</h3>h3>
+                                              <h3 style={{ color: '#d4af37', marginBottom: '16px' }}>새 광고 추가</h3>
                                               <input value={newAd.title} onChange={e => setNewAd(a => ({ ...a, title: e.target.value }))} placeholder="광고 제목" style={{ width: '100%', padding: '8px 12px', background: '#222', border: '1px solid #444', color: '#fff', borderRadius: '6px', boxSizing: 'border-box', marginBottom: '10px' }} />
                                               <input value={newAd.image_url} onChange={e => setNewAd(a => ({ ...a, image_url: e.target.value }))} placeholder="이미지 URL" style={{ width: '100%', padding: '8px 12px', background: '#222', border: '1px solid #444', color: '#fff', borderRadius: '6px', boxSizing: 'border-box', marginBottom: '10px' }} />
                                               <input value={newAd.link_url} onChange={e => setNewAd(a => ({ ...a, link_url: e.target.value }))} placeholder="링크 URL" style={{ width: '100%', padding: '8px 12px', background: '#222', border: '1px solid #444', color: '#fff', borderRadius: '6px', boxSizing: 'border-box', marginBottom: '10px' }} />
                                               <select value={newAd.position} onChange={e => setNewAd(a => ({ ...a, position: e.target.value }))} style={{ width: '100%', padding: '8px 12px', background: '#222', border: '1px solid #444', color: '#fff', borderRadius: '6px', marginBottom: '10px' }}>
-                                                              <option value="top">상단</option>option>
-                                                              <option value="bottom">하단</option>option>
-                                                              <option value="sidebar">사이드바</option>option>
-                                              </select>select>
-                                              <button onClick={addAd} style={{ background: '#d4af37', color: '#000', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>+ 광고 추가</button>button>
-                                </div>div>
+                                                              <option value="top">상단</option>
+                                                              <option value="bottom">하단</option>
+                                                              <option value="sidebar">사이드바</option>
+                                              </select>
+                                              <button onClick={addAd} style={{ background: '#d4af37', color: '#000', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>+ 광고 추가</button>
+                                </div>
                       {ads.map(a => (
                                     <div key={a.id} style={{ background: '#1a1a1a', padding: '16px', borderRadius: '8px', border: '1px solid #333', marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                     <div>
-                                                                      <div style={{ fontWeight: 'bold', color: '#fff', marginBottom: '4px' }}>{a.title}</div>div>
-                                                                      <div style={{ color: '#888', fontSize: '13px' }}>{a.position} | {a.link_url}</div>div>
-                                                    </div>div>
+                                                                      <div style={{ fontWeight: 'bold', color: '#fff', marginBottom: '4px' }}>{a.title}</div>
+                                                                      <div style={{ color: '#888', fontSize: '13px' }}>{a.position} | {a.link_url}</div>
+                                                    </div>
                                                     <div style={{ display: 'flex', gap: '8px' }}>
-                                                                      <button onClick={() => toggleAd(a.id, a.is_active)} style={{ background: a.is_active ? '#22c55e' : '#555', color: '#fff', border: 'none', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>{a.is_active ? '활성' : '비활성'}</button>button>
-                                                                      <button onClick={() => deleteAd(a.id)} style={{ background: '#ff4444', color: '#fff', border: 'none', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>삭제</button>button>
-                                                    </div>div>
-                                    </div>div>
+                                                                      <button onClick={() => toggleAd(a.id, a.is_active)} style={{ background: a.is_active ? '#22c55e' : '#555', color: '#fff', border: 'none', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>{a.is_active ? '활성' : '비활성'}</button>
+                                                                      <button onClick={() => deleteAd(a.id)} style={{ background: '#ff4444', color: '#fff', border: 'none', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>삭제</button>
+                                                    </div>
+                                    </div>
                                   ))}
-                      {ads.length === 0 && <p style={{ color: '#888', textAlign: 'center', padding: '40px' }}>등록된 광고가 없습니다.</p>p>}
-                    </div>div>
+                      {ads.length === 0 && <p style={{ color: '#888', textAlign: 'center', padding: '40px' }}>등록된 광고가 없습니다.</p>}
+                    </div>
                       )}
               
                 {/* ===== UI 설정 탭 ===== */}
                 {activeTab === 'ui' && (
                     <div>
-                                <h2>🎨 UI 설정</h2>h2>
-                                <p style={{ color: '#888', marginBottom: '20px' }}>메인화면 레이아웃, 채팅창 위치 등 사이트 UI를 어드민에서 직접 제어합니다.</p>p>
+                                <h2>🎨 UI 설정</h2>
+                                <p style={{ color: '#888', marginBottom: '20px' }}>메인화면 레이아웃, 채팅창 위치 등 사이트 UI를 어드민에서 직접 제어합니다.</p>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                                               <div style={{ background: '#1a1a1a', padding: '20px', borderRadius: '10px', border: '1px solid #333' }}>
-                                                              <h3 style={{ color: '#d4af37', marginBottom: '16px' }}>💬 채팅창 설정</h3>h3>
+                                                              <h3 style={{ color: '#d4af37', marginBottom: '16px' }}>💬 채팅창 설정</h3>
                                                               <div style={{ marginBottom: '16px' }}>
-                                                                                <label style={{ color: '#aaa', fontSize: '13px', display: 'block', marginBottom: '8px' }}>채팅창 표시</label>label>
+                                                                                <label style={{ color: '#aaa', fontSize: '13px', display: 'block', marginBottom: '8px' }}>채팅창 표시</label>
                                                                                 <div style={{ display: 'flex', gap: '8px' }}>
-                                                                                                    <button onClick={() => setUiSettings(s => ({ ...s, chat_enabled: 'true' }))} style={{ flex: 1, padding: '10px', background: uiSettings.chat_enabled === 'true' ? '#d4af37' : '#333', color: uiSettings.chat_enabled === 'true' ? '#000' : '#aaa', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>표시</button>button>
-                                                                                                    <button onClick={() => setUiSettings(s => ({ ...s, chat_enabled: 'false' }))} style={{ flex: 1, padding: '10px', background: uiSettings.chat_enabled === 'false' ? '#666' : '#333', color: uiSettings.chat_enabled === 'false' ? '#fff' : '#aaa', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>숨김</button>button>
-                                                                                </div>div>
-                                                              </div>div>
+                                                                                                    <button onClick={() => setUiSettings(s => ({ ...s, chat_enabled: 'true' }))} style={{ flex: 1, padding: '10px', background: uiSettings.chat_enabled === 'true' ? '#d4af37' : '#333', color: uiSettings.chat_enabled === 'true' ? '#000' : '#aaa', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>표시</button>
+                                                                                                    <button onClick={() => setUiSettings(s => ({ ...s, chat_enabled: 'false' }))} style={{ flex: 1, padding: '10px', background: uiSettings.chat_enabled === 'false' ? '#666' : '#333', color: uiSettings.chat_enabled === 'false' ? '#fff' : '#aaa', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>숨김</button>
+                                                                                </div>
+                                                              </div>
                                                               <div style={{ marginBottom: '16px' }}>
-                                                                                <label style={{ color: '#aaa', fontSize: '13px', display: 'block', marginBottom: '8px' }}>채팅창 위치</label>label>
+                                                                                <label style={{ color: '#aaa', fontSize: '13px', display: 'block', marginBottom: '8px' }}>채팅창 위치</label>
                                                                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                                                                   {[['inline', '메인화면 인라인'], ['bottom-right', '우측 하단'], ['bottom-left', '좌측 하단'], ['top-right', '우측 상단']].map(([val, label]) => (
-                                            <button key={val} onClick={() => setUiSettings(s => ({ ...s, chat_position: val }))} style={{ padding: '8px', background: uiSettings.chat_position === val ? '#d4af37' : '#333', color: uiSettings.chat_position === val ? '#000' : '#aaa', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>{label}</button>button>
+                                            <button key={val} onClick={() => setUiSettings(s => ({ ...s, chat_position: val }))} style={{ padding: '8px', background: uiSettings.chat_position === val ? '#d4af37' : '#333', color: uiSettings.chat_position === val ? '#000' : '#aaa', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>{label}</button>
                                           ))}
-                                                                                </div>div>
-                                                              </div>div>
-                                              </div>div>
+                                                                                </div>
+                                                              </div>
+                                              </div>
                                               <div style={{ background: '#1a1a1a', padding: '20px', borderRadius: '10px', border: '1px solid #333' }}>
-                                                              <h3 style={{ color: '#d4af37', marginBottom: '16px' }}>🏠 메인화면 섹션</h3>h3>
+                                                              <h3 style={{ color: '#d4af37', marginBottom: '16px' }}>🏠 메인화면 섹션</h3>
                                                 {[['stats_visible', '통계 섹션'], ['notice_visible', '공지사항'], ['banner_visible', '배너']].map(([key, label]) => (
                                         <div key={key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                                                            <span style={{ color: '#fff' }}>{label}</span>span>
+                                                            <span style={{ color: '#fff' }}>{label}</span>
                                                             <div style={{ display: 'flex', gap: '6px' }}>
-                                                                                  <button onClick={() => setUiSettings(s => ({ ...s, [key]: 'true' }))} style={{ padding: '6px 14px', background: uiSettings[key] === 'true' ? '#d4af37' : '#333', color: uiSettings[key] === 'true' ? '#000' : '#aaa', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>표시</button>button>
-                                                                                  <button onClick={() => setUiSettings(s => ({ ...s, [key]: 'false' }))} style={{ padding: '6px 14px', background: uiSettings[key] === 'false' ? '#555' : '#333', color: uiSettings[key] === 'false' ? '#fff' : '#aaa', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>숨김</button>button>
-                                                            </div>div>
-                                        </div>div>
+                                                                                  <button onClick={() => setUiSettings(s => ({ ...s, [key]: 'true' }))} style={{ padding: '6px 14px', background: uiSettings[key] === 'true' ? '#d4af37' : '#333', color: uiSettings[key] === 'true' ? '#000' : '#aaa', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>표시</button>
+                                                                                  <button onClick={() => setUiSettings(s => ({ ...s, [key]: 'false' }))} style={{ padding: '6px 14px', background: uiSettings[key] === 'false' ? '#555' : '#333', color: uiSettings[key] === 'false' ? '#fff' : '#aaa', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>숨김</button>
+                                                            </div>
+                                        </div>
                                       ))}
-                                              </div>div>
-                                </div>div>
+                                              </div>
+                                </div>
                                 <div style={{ background: '#1a1a1a', padding: '20px', borderRadius: '10px', border: '1px solid #333', marginBottom: '20px' }}>
-                                              <h3 style={{ color: '#d4af37', marginBottom: '12px' }}>📋 메인 섹션 순서 (쉼표로 구분)</h3>h3>
+                                              <h3 style={{ color: '#d4af37', marginBottom: '12px' }}>📋 메인 섹션 순서 (쉼표로 구분)</h3>
                                               <input value={uiSettings.main_sections_order || ''} onChange={e => setUiSettings(s => ({ ...s, main_sections_order: e.target.value }))} placeholder="hero,stats,notice,board,banner" style={{ width: '100%', padding: '10px 14px', background: '#222', border: '1px solid #444', color: '#fff', borderRadius: '6px', boxSizing: 'border-box', marginBottom: '8px' }} />
-                                              <p style={{ color: '#666', fontSize: '12px' }}>예: hero,stats,notice,board,banner (사용 가능: hero, stats, notice, board, banner)</p>p>
-                                </div>div>
+                                              <p style={{ color: '#666', fontSize: '12px' }}>예: hero,stats,notice,board,banner (사용 가능: hero, stats, notice, board, banner)</p>
+                                </div>
                                 <button onClick={saveUiSettings} style={{ background: '#d4af37', color: '#000', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', fontSize: '15px' }}>
                                               💾 UI 설정 저장
-                                </button>button>
-                    </div>div>
+                                </button>
+                    </div>
                       )}
-              </div>div>
-        </div>div>
+              </div>
+        </div>
       )
 }
 
@@ -534,19 +534,19 @@ function MemberRow({ u, onSave, saving }) {
 
   return (
         <tr style={{ borderBottom: '1px solid #333' }}>
-                <td style={{ padding: '10px', color: '#fff' }}>{u.nickname || u.telegram_first_name || '-'}</td>td>
-                <td style={{ padding: '10px', color: '#888' }}>@{u.telegram_id || '-'}</td>td>
+                <td style={{ padding: '10px', color: '#fff' }}>{u.nickname || u.telegram_first_name || '-'}</td>
+                <td style={{ padding: '10px', color: '#888' }}>@{u.telegram_id || '-'}</td>
                 <td style={{ padding: '10px' }}>
                           <select
                                       value={role}
                                       onChange={e => setRole(e.target.value)}
                                       style={{ background: '#222', color: ROLE_COLORS[role] || '#fff', border: '1px solid #444', padding: '4px 8px', borderRadius: '4px', fontWeight: 'bold' }}
                                     >
-                                    <option value="user">일반 유저</option>option>
-                                    <option value="moderator">커뮤니티 관리자</option>option>
-                                    <option value="admin">관리자</option>option>
-                          </select>select>
-                </td>td>
+                                    <option value="user">일반 유저</option>
+                                    <option value="moderator">커뮤니티 관리자</option>
+                                    <option value="admin">관리자</option>
+                          </select>
+                </td>
               <td style={{ padding: '10px' }}>
                       <select
                                   value={level}
@@ -554,11 +554,11 @@ function MemberRow({ u, onSave, saving }) {
                                   style={{ background: '#222', color: '#d4af37', border: '1px solid #444', padding: '4px 8px', borderRadius: '4px' }}
                                 >
                         {LEVEL_OPTIONS.map(lv => (
-                                              <option key={lv} value={lv}>{lv}</option>option>
+                                              <option key={lv} value={lv}>{lv}</option>
                                             ))}
-                      </select>select>
-              </td>td>
-              <td style={{ padding: '10px', color: '#666', fontSize: '13px' }}>{joinDate}</td>td>
+                      </select>
+              </td>
+              <td style={{ padding: '10px', color: '#666', fontSize: '13px' }}>{joinDate}</td>
               <td style={{ padding: '10px' }}>
                       <button
                                   onClick={handleSave}
@@ -566,8 +566,8 @@ function MemberRow({ u, onSave, saving }) {
                                   style={{ background: saving ? '#555' : '#d4af37', color: saving ? '#aaa' : '#000', border: 'none', padding: '6px 14px', borderRadius: '6px', fontWeight: 'bold', cursor: saving ? 'not-allowed' : 'pointer', fontSize: '13px' }}
                                 >
                         {saving ? '저장중...' : '💾 저장'}
-                      </button>button>
-              </td>td>
-        </tr>tr>
+                      </button>
+              </td>
+        </tr>
       )
 }
