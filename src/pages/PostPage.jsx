@@ -113,68 +113,68 @@ export default function PostPage() {
           setReporting(false)
   }
 
-  if (loading) return <div className="loading-page">로딩 중...</div>div>
-        if (!post || post.deleted) return <div className="loading-page">게시글을 찾을 수 없습니다.</div>div>
+  if (loading) return <div className="loading-page">로딩 중...</div>
+        if (!post || post.deleted) return <div className="loading-page">게시글을 찾을 수 없습니다.</div>
       
         const commentPoint = Number(settings.comment_point || 2)
       
         return (
                 <div className="post-page">
                       <div className="container">
-                              <button className="btn-back" onClick={() => navigate(-1)}>← 목록으로</button>button>
+                              <button className="btn-back" onClick={() => navigate(-1)}>← 목록으로</button>
                               <div className="post-detail card">
-                                        <h1 className="post-detail-title">{post.title}</h1>h1>
+                                        <h1 className="post-detail-title">{post.title}</h1>
                                         <div className="post-detail-meta">
-                                                    <span>👤 {post.users?.nickname || '익명'}</span>span>
-                                                    <span>👁 {post.views || 0}</span>span>
-                                                    <span>{new Date(post.created_at).toLocaleString('ko')}</span>span>
-                                        </div>div>
-                                        <div className="gold-divider"></div>div>
+                                                    <span>👤 {post.users?.nickname || '익명'}</span>
+                                                    <span>👁 {post.views || 0}</span>
+                                                    <span>{new Date(post.created_at).toLocaleString('ko')}</span>
+                                        </div>
+                                        <div className="gold-divider"></div>
                                   {post.image_url && (
                                 <img src={post.image_url} alt={post.title}
                                                   style={{ maxWidth:'100%', borderRadius:'8px', marginBottom:'16px', objectFit:'cover' }} />
                               )}
-                                        <div className="post-detail-content">{post.content}</div>div>
+                                        <div className="post-detail-content">{post.content}</div>
                                         <div style={{ marginTop:'16px', display:'flex', gap:'8px', justifyContent:'flex-end' }}>
                                             {user && user.id === post.user_id && (
                                   <button onClick={deletePost}
                                                       style={{ background:'#2a1010', color:'#ff4444', border:'1px solid #ff444433', borderRadius:'6px', padding:'6px 16px', cursor:'pointer', fontSize:'13px' }}>
                                                   🗑 삭제
-                                  </button>button>
+                                  </button>
                                                     )}
                                             {user && user.id !== post.user_id && (
                                   <button onClick={() => openReportModal('post', id)}
                                                       style={{ background:'#2a1a10', color:'#ff8c00', border:'1px solid #ff8c0033', borderRadius:'6px', padding:'6px 16px', cursor:'pointer', fontSize:'13px' }}>
                                                   🚨 신고
-                                  </button>button>
+                                  </button>
                                                     )}
-                                        </div>div>
-                              </div>div>
+                                        </div>
+                              </div>
                       
                               <div className="comments-section">
-                                        <h3 className="comments-title">💬 댓글 {comments.length}개</h3>h3>
+                                        <h3 className="comments-title">💬 댓글 {comments.length}개</h3>
                                   {comments.map(c => (
                                 <div key={c.id} className="comment-item card">
                                               <div className="comment-header">
-                                                              <span className="comment-author">👤 {c.users?.nickname || '익명'}</span>span>
-                                                              <span className="comment-date">{new Date(c.created_at).toLocaleString('ko')}</span>span>
+                                                              <span className="comment-author">👤 {c.users?.nickname || '익명'}</span>
+                                                              <span className="comment-date">{new Date(c.created_at).toLocaleString('ko')}</span>
                                                               <div style={{ marginLeft:'auto', display:'flex', gap:'6px' }}>
                                                                   {user && user.id !== c.user_id && (
                                                         <button onClick={() => openReportModal('comment', c.id)}
                                                                                   style={{ background:'none', color:'#ff8c00', border:'none', cursor:'pointer', fontSize:'11px' }}>
                                                                               신고
-                                                        </button>button>
+                                                        </button>
                                                                                 )}
                                                                   {user && (user.id === c.user_id || user.role === 'admin') && (
                                                         <button onClick={() => deleteComment(c.id, c.user_id)}
                                                                                   style={{ background:'none', color:'#666', border:'none', cursor:'pointer', fontSize:'12px' }}>
                                                                               삭제
-                                                        </button>button>
+                                                        </button>
                                                                                 )}
-                                                              </div>div>
-                                              </div>div>
-                                              <p className="comment-content">{c.content}</p>p>
-                                </div>div>
+                                                              </div>
+                                              </div>
+                                              <p className="comment-content">{c.content}</p>
+                                </div>
                               ))}
                                   {user ? (
                                 <div className="comment-form">
@@ -183,13 +183,13 @@ export default function PostPage() {
                                                                   rows={3} style={{ width:'100%', resize:'vertical' }} />
                                               <button className="btn-gold" onClick={submitComment} disabled={submittingComment} style={{ marginTop:'8px' }}>
                                                   {submittingComment ? '등록 중...' : '댓글 등록'}
-                                              </button>button>
-                                </div>div>
+                                              </button>
+                                </div>
                               ) : (
-                                <p className="login-required">댓글을 작성하려면 텔레그램 로그인이 필요합니다.</p>p>
+                                <p className="login-required">댓글을 작성하려면 텔레그램 로그인이 필요합니다.</p>
                                         )}
-                              </div>div>
-                      </div>div>
+                              </div>
+                      </div>
                 
                     {/* 신고 모달 */}
                     {reportModal && (
@@ -197,24 +197,24 @@ export default function PostPage() {
                                           onClick={() => setReportModal(null)}>
                                       <div style={{ background:'#1a1a1a', border:'1px solid #d4af37', borderRadius:'16px', padding:'24px', maxWidth:'400px', width:'100%' }}
                                                       onClick={e => e.stopPropagation()}>
-                                                  <h3 style={{ color:'#d4af37', marginBottom:'16px' }}>🚨 신고하기</h3>h3>
+                                                  <h3 style={{ color:'#d4af37', marginBottom:'16px' }}>🚨 신고하기</h3>
                                                   <p style={{ color:'#888', fontSize:'13px', marginBottom:'12px' }}>
                                                       {reportModal.type === 'post' ? '게시글' : '댓글'} 신고 사유를 입력해주세요.
-                                                  </p>p>
+                                                  </p>
                                                   <textarea value={reportReason} onChange={e => setReportReason(e.target.value)}
                                                                     placeholder="신고 사유 (예: 광고, 욕설, 음란물 등)"
                                                                     rows={4} style={{ width:'100%', padding:'10px', background:'#222', color:'#fff', border:'1px solid #444', borderRadius:'8px', resize:'none', boxSizing:'border-box', marginBottom:'12px' }} />
                                                   <div style={{ display:'flex', gap:'8px', justifyContent:'flex-end' }}>
                                                                 <button onClick={() => setReportModal(null)}
-                                                                                    style={{ background:'#333', color:'#888', border:'1px solid #444', borderRadius:'6px', padding:'8px 16px', cursor:'pointer' }}>취소</button>button>
+                                                                                    style={{ background:'#333', color:'#888', border:'1px solid #444', borderRadius:'6px', padding:'8px 16px', cursor:'pointer' }}>취소</button>
                                                                 <button onClick={handleReport} disabled={reporting}
                                                                                     style={{ background:'#ff4444', color:'#fff', border:'none', borderRadius:'6px', padding:'8px 20px', cursor:'pointer', fontWeight:'bold' }}>
                                                                     {reporting ? '접수 중...' : '신고 접수'}
-                                                                </button>button>
-                                                  </div>div>
-                                      </div>div>
-                            </div>div>
+                                                                </button>
+                                                  </div>
+                                      </div>
+                            </div>
                       )}
-                </div>div>
+                </div>
               )
 }</div>
