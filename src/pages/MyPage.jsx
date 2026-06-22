@@ -152,7 +152,7 @@ export default function MyPage() {
                                                         {nextFloor ? '다음 레벨까지 ' + (nextFloor - userExp).toLocaleString() + ' EXP' : '최대 레벨 달성!'}
                                                       </div>
                                           </div>
-                                          <Link to="/attendance" className="mypage-att-btn">📅 출석체크 하러가기</Link>Link>
+                                          <Link to="/attendance" className="mypage-att-btn">📅 출석체크 하러가기</Link>
                                 </div>
                         
                           {/* 등급 안내 */}
@@ -188,7 +188,7 @@ export default function MyPage() {
                                           <h3 className="card-title">📝 내 게시글</h3>
                                   {myPosts.length === 0 ? <p className="empty-text">작성한 게시글이 없습니다.</p> : myPosts.map(p => (
                                             <div key={p.id} className="post-item">
-                                                          <Link to={'/post/' + p.id} className="post-title">{p.title}</Link>Link>
+                                                          <Link to={'/post/' + p.id} className="post-title">{p.title}</Link>
                                                           <span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span>
                                             </div>
                                           ))}
