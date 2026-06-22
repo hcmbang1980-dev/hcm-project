@@ -74,47 +74,47 @@ export default function BoardPage() {
               <div className="container">
                       <div className="board-header-bar">
                                 <h1 className="page-title">
-                                            <span className="gold-text">{BOARD_NAMES[type] || '게시판'}</span>span>
-                                </h1>h1>
+                                            <span className="gold-text">{BOARD_NAMES[type] || '게시판'}</span>
+                                </h1>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                            <span style={{ color: '#888', fontSize: '13px' }}>총 {totalCount.toLocaleString()}개</span>span>
+                                            <span style={{ color: '#888', fontSize: '13px' }}>총 {totalCount.toLocaleString()}개</span>
                                   {canWrite && (
                         <button className="btn-gold" onClick={() => navigate('/write/' + type)}>
                                         ✏️ 글쓰기
-                        </button>button>
+                        </button>
                                             )}
-                                </div>div>
-                      </div>div>
-                      <div className="gold-divider"></div>div>
+                                </div>
+                      </div>
+                      <div className="gold-divider"></div>
               
                 {isGallery ? (
                     <div className="post-gallery">
                       {loading ? (
-                                    <div className="loading">로딩 중...</div>div>
+                                    <div className="loading">로딩 중...</div>
                                   ) : posts.length === 0 ? (
-                                    <div className="empty">등록된 게시글이 없습니다.</div>div>
+                                    <div className="empty">등록된 게시글이 없습니다.</div>
                                   ) : posts.map(post => (
                                     <Link to={'/post/' + post.id} key={post.id} className="gallery-card">
                                       {post.image_url ? (
                                                         <img src={post.image_url} alt={post.title} className="gallery-img" />
                                                       ) : (
-                                                        <div className="gallery-img-placeholder">📷</div>div>
+                                                        <div className="gallery-img-placeholder">📷</div>
                                                     )}
                                                     <div className="gallery-card-info">
-                                                                      <span className="gallery-card-title">{post.title}</span>span>
+                                                                      <span className="gallery-card-title">{post.title}</span>
                                                                       <span style={{ fontSize: '11px', color: '#888' }}>
                                                                                           💬 {post.commentCount} · 👁 {post.views || 0}
-                                                                      </span>span>
-                                                    </div>div>
+                                                                      </span>
+                                                    </div>
                                     </Link>Link>
                                   ))}
-                    </div>div>
+                    </div>
                   ) : (
                     <div className="post-list">
                       {loading ? (
-                                    <div className="loading">로딩 중...</div>div>
+                                    <div className="loading">로딩 중...</div>
                                   ) : posts.length === 0 ? (
-                                    <div className="empty">등록된 게시글이 없습니다.</div>div>
+                                    <div className="empty">등록된 게시글이 없습니다.</div>
                                   ) : posts.map(post => (
                                     <Link to={'/post/' + post.id} key={post.id} className="post-row">
                                                     <div className="post-row-main">
@@ -123,30 +123,30 @@ export default function BoardPage() {
                                                                         {post.commentCount > 0 && (
                                                             <span style={{ color: '#d4af37', fontSize: '12px', marginLeft: '6px' }}>
                                                                                     [{post.commentCount}]
-                                                            </span>span>
+                                                            </span>
                                                                                           )}
-                                                                      </span>span>
+                                                                      </span>
                                                                       <div className="post-row-meta">
-                                                                                          <span>👤 {post.users?.nickname || '익명'}</span>span>
-                                                                                          <span>👁 {post.views || 0}</span>span>
-                                                                                          <span>{new Date(post.created_at).toLocaleDateString('ko')}</span>span>
-                                                                      </div>div>
-                                                    </div>div>
+                                                                                          <span>👤 {post.users?.nickname || '익명'}</span>
+                                                                                          <span>👁 {post.views || 0}</span>
+                                                                                          <span>{new Date(post.created_at).toLocaleDateString('ko')}</span>
+                                                                      </div>
+                                                    </div>
                                     </Link>Link>
                                   ))}
-                    </div>div>
+                    </div>
                       )}
               
                       <div className="pagination">
                         {page > 1 && (
-                      <button onClick={() => setPage(p => p - 1)} className="page-btn">← 이전</button>button>
+                      <button onClick={() => setPage(p => p - 1)} className="page-btn">← 이전</button>
                                 )}
-                                <span className="page-num">{page} / {totalPages || 1}</span>span>
+                                <span className="page-num">{page} / {totalPages || 1}</span>
                         {page < totalPages && (
-                      <button onClick={() => setPage(p => p + 1)} className="page-btn">다음 →</button>button>
+                      <button onClick={() => setPage(p => p + 1)} className="page-btn">다음 →</button>
                                 )}
-                      </div>div>
-              </div>div>
-        </div>div>
+                      </div>
+              </div>
+        </div>
       )
 }</div>
