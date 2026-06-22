@@ -68,12 +68,12 @@ export default function Header() {
   const tgModal = !user && showTgLogin ? createPortal(
         <div className="tg-login-overlay" onClick={handleCloseModal}>
                 <div className="tg-login-popup" onClick={e => e.stopPropagation()}>
-                          <h2 className="gold-text">텔레그램으로 로그인</h2>h2>
-                        <p>텔레그램 계정으로 간편하게 로그인하세요</p>p>
-                        <div ref={widgetRef} style={{ margin:'16px 0', minHeight:'60px', display:'flex', justifyContent:'center', alignItems:'center' }}></div>div>
-                        <button className="btn-close" onClick={handleCloseModal}>닫기</button>button>
-                </div>div>
-        </div>div>,
+                          <h2 className="gold-text">텔레그램으로 로그인</h2>
+                        <p>텔레그램 계정으로 간편하게 로그인하세요</p>
+                        <div ref={widgetRef} style={{ margin:'16px 0', minHeight:'60px', display:'flex', justifyContent:'center', alignItems:'center' }}></div>
+                        <button className="btn-close" onClick={handleCloseModal}>닫기</button>
+                </div>
+        </div>,
         document.body
       ) : null
     
@@ -84,21 +84,21 @@ export default function Header() {
                       <header className="header">
                               <div className="header-inner">
                                         <Link to="/" className="logo">
-                                                    <span className="logo-icon">🔥</span>span>
-                                                    <span className="logo-text">호치민방앗간</span>span>
+                                                    <span className="logo-icon">🔥</span>
+                                                    <span className="logo-text">호치민방앗간</span>
                                         </Link>Link>
                               
                                         <nav className="nav-desktop">
                                                     <div className="nav-dropdown">
-                                                                  <button className="nav-btn">호치민 방앗간 ▾</button>button>
+                                                                  <button className="nav-btn">호치민 방앗간 ▾</button>
                                                                   <div className="dropdown-menu">
                                                                                   <Link to="/notice">공지사항</Link>Link>
                                                                                   <Link to="/event">방앗간 이벤트</Link>Link>
                                                                                   <Link to="/intro">가입인사</Link>Link>
-                                                                  </div>div>
-                                                    </div>div>
+                                                                  </div>
+                                                    </div>
                                                     <div className="nav-dropdown">
-                                                                  <button className="nav-btn">추천업소 ▾</button>button>
+                                                                  <button className="nav-btn">추천업소 ▾</button>
                                                                   <div className="dropdown-menu">
                                                                                   <Link to="/places/karaoke">한가라 & 로컬 가라오케</Link>Link>
                                                                                   <Link to="/places/club">클럽 & 바</Link>Link>
@@ -107,22 +107,22 @@ export default function Header() {
                                                                                   <Link to="/places/villa">풀빌라 & 에어비앤비</Link>Link>
                                                                                   <Link to="/places/rent">렌트카 & 운전기사</Link>Link>
                                                                                   <Link to="/places/restaurant">맛집</Link>Link>
-                                                                  </div>div>
-                                                    </div>div>
+                                                                  </div>
+                                                    </div>
                                                     <div className="nav-dropdown">
-                                                                  <button className="nav-btn">게시판 ▾</button>button>
+                                                                  <button className="nav-btn">게시판 ▾</button>
                                                                   <div className="dropdown-menu">
                                                                                   <Link to="/board/free">자유게시판</Link>Link>
                                                                                   <Link to="/board/review">후기게시판</Link>Link>
                                                                                   <Link to="/board/qna">질문답변</Link>Link>
                                                                                   <Link to="/board/gallery">👁 안구정화 게시판</Link>Link>
-                                                                  </div>div>
-                                                    </div>div>
-                                                    <a href="https://t.me/bangasgan" target="_blank" rel="noopener noreferrer" className="nav-btn nav-tg">제휴문의 ↗</a>a>
+                                                                  </div>
+                                                    </div>
+                                                    <a href="https://t.me/bangasgan" target="_blank" rel="noopener noreferrer" className="nav-btn nav-tg">제휴문의 ↗</a>
                                           {user && user.role === 'admin' && (
                                 <Link to="/admin" className="nav-btn nav-admin">관리자</Link>Link>
                                                     )}
-                                        </nav>nav>
+                                        </nav>
                               
                                         <div className="header-right">
                                           {user ? (
@@ -144,9 +144,9 @@ export default function Header() {
                                                                                                                                         fontWeight:'bold',
                                                                                                                 }}>
                                                                                                                 {unreadCount > 9 ? '9+' : unreadCount}
-                                                                                                                </span>span>
+                                                                                                                </span>
                                                                                       )}
-                                                                  </button>button>
+                                                                  </button>
                                                   {notifOpen && (
                                                       <div style={{
                                                                               position:'absolute', right:0, top:'calc(100% + 8px)',
@@ -155,16 +155,16 @@ export default function Header() {
                                                                               overflow:'auto', zIndex:1000, boxShadow:'0 8px 32px rgba(0,0,0,0.6)',
                                                       }}>
                                                                             <div style={{ padding:'12px 16px', borderBottom:'1px solid #333', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                                                                                                    <span style={{ color:'#d4af37', fontWeight:'bold', fontSize:'14px' }}>알림</span>span>
+                                                                                                    <span style={{ color:'#d4af37', fontWeight:'bold', fontSize:'14px' }}>알림</span>
                                                                               {unreadCount > 0 && (
                                                                                   <button onClick={markAllAsRead}
                                                                                                                 style={{ background:'none', border:'none', color:'#888', fontSize:'12px', cursor:'pointer' }}>
                                                                                                               전체 읽음
-                                                                                    </button>button>
+                                                                                    </button>
                                                                                                     )}
-                                                                            </div>div>
+                                                                            </div>
                                                         {notifications.length === 0 ? (
-                                                                                <div style={{ padding:'24px', textAlign:'center', color:'#666', fontSize:'13px' }}>알림이 없습니다.</div>div>
+                                                                                <div style={{ padding:'24px', textAlign:'center', color:'#666', fontSize:'13px' }}>알림이 없습니다.</div>
                                                                               ) : notifications.map(n => (
                                                                                 <div key={n.id}
                                                                                                             onClick={() => markAsRead(n.id)}
@@ -175,49 +175,49 @@ export default function Header() {
                                                                                                               }}>
                                                                                                           <div style={{ color: n.is_read ? '#888' : '#fff', fontSize:'13px', fontWeight: n.is_read ? 'normal' : 'bold', marginBottom:'2px' }}>
                                                                                                             {n.title}
-                                                                                                            </div>div>
-                                                                                                          <div style={{ color:'#666', fontSize:'12px' }}>{n.message}</div>div>
+                                                                                                            </div>
+                                                                                                          <div style={{ color:'#666', fontSize:'12px' }}>{n.message}</div>
                                                                                                           <div style={{ color:'#555', fontSize:'11px', marginTop:'4px' }}>
                                                                                                             {new Date(n.created_at).toLocaleString('ko-KR')}
-                                                                                                            </div>div>
-                                                                                  </div>div>
+                                                                                                            </div>
+                                                                                  </div>
                                                                               ))}
-                                                      </div>div>
+                                                      </div>
                                                                   )}
-                                                </div>div>
+                                                </div>
                                 
                                   {/* 유저 드롭다운 */}
                                                 <div className="user-info" ref={dropRef}>
                                                                   <button className="user-info-btn" onClick={() => setUserDropOpen(v => !v)} title="내 정보">
                                                                     {user.telegram_photo
                                                                                             ? <img src={user.telegram_photo} alt="" className="user-avatar" />
-                                                                                            : <span className="user-avatar-default">👤</span>span>
+                                                                                            : <span className="user-avatar-default">👤</span>
                                                                     }
                                                                                       <div className="user-details">
-                                                                                                            <span className="user-name">{user.nickname}</span>span>
+                                                                                                            <span className="user-name">{user.nickname}</span>
                                                                                                             <span className="user-level" style={{ color:'#d4af37' }}>
                                                                                                               {grade ? grade.icon + ' ' + grade.grade : '🌱 새싹'}
-                                                                                                              </span>span>
-                                                                                        </div>div>
-                                                                                      <span className="user-drop-arrow">{userDropOpen ? '▲' : '▼'}</span>span>
-                                                                  </button>button>
+                                                                                                              </span>
+                                                                                        </div>
+                                                                                      <span className="user-drop-arrow">{userDropOpen ? '▲' : '▼'}</span>
+                                                                  </button>
                                                   {userDropOpen && (
                                                       <div className="user-dropdown">
                                                                             <Link to="/mypage" className="user-drop-item" onClick={() => setUserDropOpen(false)}>👤 내 정보</Link>Link>
                                                                             <Link to="/attendance" className="user-drop-item" onClick={() => setUserDropOpen(false)}>📅 출석체크</Link>Link>
-                                                                            <button className="user-drop-item" onClick={handleSwitchAccount}>🔄 계정 변경</button>button>
-                                                                            <button className="user-drop-item user-drop-logout" onClick={handleLogout}>🚪 로그아웃</button>button>
-                                                      </div>div>
+                                                                            <button className="user-drop-item" onClick={handleSwitchAccount}>🔄 계정 변경</button>
+                                                                            <button className="user-drop-item user-drop-logout" onClick={handleLogout}>🚪 로그아웃</button>
+                                                      </div>
                                                                   )}
-                                                </div>div>
-                                </div>div>
+                                                </div>
+                                </div>
                               ) : (
-                                <button className="btn-tg-login" onClick={handleLoginClick}>텔레그램 로그인</button>button>
+                                <button className="btn-tg-login" onClick={handleLoginClick}>텔레그램 로그인</button>
                                                     )}
-                                        </div>div>
+                                        </div>
                               
-                                        <button className="hamburger" onClick={() => setMenuOpen(v => !v)}>☰</button>button>
-                              </div>div>
+                                        <button className="hamburger" onClick={() => setMenuOpen(v => !v)}>☰</button>
+                              </div>
                       
                         {menuOpen && (
                             <nav className="nav-mobile">
@@ -234,9 +234,9 @@ export default function Header() {
                                                             <Link to="/mypage" onClick={() => setMenuOpen(false)}>👤 마이페이지</Link>Link>
                                             </>>
                                           )}
-                            </nav>nav>
+                            </nav>
                               )}
-                      </header>header>
+                      </header>
                   {tgModal}
                 </>>
               )
