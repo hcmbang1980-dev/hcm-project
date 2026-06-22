@@ -175,7 +175,7 @@ const getChatStyle = () => {
                                 </div>
                         </section>
                       ),
-                stats: settings.stats_visible !== 'false' && <div key="stats">{renderStats()}</div>,
+                stats: settings.stats_visible !== 'false' && <div key="stats">{renderStats()},
                 notice: settings.notice_visible !== 'false' && (
                         <section key="notice" className="places-section">
                                 <div className="places-grid">
