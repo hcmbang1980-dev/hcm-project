@@ -137,14 +137,15 @@ export default function HomePage() {
   }
 
   // settings에서 채팅 스타일 계산
-  const getChatStyle = () => {
-        const pos = settings.chat_position || 'bottom-right'
-        const base = { position: 'fixed', zIndex: 1000 }
-        if (pos === 'bottom-left') return { ...base, bottom: Number(settings.chat_bottom||20), left: Number(settings.chat_right||20) }
-        if (pos === 'top-right') return { ...base, top: 80, right: Number(settings.chat_right||20) }
-        if (pos === 'top-left') return { ...base, top: 80, left: Number(settings.chat_right||20) }
-        return { ...base, bottom: Number(settings.chat_bottom||20), right: Number(settings.chat_right||20) }
-  }
+const getChatStyle = () => {
+      const pos = settings.chat_position || 'inline'
+      if (pos === 'inline') return { position: 'relative', width: '100%' }
+      const base = { position: 'fixed', zIndex: 1000 }
+      if (pos === 'bottom-left') return { ...base, bottom: Number(settings.chat_bottom||20), left: Number(settings.chat_right||20) }
+      if (pos === 'top-right') return { ...base, top: 80, right: Number(settings.chat_right||20) }
+      if (pos === 'top-left') return { ...base, top: 80, left: Number(settings.chat_right||20) }
+      return { ...base, bottom: Number(settings.chat_bottom||20), right: Number(settings.chat_right||20) }
+}
 
   const renderStats = () => (
         <div className="stats-bar">
@@ -228,10 +229,10 @@ export default function HomePage() {
                       {settings.popup_enabled !== 'false' && <PopupModal />}
                       {sectionOrder.map(key => sectionMap[key] || null)}
                       {settings.chat_enabled !== 'false' && (
-                              <div style={{ ...getChatStyle(), width: Number(settings.chat_width||380), height: Number(settings.chat_height||500) }}>
-                                        <ChatRoom />
-                              </div>div>
-                          )}
+                                <div style={getChatStyle()}>
+                                              <ChatRoom />
+                                </div>div>
+                              )}
                     </div>div>
                   )
 }</div>
