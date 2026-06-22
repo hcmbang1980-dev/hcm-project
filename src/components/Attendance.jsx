@@ -100,43 +100,43 @@ export default function Attendance() {
   const { current, needed, pct } = calcExpForNextLevel(levelData.exp)
 
   if (!user) return null
-    if (loading) return <div className="att-loading">로딩 중...</div>div>
+    if (loading) return <div className="att-loading">로딩 중...</div>
       
         const expPerCheck = Number(settings.attendance_point || 10)
       
         return (
               <div className="attendance-card">
                     <div className="att-header">
-                            <span className="att-title">📅 출석체크</span>span>
+                            <span className="att-title">📅 출석체크</span>
                             <LevelBadge exp={levelData.exp} size="sm" />
-                    </div>div>
+                    </div>
                     <div className="att-exp-section">
                             <div className="att-exp-label">
-                                      <span>경험치 {levelData.exp} EXP</span>span>
-                              {levelData.level < 150 && <span className="att-next">다음 레벨까지 {needed - current} EXP</span>span>}
-                            </div>div>
+                                      <span>경험치 {levelData.exp} EXP</span>
+                              {levelData.level < 150 && <span className="att-next">다음 레벨까지 {needed - current} EXP</span>}
+                            </div>
                             <div className="att-bar-track">
                                       <div className="att-bar-fill" style={{ width: pct + '%' }} />
-                            </div>div>
-                    </div>div>
+                            </div>
+                    </div>
                     <div className="att-stats">
                             <div className="att-stat-item">
-                                      <span className="att-stat-num">{streak}</span>span>
-                                      <span className="att-stat-label">연속 출석</span>span>
-                            </div>div>
+                                      <span className="att-stat-num">{streak}</span>
+                                      <span className="att-stat-label">연속 출석</span>
+                            </div>
                             <div className="att-stat-item">
-                                      <span className="att-stat-num">Lv.{levelData.level}</span>span>
-                                      <span className="att-stat-label">현재 레벨</span>span>
-                            </div>div>
-                    </div>div>
+                                      <span className="att-stat-num">Lv.{levelData.level}</span>
+                                      <span className="att-stat-label">현재 레벨</span>
+                            </div>
+                    </div>
                     <button
                               className={'att-btn' + (todayChecked ? ' checked' : '')}
                               onClick={doCheck}
                               disabled={todayChecked || checking}
                             >
                       {todayChecked ? '✅ 오늘 출석 완료' : checking ? '처리 중...' : `🗓️ 출석체크 (+${expPerCheck} EXP)`}
-                    </button>button>
-                {flashMsg && <div className="att-flash">{flashMsg}</div>div>}
-              </div>div>
+                    </button>
+                {flashMsg && <div className="att-flash">{flashMsg}</div>}
+              </div>
             )
 }</div>
