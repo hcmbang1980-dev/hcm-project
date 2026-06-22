@@ -83,32 +83,32 @@ export default function PopupModal() {
                                     {popup.link_url ? (
                                                   <a href={popup.link_url} target="_blank" rel="noopener noreferrer">
                                                                   <img src={imgUrl} alt={popup.title} style={{ width:'100%', objectFit:'cover', display:'block' }} />
-                                                  </a>a>
+                                                  </a>
                                                 ) : (
                                                   <img src={imgUrl} alt={popup.title} style={{ width:'100%', objectFit:'cover', display:'block' }} />
                                                 )}
-                                  </div>div>
+                                  </div>
                       )}
               
                 {/* 내용 */}
                       <div style={{ padding:'20px' }}>
-                        {popup.title && <h2 style={{ color:'#d4af37', fontSize:'18px', fontWeight:'bold', marginBottom:'8px' }}>{popup.title}</h2>h2>}
+                        {popup.title && <h2 style={{ color:'#d4af37', fontSize:'18px', fontWeight:'bold', marginBottom:'8px' }}>{popup.title}</h2>}
                         {popup.link_url && (
                                     <a href={popup.link_url} target="_blank" rel="noopener noreferrer"
                                                     style={{ display:'inline-block', background:'#d4af37', color:'#000', padding:'8px 20px', borderRadius:'8px', fontWeight:'bold', textDecoration:'none', fontSize:'14px', marginBottom:'12px' }}>
                                                   자세히 보기 →
-                                    </a>a>
+                                    </a>
                                 )}
                       
                         {/* 여러 팝업 네비게이션 */}
                         {popups.length > 1 && (
                                     <div style={{ display:'flex', alignItems:'center', gap:'8px', marginBottom:'12px' }}>
                                                   <button onClick={() => setCurrent(p => Math.max(0, p-1))} disabled={current === 0}
-                                                                    style={{ background:'#333', color:'#fff', border:'none', borderRadius:'6px', padding:'4px 12px', cursor:'pointer', opacity:current===0?0.4:1 }}>‹</button>button>
-                                                  <span style={{ color:'#888', fontSize:'13px' }}>{current + 1} / {popups.length}</span>span>
+                                                                    style={{ background:'#333', color:'#fff', border:'none', borderRadius:'6px', padding:'4px 12px', cursor:'pointer', opacity:current===0?0.4:1 }}>‹</button>
+                                                  <span style={{ color:'#888', fontSize:'13px' }}>{current + 1} / {popups.length}</span>
                                                   <button onClick={() => setCurrent(p => Math.min(popups.length-1, p+1))} disabled={current === popups.length-1}
-                                                                    style={{ background:'#333', color:'#fff', border:'none', borderRadius:'6px', padding:'4px 12px', cursor:'pointer', opacity:current===popups.length-1?0.4:1 }}>›</button>button>
-                                    </div>div>
+                                                                    style={{ background:'#333', color:'#fff', border:'none', borderRadius:'6px', padding:'4px 12px', cursor:'pointer', opacity:current===popups.length-1?0.4:1 }}>›</button>
+                                    </div>
                                 )}
                       
                         {/* 닫기 버튼 */}
@@ -116,20 +116,20 @@ export default function PopupModal() {
                                             <button onClick={() => closePopup(24)}
                                                             style={{ background:'transparent', color:'#888', border:'1px solid #444', borderRadius:'6px', padding:'7px 14px', cursor:'pointer', fontSize:'12px' }}>
                                                           오늘 하루 안보기
-                                            </button>button>
+                                            </button>
                                   {popup.close_hours > 24 && (
                                       <button onClick={() => closePopup(popup.close_hours)}
                                                         style={{ background:'transparent', color:'#888', border:'1px solid #444', borderRadius:'6px', padding:'7px 14px', cursor:'pointer', fontSize:'12px' }}>
                                         {popup.close_hours}시간 안보기
-                                      </button>button>
+                                      </button>
                                             )}
                                             <button onClick={() => setVisible(false)}
                                                             style={{ background:'#333', color:'#fff', border:'none', borderRadius:'6px', padding:'7px 14px', cursor:'pointer', fontSize:'12px' }}>
                                                           닫기
-                                            </button>button>
-                                </div>div>
-                      </div>div>
-              </div>div>
-        </div>div>
+                                            </button>
+                                </div>
+                      </div>
+              </div>
+        </div>
       )
 }</div>
