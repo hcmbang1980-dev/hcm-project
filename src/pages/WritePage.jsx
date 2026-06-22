@@ -35,9 +35,9 @@ export default function WritePage() {
   if (!user) {
         return (
                 <div style={{ paddingTop:'84px', textAlign:'center', padding:'80px 20px' }}>
-                          <p style={{ color:'#888', marginBottom:'20px' }}>글쓰기는 로그인이 필요합니다.</p>p>
-                          <button className="btn-gold" onClick={() => navigate(-1)}>돌아가기</button>button>
-                </div>div>
+                          <p style={{ color:'#888', marginBottom:'20px' }}>글쓰기는 로그인이 필요합니다.</p>
+                          <button className="btn-gold" onClick={() => navigate(-1)}>돌아가기</button>
+                </div>
               )
   }
 
@@ -87,8 +87,8 @@ export default function WritePage() {
         <div style={{ paddingTop:'84px', minHeight:'100vh' }}>
                 <div className="container" style={{ maxWidth:'800px', padding:'30px 20px' }}>
                           <h1 className="page-title" style={{ marginBottom:'24px' }}>
-                                      <span className="gold-text">{BOARD_NAMES[type]} 글쓰기</span>span>
-                          </h1>h1>
+                                      <span className="gold-text">{BOARD_NAMES[type]} 글쓰기</span>
+                          </h1>
                         <div className="card" style={{ padding:'24px', display:'flex', flexDirection:'column', gap:'16px' }}>
                                   <input
                                                 type="text"
@@ -110,7 +110,7 @@ export default function WritePage() {
                                         <img src={imageUrl} alt="preview" style={{ marginTop:'8px', maxWidth:'100%', maxHeight:'200px', borderRadius:'8px', objectFit:'cover' }}
                                                             onError={e => { e.target.style.display = 'none' }} />
                                       )}
-                      </div>div>
+                      </div>
                                   )}
                                   <textarea
                                                 placeholder={`내용을 입력하세요...${pointAmount > 0 ? ` (작성 시 +${pointAmount}P 지급)` : ''}`}
@@ -120,13 +120,13 @@ export default function WritePage() {
                                                 style={{ width:'100%', resize:'vertical', fontSize:'14px', lineHeight:'1.7' }}
                                               />
                                   <div style={{ display:'flex', gap:'12px', justifyContent:'flex-end' }}>
-                                              <button onClick={() => navigate(-1)} style={{ padding:'10px 20px', background:'none', border:'1px solid #333', borderRadius:'8px', color:'#888', cursor:'pointer' }}>취소</button>button>
+                                              <button onClick={() => navigate(-1)} style={{ padding:'10px 20px', background:'none', border:'1px solid #333', borderRadius:'8px', color:'#888', cursor:'pointer' }}>취소</button>
                                               <button className="btn-gold" onClick={handleSubmit} disabled={submitting}>
                                                 {submitting ? '등록 중...' : '게시글 등록'}
-                                              </button>button>
-                                  </div>div>
-                        </div>div>
-                </div>div>
-        </div>div>
+                                              </button>
+                                  </div>
+                        </div>
+                </div>
+        </div>
       )
 }</span>
