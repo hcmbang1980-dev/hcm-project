@@ -86,41 +86,41 @@ export default function Header() {
                                         <Link to="/" className="logo">
                                                     <span className="logo-icon">🔥</span>
                                                     <span className="logo-text">호치민방앗간</span>
-                                        </Link>Link>
+                                        </Link>
                               
                                         <nav className="nav-desktop">
                                                     <div className="nav-dropdown">
                                                                   <button className="nav-btn">호치민 방앗간 ▾</button>
                                                                   <div className="dropdown-menu">
-                                                                                  <Link to="/notice">공지사항</Link>Link>
-                                                                                  <Link to="/event">방앗간 이벤트</Link>Link>
-                                                                                  <Link to="/intro">가입인사</Link>Link>
+                                                                                  <Link to="/notice">공지사항</Link>
+                                                                                  <Link to="/event">방앗간 이벤트</Link>
+                                                                                  <Link to="/intro">가입인사</Link>
                                                                   </div>
                                                     </div>
                                                     <div className="nav-dropdown">
                                                                   <button className="nav-btn">추천업소 ▾</button>
                                                                   <div className="dropdown-menu">
-                                                                                  <Link to="/places/karaoke">한가라 & 로컬 가라오케</Link>Link>
-                                                                                  <Link to="/places/club">클럽 & 바</Link>Link>
-                                                                                  <Link to="/places/massage">건전마사지 & 이발소</Link>Link>
-                                                                                  <Link to="/places/adult-massage">불건전마사지</Link>Link>
-                                                                                  <Link to="/places/villa">풀빌라 & 에어비앤비</Link>Link>
-                                                                                  <Link to="/places/rent">렌트카 & 운전기사</Link>Link>
-                                                                                  <Link to="/places/restaurant">맛집</Link>Link>
+                                                                                  <Link to="/places/karaoke">한가라 & 로컬 가라오케</Link>
+                                                                                  <Link to="/places/club">클럽 & 바</Link>
+                                                                                  <Link to="/places/massage">건전마사지 & 이발소</Link>
+                                                                                  <Link to="/places/adult-massage">불건전마사지</Link>
+                                                                                  <Link to="/places/villa">풀빌라 & 에어비앤비</Link>
+                                                                                  <Link to="/places/rent">렌트카 & 운전기사</Link>
+                                                                                  <Link to="/places/restaurant">맛집</Link>
                                                                   </div>
                                                     </div>
                                                     <div className="nav-dropdown">
                                                                   <button className="nav-btn">게시판 ▾</button>
                                                                   <div className="dropdown-menu">
-                                                                                  <Link to="/board/free">자유게시판</Link>Link>
-                                                                                  <Link to="/board/review">후기게시판</Link>Link>
-                                                                                  <Link to="/board/qna">질문답변</Link>Link>
-                                                                                  <Link to="/board/gallery">👁 안구정화 게시판</Link>Link>
+                                                                                  <Link to="/board/free">자유게시판</Link>
+                                                                                  <Link to="/board/review">후기게시판</Link>
+                                                                                  <Link to="/board/qna">질문답변</Link>
+                                                                                  <Link to="/board/gallery">👁 안구정화 게시판</Link>
                                                                   </div>
                                                     </div>
                                                     <a href="https://t.me/bangasgan" target="_blank" rel="noopener noreferrer" className="nav-btn nav-tg">제휴문의 ↗</a>
                                           {user && user.role === 'admin' && (
-                                <Link to="/admin" className="nav-btn nav-admin">관리자</Link>Link>
+                                <Link to="/admin" className="nav-btn nav-admin">관리자</Link>
                                                     )}
                                         </nav>
                               
@@ -203,8 +203,8 @@ export default function Header() {
                                                                   </button>
                                                   {userDropOpen && (
                                                       <div className="user-dropdown">
-                                                                            <Link to="/mypage" className="user-drop-item" onClick={() => setUserDropOpen(false)}>👤 내 정보</Link>Link>
-                                                                            <Link to="/attendance" className="user-drop-item" onClick={() => setUserDropOpen(false)}>📅 출석체크</Link>Link>
+                                                                            <Link to="/mypage" className="user-drop-item" onClick={() => setUserDropOpen(false)}>👤 내 정보</Link>
+                                                                            <Link to="/attendance" className="user-drop-item" onClick={() => setUserDropOpen(false)}>📅 출석체크</Link>
                                                                             <button className="user-drop-item" onClick={handleSwitchAccount}>🔄 계정 변경</button>
                                                                             <button className="user-drop-item user-drop-logout" onClick={handleLogout}>🚪 로그아웃</button>
                                                       </div>
@@ -221,17 +221,17 @@ export default function Header() {
                       
                         {menuOpen && (
                             <nav className="nav-mobile">
-                                        <Link to="/" onClick={() => setMenuOpen(false)}>🏠 홈</Link>Link>
-                                        <Link to="/notice" onClick={() => setMenuOpen(false)}>📢 공지사항</Link>Link>
-                                        <Link to="/event" onClick={() => setMenuOpen(false)}>🎉 방앗간 이벤트</Link>Link>
-                                        <Link to="/board/free" onClick={() => setMenuOpen(false)}>💬 자유게시판</Link>Link>
-                                        <Link to="/board/review" onClick={() => setMenuOpen(false)}>📝 후기게시판</Link>Link>
-                                        <Link to="/board/qna" onClick={() => setMenuOpen(false)}>❓ 질문답변</Link>Link>
-                                        <Link to="/board/gallery" onClick={() => setMenuOpen(false)}>👁 안구정화 게시판</Link>Link>
+                                        <Link to="/" onClick={() => setMenuOpen(false)}>🏠 홈</Link>
+                                        <Link to="/notice" onClick={() => setMenuOpen(false)}>📢 공지사항</Link>
+                                        <Link to="/event" onClick={() => setMenuOpen(false)}>🎉 방앗간 이벤트</Link>
+                                        <Link to="/board/free" onClick={() => setMenuOpen(false)}>💬 자유게시판</Link>
+                                        <Link to="/board/review" onClick={() => setMenuOpen(false)}>📝 후기게시판</Link>
+                                        <Link to="/board/qna" onClick={() => setMenuOpen(false)}>❓ 질문답변</Link>
+                                        <Link to="/board/gallery" onClick={() => setMenuOpen(false)}>👁 안구정화 게시판</Link>
                               {user && (
                                             <>
-                                                            <Link to="/attendance" onClick={() => setMenuOpen(false)}>📅 출석체크</Link>Link>
-                                                            <Link to="/mypage" onClick={() => setMenuOpen(false)}>👤 마이페이지</Link>Link>
+                                                            <Link to="/attendance" onClick={() => setMenuOpen(false)}>📅 출석체크</Link>
+                                                            <Link to="/mypage" onClick={() => setMenuOpen(false)}>👤 마이페이지</Link>
                                             </>>
                                           )}
                             </nav>
