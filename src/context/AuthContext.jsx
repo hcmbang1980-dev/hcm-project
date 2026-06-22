@@ -166,7 +166,7 @@ export function AuthProvider({ children }) {
   return (
           <AuthContext.Provider value={{ user, loading, logout, handleTelegramLogin, refreshUser }}>
               {children}
-          </AuthContext.Provider>AuthContext.Provider>
+          </AuthContext.Provider>>
         )
 }
 
