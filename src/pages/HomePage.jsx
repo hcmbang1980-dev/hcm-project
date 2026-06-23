@@ -8,10 +8,10 @@ import PopupModal from '../components/PopupModal'
 import './HomePage.css'
 
 const PLACES = [
-  { icon: '🎤', name: '핫가라 & 트월 가라오케', path: '/places/karaoke', key: 'karaoke' },
+  { icon: '🎤', name: '한가라 & 로컬 가라오케', path: '/places/karaoke', key: 'karaoke' },
   { icon: '🍺', name: '클럽 & 바', path: '/places/club', key: 'club' },
-  { icon: '💆', name: '전견마사지 & 이발소', path: '/places/massage', key: 'massage' },
-  { icon: '💋', name: '전견마사지', path: '/places/adult-massage', key: 'adult' },
+  { icon: '💆', name: '건전마사지 & 이발소', path: '/places/massage', key: 'massage' },
+  { icon: '💋', name: '불건전마사지', path: '/places/adult-massage', key: 'adult' },
   { icon: '🏠', name: '풀빌라 & 에어비앤비', path: '/places/villa', key: 'villa' },
   { icon: '🚗', name: '렌트카 & 운전기사', path: '/places/rent', key: 'rent' },
   { icon: '🍜', name: '맛집', path: '/places/restaurant', key: 'food' },
@@ -166,10 +166,10 @@ const getChatStyle = () => {
                         <section key="hero" className={`hero hero-${settings.hero_layout || 'default'}`}>
                                 <div className="hero-bg"></div>
                                 <div className="hero-content">
-                                          <h1 className="hero-title"><span className="gold-text">호치민 동룡 커뮤니티</span><br />NO.1</h1>
-                                          <p className="hero-subtitle">실시간으로 만나는 호치민 발로뛰 핫링<br />지금 바로 [호치민발양관] 텔레그렇으로 회회가입!</p>
+                                          <h1 className="hero-title"><span className="gold-text">호치민 방앗간 커뮤니티</span><br />NO.1</h1>
+                                          <p className="hero-subtitle">실시간으로 만나는 호치민 방앗간 채팅<br />지금 바로 [호치민방앗] 텔레그램으로 회가입!</p>
                                           <div className="hero-buttons">
-                                                      <Link to="/login" className="btn-gold hero-btn">🔥 텔레그렇으로 회회가입</Link>
+                                                      <Link to="/login" className="btn-gold hero-btn">🔥 텔레그램으로 회원가입</Link>
                                                       <Link to="/board/free" className="hero-btn-outline">🔥 커뮤니티 보기</Link>
                                           </div>
                                 </div>
