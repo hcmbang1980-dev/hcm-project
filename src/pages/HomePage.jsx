@@ -235,6 +235,4 @@ const getChatStyle = () => {
                               )}
                     </div>
                   )
-</div>
-  </div>
 }
