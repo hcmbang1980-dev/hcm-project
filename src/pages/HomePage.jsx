@@ -166,7 +166,7 @@ const getChatStyle = () => {
                         <section key="hero" className={`hero hero-${settings.hero_layout || 'default'}`}>
                                 <div className="hero-bg"></div>
                                 <div className="hero-content">
-                                          <h1 className="hero-title"><span className="gold-text">호치민 방앗간</span><br />NO.1</h1>
+                                          <h1 className="hero-title"><span className="gold-text">호치민 방앗간</span><br />NO.1 커뮤니티</h1>
                                           <p className="hero-subtitle">실시간으로 소통하는 호치민 방앗간 채팅<br />지금 바로 [호치민방앗간] 텔레그램으로 회원가입!</p>
                                           <div className="hero-buttons">
                                                       <Link to="/login" className="btn-gold hero-btn">🔥 텔레그램으로 회원가입</Link>
