@@ -149,4 +149,4 @@ export default function BoardPage() {
               </div>
         </div>
       )
-}</div>
+}
