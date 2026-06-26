@@ -476,24 +476,70 @@ export default function AdminPage() {
                                 <p style={{ color: '#888', marginBottom: '20px' }}>메인화면 레이아웃, 채팅창 위치 등 사이트 UI를 어드민에서 직접 제어합니다.</p>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                                               <div style={{ background: '#1a1a1a', padding: '20px', borderRadius: '10px', border: '1px solid #333' }}>
-                                                              <h3 style={{ color: '#d4af37', marginBottom: '16px' }}>💬 채팅창 설정</h3>
-                                                              <div style={{ marginBottom: '16px' }}>
-                                                                                <label style={{ color: '#aaa', fontSize: '13px', display: 'block', marginBottom: '8px' }}>채팅창 표시</label>
-                                                                                <div style={{ display: 'flex', gap: '8px' }}>
-                                                                                                    <button onClick={() => setUiSettings(s => ({ ...s, chat_enabled: 'true' }))} style={{ flex: 1, padding: '10px', background: uiSettings.chat_enabled === 'true' ? '#d4af37' : '#333', color: uiSettings.chat_enabled === 'true' ? '#000' : '#aaa', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>표시</button>
-                                                                                                    <button onClick={() => setUiSettings(s => ({ ...s, chat_enabled: 'false' }))} style={{ flex: 1, padding: '10px', background: uiSettings.chat_enabled === 'false' ? '#666' : '#333', color: uiSettings.chat_enabled === 'false' ? '#fff' : '#aaa', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>숨김</button>
-                                                                                </div>
-                                                              </div>
-                                                              <div style={{ marginBottom: '16px' }}>
-                                                                                <label style={{ color: '#aaa', fontSize: '13px', display: 'block', marginBottom: '8px' }}>채팅창 위치</label>
-                                                                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                                                                                  {[['inline', '메인화면 인라인'], ['bottom-right', '우측 하단'], ['bottom-left', '좌측 하단'], ['top-right', '우측 상단']].map(([val, label]) => (
-                                            <button key={val} onClick={() => setUiSettings(s => ({ ...s, chat_position: val }))} style={{ padding: '8px', background: uiSettings.chat_position === val ? '#d4af37' : '#333', color: uiSettings.chat_position === val ? '#000' : '#aaa', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>{label}</button>
-                                          ))}
-                                                                                </div>
-                                                              </div>
-                                              </div>
-                                              <div style={{ background: '#1a1a1a', padding: '20px', borderRadius: '10px', border: '1px solid #333' }}>
+                <h3 style={{ color: '#d4af37', marginBottom: '16px' }}>💬 채팅창 설정</h3>
+
+                {/* 채팅창 표시 여부 */}
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ color: '#aaa', fontSize: '13px', display: 'block', marginBottom: '8px' }}>채팅창 표시</label>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button onClick={() => setUiSettings(s => ({ ...s, chat_enabled: 'true' }))}
+                      style={{ flex: 1, padding: '10px', background: uiSettings.chat_enabled === 'true' ? '#d4af37' : '#333', color: uiSettings.chat_enabled === 'true' ? '#000' : '#aaa', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>표시</button>
+                    <button onClick={() => setUiSettings(s => ({ ...s, chat_enabled: 'false' }))}
+                      style={{ flex: 1, padding: '10px', background: uiSettings.chat_enabled === 'false' ? '#666' : '#333', color: uiSettings.chat_enabled === 'false' ? '#fff' : '#aaa', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>숨김</button>
+                  </div>
+                </div>
+
+                {/* 채팅창 위치 */}
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ color: '#aaa', fontSize: '13px', display: 'block', marginBottom: '8px' }}>채팅창 위치</label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                    {[['inline', '📌 메인화면 인라인'], ['bottom-right', '↘ 우측 하단 팝업'], ['bottom-left', '↙ 좌측 하단 팝업'], ['top-right', '↗ 우측 상단 팝업']].map(([val, label]) => (
+                      <button key={val} onClick={() => setUiSettings(s => ({ ...s, chat_position: val }))}
+                        style={{ padding: '8px', background: uiSettings.chat_position === val ? '#d4af37' : '#333', color: uiSettings.chat_position === val ? '#000' : '#aaa', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: uiSettings.chat_position === val ? 'bold' : 'normal' }}>{label}</button>
+                    ))}
+                  </div>
+                  {uiSettings.chat_position !== 'inline' && (
+                    <p style={{ color: '#666', fontSize: '11px', marginTop: '6px' }}>💡 팝업 모드: 드래그·크기조절·최소화·닫기 지원</p>
+                  )}
+                </div>
+
+                {/* 팝업 위치 오프셋 (inline이 아닐 때) */}
+                {uiSettings.chat_position !== 'inline' && (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+                    <div>
+                      <label style={{ color: '#aaa', fontSize: '12px', display: 'block', marginBottom: '4px' }}>우측/좌측 여백 (px)</label>
+                      <input type="number" value={uiSettings.chat_right || 20}
+                        onChange={e => setUiSettings(s => ({ ...s, chat_right: e.target.value }))}
+                        style={{ width: '100%', padding: '8px', background: '#222', border: '1px solid #444', color: '#d4af37', borderRadius: '6px', boxSizing: 'border-box' }} />
+                    </div>
+                    <div>
+                      <label style={{ color: '#aaa', fontSize: '12px', display: 'block', marginBottom: '4px' }}>상단/하단 여백 (px)</label>
+                      <input type="number" value={uiSettings.chat_bottom || 20}
+                        onChange={e => setUiSettings(s => ({ ...s, chat_bottom: e.target.value }))}
+                        style={{ width: '100%', padding: '8px', background: '#222', border: '1px solid #444', color: '#d4af37', borderRadius: '6px', boxSizing: 'border-box' }} />
+                    </div>
+                  </div>
+                )}
+
+                {/* 팝업 크기 (inline이 아닐 때) */}
+                {uiSettings.chat_position !== 'inline' && (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                    <div>
+                      <label style={{ color: '#aaa', fontSize: '12px', display: 'block', marginBottom: '4px' }}>기본 가로 크기 (px)</label>
+                      <input type="number" value={uiSettings.chat_width || 380}
+                        onChange={e => setUiSettings(s => ({ ...s, chat_width: e.target.value }))}
+                        style={{ width: '100%', padding: '8px', background: '#222', border: '1px solid #444', color: '#d4af37', borderRadius: '6px', boxSizing: 'border-box' }} />
+                    </div>
+                    <div>
+                      <label style={{ color: '#aaa', fontSize: '12px', display: 'block', marginBottom: '4px' }}>기본 세로 크기 (px)</label>
+                      <input type="number" value={uiSettings.chat_height || 500}
+                        onChange={e => setUiSettings(s => ({ ...s, chat_height: e.target.value }))}
+                        style={{ width: '100%', padding: '8px', background: '#222', border: '1px solid #444', color: '#d4af37', borderRadius: '6px', boxSizing: 'border-box' }} />
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div style={{ background: '#1a1a1a', padding: '20px', borderRadius: '10px', border: '1px solid #333' }}>
                                                               <h3 style={{ color: '#d4af37', marginBottom: '16px' }}>🏠 메인화면 섹션</h3>
                                                 {[['stats_visible', '통계 섹션'], ['notice_visible', '공지사항'], ['banner_visible', '배너']].map(([key, label]) => (
                                         <div key={key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
