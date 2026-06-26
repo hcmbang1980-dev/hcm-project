@@ -115,7 +115,7 @@ export default function FloatingChat({ settings = {} }) {
                                     boxShadow: '0 4px 16px rgba(0,0,0,0.5)',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center'
                         }}
-                      >💬</button>button>
+                      >💬</button>
             )
   }
   
@@ -183,37 +183,37 @@ export default function FloatingChat({ settings = {} }) {
                                                   gap: 8,
                                       }}
                                     >
-                                    <span style={{ fontSize: 16 }}>💬</span>span>
-                                    <span style={{ flex: 1, color: '#d4af37', fontWeight: 'bold', fontSize: 14 }}>실시간 채팅</span>span>
+                                    <span style={{ fontSize: 16 }}>💬</span>
+                                    <span style={{ flex: 1, color: '#d4af37', fontWeight: 'bold', fontSize: 14 }}>실시간 채팅</span>
                               {/* 크기 리셋 버튼 */}
                                     <button
                                                 onMouseDown={e => e.stopPropagation()}
                                                 onClick={() => { setSize({ width: initWidth, height: initHeight }); setPosition(getInitPos()) }}
                                                 title="위치/크기 초기화"
                                                 style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 14, padding: '2px 5px', borderRadius: 4, lineHeight: 1 }}
-                                              >⟲</button>button>
+                                              >⟲</button>
                               {/* 최소화 버튼 */}
                                     <button
                                                 onMouseDown={e => e.stopPropagation()}
                                                 onClick={() => setMinimized(m => !m)}
                                                 title={minimized ? '펼치기' : '최소화'}
                                                 style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: 16, padding: '2px 5px', borderRadius: 4, lineHeight: 1 }}
-                                              >{minimized ? '▲' : '▼'}</button>button>
+                                              >{minimized ? '▲' : '▼'}</button>
                               {/* 닫기 버튼 */}
                                     <button
                                                 onMouseDown={e => e.stopPropagation()}
                                                 onClick={() => setVisible(false)}
                                                 title="닫기"
                                                 style={{ background: 'none', border: 'none', color: '#ff6666', cursor: 'pointer', fontSize: 16, padding: '2px 5px', borderRadius: 4, lineHeight: 1 }}
-                                              >✕</button>button>
-                            </div>div>
+                                              >✕</button>
+                            </div>
                       
                         {/* 채팅 본문 */}
                         {!minimized && (
                                       <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                                                 <ChatRoom />
-                                      </div>div>
+                                      </div>
                             )}
-                      </div>div>
+                      </div>
                     )
 }</button>
