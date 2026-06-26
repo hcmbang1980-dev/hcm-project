@@ -351,14 +351,14 @@ export default function AdminPage() {
                                               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                                               <thead>
                                                                                 <tr style={{ borderBottom: '2px solid #d4af37' }}>
-                                                                                                    <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>닉네임</th>th>
-                                                                                                    <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>텔레그램</th>th>
-                                                                                                    <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>역할</th>th>
-                                                                                                    <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>레벨</th>th>
-                                                                                                    <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>가입일</th>th>
-                                                                                                    <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>저장</th>th>
+                                                                                                    <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>닉네임</th>
+                                                                                                    <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>텔레그램</th>
+                                                                                                    <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>역할</th>
+                                                                                                    <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>레벨</th>
+                                                                                                    <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>가입일</th>
+                                                                                                    <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>저장</th>
                                                                                 </tr>
-                                                              </thead>thead>
+                                                              </thead>
                                                               <tbody>
                                                                 {filteredUsers.map(u => (
                                           <MemberRow
@@ -368,7 +368,7 @@ export default function AdminPage() {
                                                                   saving={savingUser === u.id}
                                                                 />
                                         ))}
-                                                              </tbody>tbody>
+                                                              </tbody>
                                               </table>
                                 </div>
                     </div>
