@@ -16,7 +16,6 @@ export default function FloatingChat({ settings = {} }) {
     return { x: window.innerWidth - initW - 20, y: window.innerHeight - initH - 20 }
   }
 
-  const [visible, setVisible] = useState(true)
   const [minimized, setMinimized] = useState(false)
   const [size, setSize] = useState({ width: initW, height: initH })
   const [position, setPosition] = useState(getInitPos)
@@ -28,11 +27,11 @@ export default function FloatingChat({ settings = {} }) {
   const HEADER_H = 44
 
   const onDragStart = useCallback((e) => {
-    if (e.button !== 0) return
+    if (e.button !== 0 || minimized) return
     e.preventDefault()
     setIsDragging(true)
     dragOffset.current = { x: e.clientX - position.x, y: e.clientY - position.y }
-  }, [position])
+  }, [position, minimized])
 
   const onResizeStart = useCallback((e, dir) => {
     e.preventDefault()
@@ -72,25 +71,6 @@ export default function FloatingChat({ settings = {} }) {
     return () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp) }
   }, [isDragging, isResizing, resizeDir, size])
 
-  if (!visible) {
-    const fixedStyle = {
-      position: 'fixed', zIndex: 9000,
-      bottom: bottomOff,
-      right: pos.includes('left') ? 'auto' : rightOff,
-      left: pos.includes('left') ? rightOff : 'auto',
-      width: 52, height: 52, borderRadius: '50%',
-      background: '#d4af37', color: '#000', border: 'none',
-      fontSize: '22px', cursor: 'pointer',
-      boxShadow: '0 4px 16px rgba(0,0,0,0.5)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center'
-    }
-    return (
-      <button onClick={() => setVisible(true)} title="채팅 열기" style={fixedStyle}>
-        💬
-      </button>
-    )
-  }
-
   const RS = 8
   const handles = [
     { dir: 'n',  s: { top: 0, left: RS, right: RS, height: RS, cursor: 'n-resize' } },
@@ -103,32 +83,60 @@ export default function FloatingChat({ settings = {} }) {
     { dir: 'sw', s: { bottom: 0, left: 0, width: RS, height: RS, cursor: 'sw-resize' } },
   ]
 
+  // 최소화 상태일 때: 우측 하단에 고정 (fixed)
+  if (minimized) {
+    return (
+      <div style={{
+        position: 'fixed',
+        bottom: bottomOff,
+        right: rightOff,
+        zIndex: 9000,
+        width: size.width,
+        height: HEADER_H,
+        background: '#1a1a1a',
+        border: '1.5px solid #d4af37',
+        borderRadius: 12,
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 10px',
+        gap: 8,
+        boxShadow: '0 4px 16px rgba(0,0,0,0.6)',
+        cursor: 'pointer',
+      }}
+        onClick={() => setMinimized(false)}
+      >
+        <span style={{ fontSize: 16 }}>💬</span>
+        <span style={{ flex: 1, color: '#d4af37', fontWeight: 'bold', fontSize: 14 }}>실시간 채팅</span>
+        <button
+          onMouseDown={e => e.stopPropagation()}
+          onClick={e => { e.stopPropagation(); setMinimized(false) }}
+          title="펼치기"
+          style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: 16, padding: '2px 5px', borderRadius: 4, lineHeight: 1 }}
+        >▲</button>
+      </div>
+    )
+  }
+
   const containerStyle = {
     position: 'fixed', left: position.x, top: position.y,
-    width: size.width, height: minimized ? HEADER_H : size.height,
+    width: size.width, height: size.height,
     zIndex: 9000, display: 'flex', flexDirection: 'column',
     background: '#111', border: '1.5px solid #d4af37', borderRadius: 12,
     boxShadow: '0 8px 32px rgba(0,0,0,0.7)', overflow: 'hidden',
     userSelect: isDragging || isResizing ? 'none' : 'auto',
-    transition: isDragging || isResizing ? 'none' : 'height 0.2s ease',
   }
 
   const headerStyle = {
     height: HEADER_H, minHeight: HEADER_H,
     background: 'linear-gradient(90deg,#1a1a1a,#222)',
-    borderBottom: minimized ? 'none' : '1px solid #333',
+    borderBottom: '1px solid #333',
     display: 'flex', alignItems: 'center', padding: '0 10px',
     cursor: 'grab', userSelect: 'none', gap: 8,
   }
 
-  const btnStyle = {
-    background: 'none', border: 'none', cursor: 'pointer',
-    fontSize: 14, padding: '2px 5px', borderRadius: 4, lineHeight: 1
-  }
-
   return (
     <div style={containerStyle}>
-      {!minimized && handles.map(h => (
+      {handles.map(h => (
         <div key={h.dir} onMouseDown={e => onResizeStart(e, h.dir)} style={{ position: 'absolute', zIndex: 10, ...h.s }} />
       ))}
       <div onMouseDown={onDragStart} style={headerStyle}>
@@ -136,28 +144,14 @@ export default function FloatingChat({ settings = {} }) {
         <span style={{ flex: 1, color: '#d4af37', fontWeight: 'bold', fontSize: 14 }}>실시간 채팅</span>
         <button
           onMouseDown={e => e.stopPropagation()}
-          onClick={() => { setSize({ width: initW, height: initH }); setPosition(getInitPos()) }}
-          title="위치/크기 초기화"
-          style={{ ...btnStyle, color: '#888' }}
-        >⟲</button>
-        <button
-          onMouseDown={e => e.stopPropagation()}
-          onClick={() => setMinimized(m => !m)}
-          title={minimized ? '펼치기' : '최소화'}
-          style={{ ...btnStyle, color: '#aaa', fontSize: 16 }}
-        >{minimized ? '▲' : '▼'}</button>
-        <button
-          onMouseDown={e => e.stopPropagation()}
-          onClick={() => setVisible(false)}
-          title="닫기"
-          style={{ ...btnStyle, color: '#ff6666', fontSize: 16 }}
-        >✕</button>
+          onClick={() => setMinimized(true)}
+          title="최소화"
+          style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: 16, padding: '2px 5px', borderRadius: 4, lineHeight: 1 }}
+        >▼</button>
       </div>
-      {!minimized && (
-        <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-          <ChatRoom />
-        </div>
-      )}
+      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        <ChatRoom />
+      </div>
     </div>
   )
 }
