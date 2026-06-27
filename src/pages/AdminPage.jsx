@@ -215,14 +215,14 @@ export default function AdminPage() {
   const saveSiteStats = async () => {
         const { error } = await supabase.from('site_stats').upsert({
                 id: 1,
-                members_base: parseInt(siteStats.members_base) || 0,
-                online_base: parseInt(siteStats.online_base) || 0,
-                today_base: parseInt(siteStats.today_base) || 0,
-                total_base: parseInt(siteStats.total_base) || 0,
-                members_label: siteStats.members_label,
-                online_label: siteStats.online_label,
-                today_label: siteStats.today_label,
-                total_label: siteStats.total_label,
+                base_members: parseInt(siteStats.members_base) || 0,
+                base_online: parseInt(siteStats.online_base) || 0,
+                base_today: parseInt(siteStats.today_base) || 0,
+                base_total: parseInt(siteStats.total_base) || 0,
+                label_members: siteStats.members_label,
+                label_online: siteStats.online_label,
+                label_today: siteStats.today_label,
+                label_total: siteStats.total_label,
         }, { onConflict: 'id' })
         if (error) { showToast('저장 실패: ' + error.message, 'error'); return }
         showToast('통계 수치 저장 완료!')
@@ -348,10 +348,10 @@ export default function AdminPage() {
                                                 style={{ width: '100%', padding: '10px 14px', background: '#1a1a1a', border: '1px solid #444', color: '#fff', borderRadius: '8px', marginBottom: '16px', boxSizing: 'border-box' }}
                                               />
                                 <div style={{ overflowX: 'auto' }}>
-                                              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '700px' }}>
                                                               <thead>
                                                                                 <tr style={{ borderBottom: '2px solid #d4af37' }}>
-                                                                                                    <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>닉네임</th>
+                                                                                                    <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37', minWidth: '100px' }}>닉네임</th>
                                                                                                     <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>텔레그램</th>
                                                                                                     <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>역할</th>
                                                                                                     <th style={{ padding: '10px', textAlign: 'left', color: '#d4af37' }}>레벨</th>
@@ -378,8 +378,8 @@ export default function AdminPage() {
                 {activeTab === 'stats' && (
                     <div>
                                 <h2>📊 통계 수치 관리</h2>
-                                <p style={{ color: '#888', marginBottom: '20px' }}>표시 텍스트</p>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                                <p style={{ color: '#888', marginBottom: '20px' }}>기본 수치와 표시 텍스트를 설정하세요</p>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '16px', marginBottom: '20px' }}>
                                   {[
                                       ['members_label', 'members_base', '가입인원'],
                                       ['online_label', 'online_base', '실시간 접속'],
@@ -580,7 +580,7 @@ function MemberRow({ u, onSave, saving }) {
 
   return (
         <tr style={{ borderBottom: '1px solid #333' }}>
-                <td style={{ padding: '10px', color: '#fff' }}>{u.nickname || u.telegram_first_name || '-'}</td>
+                <td style={{ padding: '10px', color: '#fff', minWidth: '100px', whiteSpace: 'nowrap' }}>{u.nickname || u.telegram_first_name || '-'}</td>
                 <td style={{ padding: '10px', color: '#888' }}>@{u.telegram_id || '-'}</td>
                 <td style={{ padding: '10px' }}>
                           <select
