@@ -200,14 +200,14 @@ export default function AdminPage() {
         const { data } = await supabase.from('site_stats').select('*').eq('id', 1).single()
         if (data) {
                 setSiteStats({
-                                  members_base: data.members_base ?? data.base_members ?? 330,
-                                  online_base: data.online_base ?? data.base_online ?? 15,
-                                  today_base: data.today_base ?? data.base_today ?? 70,
-                                  total_base: data.total_base ?? data.base_total ?? data.total_visitors ?? 13000,
-                                  members_label: data.members_label ?? data.label_members ?? '가입인원',
-                                  online_label: data.online_label ?? data.label_online ?? '실시간 접속',
-                                  today_label: data.today_label ?? data.label_today ?? '당일 방문자',
-                                  total_label: data.total_label ?? data.label_total ?? '누적방문자수',
+                                  members_base: data.base_members ?? 330,
+                                  online_base: data.base_online ?? 15,
+                                  today_base: data.base_today ?? 70,
+                                  total_base: data.base_total ?? data.total_visitors ?? 13000,
+                                  members_label: data.label_members ?? '가입인원',
+                                  online_label: data.label_online ?? '실시간 접속',
+                                  today_label: data.label_today ?? '당일 방문자',
+                                  total_label: data.label_total ?? '누적방문자수',
                 })
         }
   }
@@ -226,6 +226,7 @@ export default function AdminPage() {
         }, { onConflict: 'id' })
         if (error) { showToast('저장 실패: ' + error.message, 'error'); return }
         showToast('통계 수치 저장 완료!')
+fetchSiteStats()
   }
 
   // ===== 팝업 관리 =====
