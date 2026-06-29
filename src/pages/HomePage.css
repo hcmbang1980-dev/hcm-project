@@ -468,3 +468,61 @@
   border-color: #d4af37;
   color: #f5d060;
 }
+
+
+/* ===== 통계 바 - 가로 한 줄 ===== */
+.stats-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 32px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: nowrap;
+}
+
+.stats-bar .stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.stats-bar .stat-num {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 900;
+  display: block;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.stats-bar .stat-label {
+  font-size: clamp(11px, 1.2vw, 14px);
+  color: #888;
+  display: block;
+}
+
+.stats-bar .stat-divider {
+  width: 1px;
+  height: 50px;
+  background: rgba(255,215,0,0.2);
+  flex-shrink: 0;
+  margin: 0 16px;
+}
+
+@media (max-width: 600px) {
+  .stats-bar {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .stats-bar .stat-divider {
+    display: none;
+  }
+  .stats-bar .stat-item {
+    flex: 0 0 calc(50% - 8px);
+  }
+}
