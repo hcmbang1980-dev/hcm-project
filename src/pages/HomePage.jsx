@@ -18,7 +18,7 @@ const PLACES = [
   { icon: '🍜', name: '맛집', path: '/places/restaurant', key: 'food' },
 ]
 
-const DEFAULT_STATS = { members: 330, online: 15, todayVisits: 70, totalVisits: 7000 }
+const DEFAULT_STATS = { members: 330, online: 15, todayVisits: 70, totalVisits: 13000 }
 const DEFAULT_LABELS = { members: '가입인원', online: '실시간 접속', todayVisits: '당일 방문자', totalVisits: '누적방문자수' }
 
 export default function HomePage() {
@@ -125,9 +125,11 @@ export default function HomePage() {
           todayVisits: siteData.label_today || DEFAULT_LABELS.todayVisits,
           totalVisits: siteData.label_total || DEFAULT_LABELS.totalVisits,
         })
-        const baseMembers = siteData?.base_members || DEFAULT_STATS.members
+        const baseMembers = siteData.base_members || DEFAULT_STATS.members
+        // base_total을 우선 사용, 없으면 total_visitors fallback
+        const baseTotalVisits = siteData.base_total || siteData.total_visitors || DEFAULT_STATS.totalVisits
         const { count: userCount } = await supabase.from('users').select('*', { count: 'exact', head: true })
-        setStats(prev => ({ ...prev, members: baseMembers + (userCount || 0), totalVisits: siteData.total_visitors || DEFAULT_STATS.totalVisits }))
+        setStats(prev => ({ ...prev, members: baseMembers + (userCount || 0), totalVisits: baseTotalVisits }))
         const today = new Date().toISOString().split('T')[0]
         const { data: todayData } = await supabase.from('visitor_stats').select('total_visits').eq('date', today).single()
         if (todayData) setStats(prev => ({ ...prev, todayVisits: todayData.total_visits }))
