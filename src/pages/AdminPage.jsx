@@ -219,6 +219,7 @@ export default function AdminPage() {
                 base_online: parseInt(siteStats.online_base) || 0,
                 base_today: parseInt(siteStats.today_base) || 0,
                 base_total: parseInt(siteStats.total_base) || 0,
+                total_visitors: parseInt(siteStats.total_base) || 0,
                 label_members: siteStats.members_label,
                 label_online: siteStats.online_label,
                 label_today: siteStats.today_label,
@@ -258,13 +259,13 @@ fetchSiteStats()
 
   // ===== 광고 관리 =====
   const fetchAds = async () => {
-        const { data } = await supabase.from('ads').select('*').order('created_at', { ascending: false })
+        const { data } = await supabase.from('advertisements').select('*').order('created_at', { ascending: false })
         setAds(data || [])
   }
 
   const addAd = async () => {
         if (!newAd.title) { showToast('제목을 입력하세요', 'error'); return }
-        const { error } = await supabase.from('ads').insert([newAd])
+        const { error } = await supabase.from('advertisements').insert([newAd])
         if (error) { showToast('추가 실패', 'error'); return }
         setNewAd({ title: '', image_url: '', link_url: '', position: 'top', is_active: true })
         showToast('광고 추가 완료!')
@@ -272,13 +273,13 @@ fetchSiteStats()
   }
 
   const toggleAd = async (id, is_active) => {
-        await supabase.from('ads').update({ is_active: !is_active }).eq('id', id)
+        await supabase.from('advertisements').update({ is_active: !is_active }).eq('id', id)
         fetchAds()
   }
 
   const deleteAd = async (id) => {
         if (!window.confirm('광고를 삭제하시겠습니까?')) return
-        await supabase.from('ads').delete().eq('id', id)
+        await supabase.from('advertisements').delete().eq('id', id)
         showToast('광고 삭제 완료!')
         fetchAds()
   }
