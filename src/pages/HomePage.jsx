@@ -18,7 +18,7 @@ const PLACES = [
   { icon: '🍜', name: '맛집', path: '/places/restaurant', key: 'food' },
 ]
 
-const DEFAULT_STATS = { members: 330, online: 15, todayVisits: 70, totalVisits: 13000 }
+const DEFAULT_STATS = { members: 330, online: 15, onlineBase: 15, todayVisits: 70, totalVisits: 13000 }
 const DEFAULT_LABELS = { members: '가입인원', online: '실시간 접속', todayVisits: '당일 방문자', totalVisits: '누적방문자수' }
 
 export default function HomePage() {
@@ -37,7 +37,7 @@ export default function HomePage() {
     chat_bottom: '20',
     chat_width: '380',
     chat_height: '500',
-    chat_position: 'bottom-right',
+    chat_position: 'inline',
     stats_visible: 'true',
     notice_visible: 'true',
     banner_visible: 'true',
@@ -85,7 +85,7 @@ export default function HomePage() {
   const fetchOnlineCount = async () => {
     const threshold = new Date(Date.now() - 10 * 60 * 1000).toISOString()
     const { count } = await supabase.from('online_sessions').select('*', { count: 'exact', head: true }).gte('last_seen', threshold)
-    setStats(prev => ({ ...prev, online: DEFAULT_STATS.online + (count || 0) }))
+    setStats(prev => ({ ...prev, online: (prev.onlineBase ?? DEFAULT_STATS.online) + (count || 0) }))
   }
 
   const trackVisit = async () => {
@@ -97,10 +97,9 @@ export default function HomePage() {
         nickname: user.nickname || user.telegram_first_name || '회원',
       }, { onConflict: 'user_id' })
       const today = new Date().toISOString().split('T')[0]
-      const { data: existing } = await supabase.from('visitor_stats').select('total_visits').eq('date', today)
-      if (existing) {
-        await supabase.from('visitor_stats').upsert({ date: today, total_visits: (existing[0]?.total_visits || 0) + 1 })
-      }
+      const { data: existing } = await supabase.from('visitor_stats').select('total_visits').eq('date', today).single()
+      const currentVisits = existing?.total_visits || 0
+      await supabase.from('visitor_stats').upsert({ date: today, total_visits: currentVisits + 1 }, { onConflict: 'date' })
     } catch (e) {}
   }
 
@@ -125,27 +124,52 @@ export default function HomePage() {
           todayVisits: siteData.label_today || DEFAULT_LABELS.todayVisits,
           totalVisits: siteData.label_total || DEFAULT_LABELS.totalVisits,
         })
-        const baseMembers = siteData.base_members || DEFAULT_STATS.members
-        // base_total을 우선 사용, 없으면 total_visitors fallback
-        const baseTotalVisits = siteData.base_total || siteData.total_visitors || DEFAULT_STATS.totalVisits
+        const baseMembers = siteData.base_members ?? DEFAULT_STATS.members
+        const baseOnline  = siteData.base_online  ?? DEFAULT_STATS.online
+        const baseToday   = siteData.base_today   ?? DEFAULT_STATS.todayVisits
+        const baseTotal   = siteData.base_total   ?? siteData.total_visitors ?? DEFAULT_STATS.totalVisits
+
         const { count: userCount } = await supabase.from('users').select('*', { count: 'exact', head: true })
-        setStats(prev => ({ ...prev, members: baseMembers + (userCount || 0), totalVisits: baseTotalVisits }))
+
+        // 오늘 실제 방문 수 → base_today + 실제방문
         const today = new Date().toISOString().split('T')[0]
         const { data: todayData } = await supabase.from('visitor_stats').select('total_visits').eq('date', today).single()
-        if (todayData) setStats(prev => ({ ...prev, todayVisits: todayData.total_visits }))
+        const todayExtra = todayData?.total_visits || 0
+
+        setStats({
+          members: baseMembers + (userCount || 0),
+          online: baseOnline,
+          onlineBase: baseOnline,
+          todayVisits: baseToday + todayExtra,
+          totalVisits: baseTotal,
+        })
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error('fetchStats error:', e)
+    }
   }
 
   const renderStats = () => (
     <div className="stats-bar">
-      <div className="stat-item"><span className="stat-num gold-text">{stats.members.toLocaleString()}+</span><span className="stat-label">{labels.members}</span></div>
+      <div className="stat-item">
+        <span className="stat-num gold-text">{stats.members.toLocaleString()}+</span>
+        <span className="stat-label">{labels.members}</span>
+      </div>
       <div className="stat-divider"></div>
-      <div className="stat-item"><span className="stat-num gold-text">{stats.online.toLocaleString()}+</span><span className="stat-label">{labels.online}</span></div>
+      <div className="stat-item">
+        <span className="stat-num gold-text">{stats.online.toLocaleString()}+</span>
+        <span className="stat-label">{labels.online}</span>
+      </div>
       <div className="stat-divider"></div>
-      <div className="stat-item"><span className="stat-num gold-text">{stats.todayVisits.toLocaleString()}+</span><span className="stat-label">{labels.todayVisits}</span></div>
+      <div className="stat-item">
+        <span className="stat-num gold-text">{stats.todayVisits.toLocaleString()}+</span>
+        <span className="stat-label">{labels.todayVisits}</span>
+      </div>
       <div className="stat-divider"></div>
-      <div className="stat-item"><span className="stat-num gold-text">{stats.totalVisits.toLocaleString()}+</span><span className="stat-label">{labels.totalVisits}</span></div>
+      <div className="stat-item">
+        <span className="stat-num gold-text">{stats.totalVisits.toLocaleString()}+</span>
+        <span className="stat-label">{labels.totalVisits}</span>
+      </div>
     </div>
   )
 
@@ -214,7 +238,6 @@ export default function HomePage() {
     banner: settings.banner_visible !== 'false' && <div key="banner" />,
   }
 
-  // 채팅창 렌더링: inline이면 메인 섹션에 인라인, 그 외엔 FloatingChat 팝업
   const renderChat = () => {
     if (settings.chat_enabled === 'false') return null
     const pos = settings.chat_position || 'inline'
@@ -225,7 +248,6 @@ export default function HomePage() {
         </div>
       )
     }
-    // bottom-right, bottom-left, top-right, top-left → FloatingChat 팝업
     return <FloatingChat settings={settings} />
   }
 
