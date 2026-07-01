@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route, Navigate, BrowserRouter } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Header from './components/Header'
 import HomePage from './pages/HomePage'
@@ -10,13 +10,14 @@ import MyPage from './pages/MyPage'
 import LoginPage from './pages/LoginPage'
 import AdminPage from './pages/AdminPage'
 import AttendancePage from './pages/AttendancePage'
+import PlacesPage from './pages/PlacesPage'
 import './index.css'
 
 function ProtectedRoute({ children }) {
 const { user, loading } = useAuth()
 if (loading) {
 const s = {display:'flex',alignItems:'center',justifyContent:'center',height:'50vh',color:'#d4af37'}
-return React.createElement('div', {style:s}, '\uB85C\uB529 \uC911...')
+return React.createElement('div', {style:s}, '로딩 중...')
 }
 if (!user) return React.createElement(Navigate, {to:'/login', replace:true})
 return children
@@ -39,7 +40,8 @@ React.createElement(Route, {path:'/write/:type', element:W(WritePage)}),
 React.createElement(Route, {path:'/mypage', element:W(MyPage)}),
 React.createElement(Route, {path:'/admin', element:W(AdminPage)}),
 React.createElement(Route, {path:'/attendance', element:W(AttendancePage)}),
-React.createElement(Route, {path:'/places/:type', element:React.createElement(HomePage)})
+React.createElement(Route, {path:'/places/:category', element:React.createElement(PlacesPage)}),
+React.createElement(Route, {path:'/place/:id', element:React.createElement(PlacesPage)})
 )
 )
 }
