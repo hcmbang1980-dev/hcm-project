@@ -7,6 +7,14 @@ const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BO
 const CHAT_BOT_TOKEN = process.env.TELEGRAM_CHAT_BOT_TOKEN || BOT_TOKEN
 const WEBHOOK_URL = 'https://www.hcmboom.com/api/telegram-webhook'
 
+// 성+이름 형태로 조합 (텔레그램: last_name이 성, first_name이 이름)
+function buildFullName(firstName, lastName) {
+  const f = (firstName || '').trim()
+  const l = (lastName || '').trim()
+  if (f && l) return l + f
+  return f || l || ''
+}
+
 async function sendMsg(token, chatId, text) {
   try {
     await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
@@ -73,13 +81,14 @@ export default async function handler(req, res) {
         await sendMsg(BOT_TOKEN, msg.chat.id, '❌ 코드가 만료되었거나 없습니다. 사이트에서 다시 시도하세요.')
         return res.status(200).json({ ok: true })
       }
-      // 닉네임: first_name 우선, 없으면 @username
-      const nick = from.first_name || (from.username ? '@' + from.username : 'User')
+      // 닉네임: 성+이름 우선, 없으면 @username
+      const nick = buildFullName(from.first_name, from.last_name) || (from.username ? '@' + from.username : 'User')
       await supabase.from('login_tokens').update({
         used: true,
         telegram_id: from.id,
         telegram_username: from.username || null,
         telegram_first_name: from.first_name || null,
+        telegram_last_name: from.last_name || null,
         telegram_photo: null
       }).eq('token', token)
       await sendMsg(BOT_TOKEN, msg.chat.id, `✅ ${nick}님 인증 완료! 호치민방앗간으로 돌아가세요.`)
@@ -98,8 +107,8 @@ export default async function handler(req, res) {
     // 텍스트가 없는 메시지 (media 등) 무시
     if (!text.trim()) return res.status(200).json({ ok: true, note: 'no text' })
 
-    // 닉네임: first_name(텔레그램 표시이름) 우선, 없으면 @username
-    const displayName = from.first_name || (from.username ? '@' + from.username : '텔레그램유저')
+    // 닉네임: 성+이름(텔레그램 표시이름) 우선, 없으면 @username
+    const displayName = buildFullName(from.first_name, from.last_name) || (from.username ? '@' + from.username : '텔레그램유저')
     console.log('Chat message from Telegram:', { text, displayName, chat_id: msg.chat?.id })
 
     // 일반 메시지 -> 커뮤니티 채팅(Supabase)에 저장
