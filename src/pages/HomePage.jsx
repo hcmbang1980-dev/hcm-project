@@ -6,6 +6,7 @@ import { getSettings } from '../services/settingsService'
 import ChatRoom from '../components/ChatRoom'
 import FloatingChat from '../components/FloatingChat'
 import PopupModal from '../components/PopupModal'
+import Banner from '../components/Banner'
 import './HomePage.css'
 
 const PLACES = [
@@ -125,13 +126,12 @@ export default function HomePage() {
           totalVisits: siteData.label_total || DEFAULT_LABELS.totalVisits,
         })
         const baseMembers = siteData.base_members ?? DEFAULT_STATS.members
-        const baseOnline  = siteData.base_online  ?? DEFAULT_STATS.online
-        const baseToday   = siteData.base_today   ?? DEFAULT_STATS.todayVisits
-        const baseTotal   = siteData.base_total   ?? siteData.total_visitors ?? DEFAULT_STATS.totalVisits
+        const baseOnline = siteData.base_online ?? DEFAULT_STATS.online
+        const baseToday = siteData.base_today ?? DEFAULT_STATS.todayVisits
+        const baseTotal = siteData.base_total ?? siteData.total_visitors ?? DEFAULT_STATS.totalVisits
 
         const { count: userCount } = await supabase.from('users').select('*', { count: 'exact', head: true })
 
-        // 오늘 실제 방문 수 → base_today + 실제방문
         const today = new Date().toISOString().split('T')[0]
         const { data: todayData } = await supabase.from('visitor_stats').select('total_visits').eq('date', today).single()
         const todayExtra = todayData?.total_visits || 0
@@ -235,7 +235,7 @@ export default function HomePage() {
         </div>
       </section>
     ),
-    banner: settings.banner_visible !== 'false' && <div key="banner" />,
+    banner: settings.banner_visible !== 'false' && <div key="banner"><Banner position="bottom" /></div>,
   }
 
   const renderChat = () => {
@@ -254,8 +254,9 @@ export default function HomePage() {
   return (
     <div className="home">
       {settings.popup_enabled !== 'false' && <PopupModal />}
+      {settings.banner_visible !== 'false' && <Banner position="top" />}
       {sectionOrder.map(key => sectionMap[key] || null)}
       {renderChat()}
     </div>
   )
-}
+        }
