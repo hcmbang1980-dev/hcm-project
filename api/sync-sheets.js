@@ -11,6 +11,14 @@ function formatDate(dateStr) {
   return `${yy}/${mm}/${dd}`
 }
 
+// 성+이름 형태로 조합 (텔레그램: last_name이 성, first_name이 이름)
+function buildFullName(firstName, lastName) {
+  const f = (firstName || '').trim()
+  const l = (lastName || '').trim()
+  if (f && l) return l + f
+  return f || l || ''
+}
+
 // 기존 회원 전체를 구글시트에 일괄 동기화
 // 호출: GET /api/sync-sheets?secret=sync2026
 export default async function handler(req, res) {
@@ -34,10 +42,9 @@ export default async function handler(req, res) {
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-  // telegram_last_name 제거 - users 테이블에 없는 컬럼
   const { data: users, error } = await supabase
     .from('users')
-    .select('id, created_at, telegram_id, telegram_username, telegram_first_name, nickname')
+    .select('id, created_at, telegram_id, telegram_username, telegram_first_name, telegram_last_name, nickname')
     .order('created_at', { ascending: true })
 
   if (error) {
@@ -49,8 +56,8 @@ export default async function handler(req, res) {
 
   for (let i = 0; i < users.length; i++) {
     const u = users[i]
-    // 이름: telegram_first_name 우선, 없으면 nickname
-    const name = u.telegram_first_name || u.nickname || ''
+    // 이름: 성+이름(telegram_last_name+telegram_first_name) 우선, 없으면 nickname
+    const name = buildFullName(u.telegram_first_name, u.telegram_last_name) || u.nickname || ''
 
     try {
       const r = await fetch(SHEET_WEBHOOK, {
