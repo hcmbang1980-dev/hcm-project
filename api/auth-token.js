@@ -19,6 +19,14 @@ function formatDate(dateStr) {
   return `${yy}/${mm}/${dd}`
 }
 
+// 성+이름 형태로 조합 (텔레그램: last_name이 성, first_name이 이름)
+function buildFullName(firstName, lastName) {
+  const f = (firstName || '').trim()
+  const l = (lastName || '').trim()
+  if (f && l) return l + f
+  return f || l || ''
+}
+
 export default async function handler(req, res) {
   const hasUrl = !!SUPABASE_URL
   const hasKey = !!SUPABASE_KEY
@@ -59,8 +67,8 @@ export default async function handler(req, res) {
       }
       if (!data.used || !data.telegram_id) return res.status(200).json({ ok: true, authenticated: false })
 
-      // 닉네임: first_name 우선, 없으면 @username
-      const displayNickname = data.telegram_first_name || (data.telegram_username ? '@' + data.telegram_username : 'User')
+      // 닉네임: 성+이름 우선, 없으면 @username
+      const displayNickname = buildFullName(data.telegram_first_name, data.telegram_last_name) || (data.telegram_username ? '@' + data.telegram_username : 'User')
       let { data: existing } = await supabase.from('users').select('*').eq('telegram_id', data.telegram_id).single()
       let userData = existing
       let isNew = false
@@ -73,6 +81,7 @@ export default async function handler(req, res) {
           telegram_id: data.telegram_id,
           telegram_username: data.telegram_username || null,
           telegram_first_name: data.telegram_first_name || null,
+          telegram_last_name: data.telegram_last_name || null,
           telegram_photo: data.telegram_photo || null,
         }).select().single()
 
@@ -86,7 +95,7 @@ export default async function handler(req, res) {
           if (SHEET_WEBHOOK) {
             try {
               const { count } = await supabase.from('users').select('*', { count: 'exact', head: true })
-              const name = newUser.telegram_first_name || displayNickname
+              const name = buildFullName(newUser.telegram_first_name, newUser.telegram_last_name) || displayNickname
               await fetch(SHEET_WEBHOOK, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -107,6 +116,7 @@ export default async function handler(req, res) {
         const { data: upd } = await supabase.from('users').update({
           telegram_username: data.telegram_username || null,
           telegram_first_name: data.telegram_first_name || null,
+          telegram_last_name: data.telegram_last_name || null,
         }).eq('telegram_id', data.telegram_id).select().single()
         if (upd) userData = upd
       }
