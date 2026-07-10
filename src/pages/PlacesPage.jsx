@@ -32,6 +32,16 @@ function StarRating({ value, onChange }) {
   )
 }
 
+function renderContentWithImages(content) {
+  if (!content) return null
+  return content.split('\n').map((line, i) => {
+    const m = line.match(/^!\[.*\]\((.*)\)$/)
+    if (m) return <img key={i} src={m[1]} alt="" style={{width:'100%',borderRadius:8,margin:'10px 0',display:'block'}} />
+    if (line.trim()==='') return <br key={i} />
+    return <p key={i} style={{margin:'4px 0'}}>{line}</p>
+  })
+}
+
 export default function PlacesPage() {
   const { category, id } = useParams()
   const navigate = useNavigate()
@@ -108,7 +118,6 @@ export default function PlacesPage() {
   }
 
   if (loading) return <div style={{...S.page,display:'flex',alignItems:'center',justifyContent:'center'}}><div style={{color:'#d4af37',fontSize:18}}>로딩 중...</div></div>
-
   // 업소 상세 페이지
   if (id && place) {
     const avgRating = reviews.length ? (reviews.reduce((a,r)=>a+r.rating,0)/reviews.length).toFixed(1) : '-'
@@ -136,7 +145,7 @@ export default function PlacesPage() {
               {place.price_range && <div style={{color:'#ccc',fontSize:14}}><span style={{color:'#d4af37'}}>&#128176;</span> {place.price_range}</div>}
             </div>
             {place.description && <p style={{color:'#bbb',marginTop:16,lineHeight:1.7,whiteSpace:'pre-wrap'}}>{place.description}</p>}
-            {place.content && <div style={{marginTop:16,padding:16,background:'#111',borderRadius:8,color:'#ccc',lineHeight:1.8,whiteSpace:'pre-wrap'}}>{place.content}</div>}
+            {place.content && <div style={{marginTop:16,padding:16,background:'#111',borderRadius:8,color:'#ccc',lineHeight:1.8}}>{renderContentWithImages(place.content)}</div>}
             {place.tags && place.tags.length>0 && (
               <div style={{marginTop:12,display:'flex',flexWrap:'wrap',gap:6}}>
                 {place.tags.map((t,i)=><span key={i} style={{background:'#222',color:'#d4af37',border:'1px solid #d4af37',borderRadius:4,padding:'2px 8px',fontSize:12}}>#{t}</span>)}
@@ -197,7 +206,6 @@ export default function PlacesPage() {
       </div>
     )
   }
-
   // 업소 목록 페이지
   const categoryIcon = category==='karaoke'?'🎤':category==='club'?'🍺':category==='massage'?'💆':category==='adult'?'💋':category==='villa'?'🏠':category==='rent'?'🚗':'🍜'
 
