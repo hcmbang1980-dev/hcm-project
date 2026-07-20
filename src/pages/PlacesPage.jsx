@@ -46,7 +46,6 @@ export default function PlacesPage() {
   const { category, id } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
-
   const [places, setPlaces] = useState([])
   const [place, setPlace] = useState(null)
   const [images, setImages] = useState([])
@@ -55,7 +54,6 @@ export default function PlacesPage() {
   const [reviewText, setReviewText] = useState('')
   const [rating, setRating] = useState(5)
   const [submitting, setSubmitting] = useState(false)
-
   const isAdmin = user && (user.role === 'admin' || user.role === 'community_admin')
 
   useEffect(() => {
@@ -81,7 +79,11 @@ export default function PlacesPage() {
     if (!p) { navigate('/'); return }
     setPlace(p)
     await supabase.from('places').update({ views: (p.views||0)+1 }).eq('id', id)
-    const { data: imgs } = await supabase.from('place_images').select('*').eq('place_key', p.category).order('created_at')
+    let { data: imgs } = await supabase.from('place_images').select('*').eq('place_id', id).order('created_at')
+    if (!imgs || imgs.length === 0) {
+      const legacy = await supabase.from('place_images').select('*').is('place_id', null).eq('place_key', p.category).order('created_at')
+      imgs = legacy.data || []
+    }
     setImages(imgs || [])
     const { data: rvs } = await supabase.from('reviews').select('*').eq('place_id', id).order('created_at', { ascending: false })
     setReviews(rvs || [])
@@ -118,6 +120,7 @@ export default function PlacesPage() {
   }
 
   if (loading) return <div style={{...S.page,display:'flex',alignItems:'center',justifyContent:'center'}}><div style={{color:'#d4af37',fontSize:18}}>로딩 중...</div></div>
+
   // 업소 상세 페이지
   if (id && place) {
     const avgRating = reviews.length ? (reviews.reduce((a,r)=>a+r.rating,0)/reviews.length).toFixed(1) : '-'
@@ -206,9 +209,9 @@ export default function PlacesPage() {
       </div>
     )
   }
+
   // 업소 목록 페이지
   const categoryIcon = category==='karaoke'?'🎤':category==='club'?'🍺':category==='massage'?'💆':category==='adult'?'💋':category==='villa'?'🏠':category==='rent'?'🚗':'🍜'
-
   return (
     <div style={S.page}>
       <div style={S.container}>
