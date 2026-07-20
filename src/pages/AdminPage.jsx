@@ -8,7 +8,6 @@ import './AdminPage.css'
 const ROLE_COLORS = { admin: '#ff4444', moderator: '#d4af37', user: '#888888' }
 const LEVEL_OPTIONS = ['새싹','씨앗','나무','열매','뿌리','숲','정글','마스터']
 const LEVEL_NUM_MAP = {'새싹':1,'씨앗':5,'나무':10,'열매':20,'뿌리':30,'숲':50,'정글':70,'마스터':100}
-
 const PLACE_CATEGORIES = [
 {key:'karaoke',label:'한가라 & 로컬 가라오케'},
 {key:'club',label:'클럽 & 바'},
@@ -18,7 +17,6 @@ const PLACE_CATEGORIES = [
 {key:'rent',label:'렌트카 & 운전기사'},
 {key:'food',label:'맛집'},
 ]
-
 const TABS = [
 {key:'members',label:'👥 회원 관리'},
 {key:'places',label:'🏪 추천업소 관리'},
@@ -85,6 +83,7 @@ style={{width:'100%',padding:14,background:locked?'#333':'#d4af37',color:locked?
 </div>
 )
 }
+
 export default function AdminPage() {
 const { user } = useAuth()
 const navigate = useNavigate()
@@ -127,14 +126,13 @@ useEffect(() => {
 if (pinVerified) { fetchUsers(); fetchSiteStats(); fetchPopups(); fetchAds(); fetchUiSettings() }
 }, [pinVerified])
 useEffect(() => {
-if (pinVerified && activeTab === 'places') { fetchPlaces(placeCat); fetchPlaceImages(placeCat) }
+if (pinVerified && activeTab === 'places') { fetchPlaces(placeCat) }
 }, [pinVerified, activeTab, placeCat])
 
 const showToast = (msg, type='success') => {
 setToast({msg,type})
 setTimeout(() => setToast(null), 3000)
 }
-
 const uploadImage = async (file) => {
 if (!file) return null
 try {
@@ -146,7 +144,6 @@ const {data} = supabase.storage.from('images').getPublicUrl(path)
 return data.publicUrl
 } catch(e) { showToast('업로드 실패: '+(e.message||e),'error'); return null }
 }
-
 const fetchUsers = async () => {
 const {data,error} = await supabase.from('users').select('id,nickname,telegram_id,role,level,level_num,created_at,is_banned').order('created_at',{ascending:false})
 if (error) { showToast('회원 목록 로드 실패: '+error.message,'error'); return }
@@ -180,7 +177,6 @@ const matchSearch = !searchQuery||(u.nickname||'').includes(searchQuery)||(u.tel
 const matchRole = filterRole==='all'||u.role===filterRole
 return matchSearch && matchRole
 })
-
 const fetchSiteStats = async () => {
 const {data,error} = await supabase.from('site_stats').select('*').eq('id',1).single()
 if (error) { showToast('통계 로드 실패: '+error.message,'error'); return }
@@ -228,7 +224,6 @@ if (!window.confirm('팝업을 삭제하시겠습니까?')) return
 await supabase.from('popups').delete().eq('id',id)
 showToast('팝업 삭제 완료!'); fetchPopups()
 }
-
 const fetchAds = async () => {
 const {data} = await supabase.from('advertisements').select('*').order('sort_order',{ascending:true}).order('created_at',{ascending:false})
 setAds(data||[])
@@ -277,6 +272,11 @@ if (error) { showToast('등록 실패: '+error.message,'error'); return }
 setNewPlace({name:'',address:'',phone:'',description:'',price_range:'',banner_url:'',content:'',status:'노출중'})
 showToast('업소 등록 완료!'); fetchPlaces(placeCat)
 }
+const startEditPlace = async (p) => {
+setEditingPlace(p)
+await fetchPlaceImages(p.id)
+setNewPlaceImage({image_url:'',caption:''})
+}
 const updatePlace = async () => {
 if (!editingPlace || !editingPlace.name) { showToast('업소명을 입력하세요','error'); return }
 const {error} = await supabase.from('places').update({
@@ -285,7 +285,7 @@ description:editingPlace.description,price_range:editingPlace.price_range,
 banner_url:editingPlace.banner_url,content:editingPlace.content,status:editingPlace.status
 }).eq('id',editingPlace.id)
 if (error) { showToast('수정 실패: '+error.message,'error'); return }
-setEditingPlace(null); showToast('수정 완료!'); fetchPlaces(placeCat)
+setEditingPlace(null); setPlaceImages([]); showToast('수정 완료!'); fetchPlaces(placeCat)
 }
 const deletePlace = async (id) => {
 if (!window.confirm('업소를 삭제하시겠습니까?')) return
@@ -298,24 +298,24 @@ const {error} = await supabase.from('places').update({status:next}).eq('id',p.id
 if (error) { showToast('변경 실패: '+error.message,'error'); return }
 showToast(p.name+' → '+next+' 전환 완료'); fetchPlaces(placeCat)
 }
-const fetchPlaceImages = async (cat) => {
-const {data} = await supabase.from('place_images').select('*').eq('place_key',cat).order('sort_order',{ascending:true}).order('created_at',{ascending:true})
+const fetchPlaceImages = async (placeId) => {
+const {data} = await supabase.from('place_images').select('*').eq('place_id',placeId).order('created_at',{ascending:true})
 setPlaceImages(data||[])
 }
 const addPlaceImage = async () => {
+if (!editingPlace) { showToast('먼저 업소를 선택하세요','error'); return }
 if (!newPlaceImage.image_url) { showToast('사진을 업로드하거나 URL을 입력하세요','error'); return }
-const {error} = await supabase.from('place_images').insert([{place_key:placeCat,image_url:newPlaceImage.image_url,caption:newPlaceImage.caption||null}])
+const {error} = await supabase.from('place_images').insert([{place_id:editingPlace.id,place_key:placeCat,image_url:newPlaceImage.image_url,caption:newPlaceImage.caption||null}])
 if (error) { showToast('추가 실패: '+error.message,'error'); return }
 setNewPlaceImage({image_url:'',caption:''})
-showToast('사진 추가 완료!'); fetchPlaceImages(placeCat)
+showToast('사진 추가 완료!'); fetchPlaceImages(editingPlace.id)
 }
 const deletePlaceImage = async (id) => {
 if (!window.confirm('사진을 삭제하시겠습니까?')) return
 await supabase.from('place_images').delete().eq('id',id)
-showToast('사진 삭제 완료!'); fetchPlaceImages(placeCat)
+showToast('사진 삭제 완료!'); if (editingPlace) fetchPlaceImages(editingPlace.id)
 }
 if (!pinVerified) return <AdminPinGate onSuccess={()=>setPinVerified(true)} />
-
 const adminCounts = {
 all:users.length,
 admin:users.filter(u=>u.role==='admin').length,
@@ -359,7 +359,6 @@ return (
 ))}
 </div>
 <div className="admin-content">
-
 {activeTab==='members' && (
 <div>
 <h2>👥 회원 관리</h2>
@@ -397,35 +396,12 @@ style={{...S.input,marginBottom:16}} />
 <h2>🏪 추천업소 관리</h2>
 <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:20}}>
 {PLACE_CATEGORIES.map(p=>(
-<button key={p.key} onClick={()=>{setPlaceCat(p.key);setEditingPlace(null)}}
+<button key={p.key} onClick={()=>{setPlaceCat(p.key);setEditingPlace(null);setPlaceImages([])}}
 style={{padding:'8px 14px',background:placeCat===p.key?'#d4af37':'#222',color:placeCat===p.key?'#000':'#aaa',border:'1px solid #444',borderRadius:8,cursor:'pointer',fontWeight:placeCat===p.key?'bold':'normal',fontSize:13}}>
 {p.label}
 </button>
 ))}
 </div>
-
-<div style={{...S.card,marginBottom:24}}>
-<h3 style={{color:'#d4af37',marginBottom:8}}>🖼 {PLACE_CATEGORIES.find(p=>p.key===placeCat)?.label} 사진첩 관리</h3>
-<p style={{color:'#888',fontSize:13,marginBottom:14}}>여기에 등록한 사진은 메인 화면에서 이 카테고리를 클릭했을 때 사진첩으로 노출됩니다. (사진 여러 장 등록 가능)</p>
-<div style={{display:'flex',gap:10,marginBottom:16,flexWrap:'wrap',alignItems:'center'}}>
-<div style={{flex:'2 1 260px',minWidth:220}}>
-<ImageInput value={newPlaceImage.image_url} onChange={url=>setNewPlaceImage(p=>({...p,image_url:url}))} placeholder="사진 URL 또는 업로드" uploadImage={uploadImage} />
-</div>
-<input value={newPlaceImage.caption} onChange={e=>setNewPlaceImage(p=>({...p,caption:e.target.value}))} placeholder="설명 (선택)" style={{...S.input,flex:'1 1 160px',width:'auto'}} />
-<button onClick={addPlaceImage} style={{background:'#d4af37',color:'#000',border:'none',padding:'10px 18px',borderRadius:8,fontWeight:'bold',cursor:'pointer',whiteSpace:'nowrap'}}>+ 사진 추가</button>
-</div>
-<div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(120px,1fr))',gap:10}}>
-{placeImages.map(img=>(
-<div key={img.id} style={{position:'relative'}}>
-<img src={img.image_url} alt={img.caption||''} style={{width:'100%',height:100,objectFit:'cover',borderRadius:8}} />
-{img.caption && <p style={{color:'#888',fontSize:11,marginTop:2,textAlign:'center'}}>{img.caption}</p>}
-<button onClick={()=>deletePlaceImage(img.id)} style={{position:'absolute',top:4,right:4,background:'rgba(255,0,0,0.85)',color:'#fff',border:'none',borderRadius:6,width:22,height:22,cursor:'pointer',fontSize:12,lineHeight:'22px',padding:0}}>×</button>
-</div>
-))}
-</div>
-{placeImages.length===0 && <p style={{color:'#666',textAlign:'center',padding:20}}>등록된 사진이 없습니다.</p>}
-</div>
-
 {editingPlace ? (
 <div style={{...S.card,marginBottom:24,border:'2px solid #d4af37'}}>
 <h3 style={{color:'#d4af37',marginBottom:16}}>✏️ 업소 수정: {editingPlace.name}</h3>
@@ -437,6 +413,7 @@ style={{padding:'8px 14px',background:placeCat===p.key?'#d4af37':'#222',color:pl
 </div>
 <div style={{marginBottom:10}}>
 <label style={{color:'#888',fontSize:12,display:'block',marginBottom:4}}>대표 이미지</label>
+<p style={{color:'#666',fontSize:11,margin:'0 0 6px'}}>권장 사이즈: 800 × 600px (4:3 비율) · 최대 2MB · JPG/PNG</p>
 <ImageInput value={editingPlace.banner_url||''} onChange={url=>setEditingPlace(p=>({...p,banner_url:url}))} placeholder="대표 이미지 URL 또는 업로드" uploadImage={uploadImage} />
 </div>
 <select value={editingPlace.status||'노출중'} onChange={e=>setEditingPlace(p=>({...p,status:e.target.value}))} style={{...S.input,marginBottom:10}}>
@@ -451,20 +428,42 @@ style={{padding:'8px 14px',background:placeCat===p.key?'#d4af37':'#222',color:pl
 <input type="file" accept="image/*" style={{display:'none'}} onChange={async e=>{
 const file=e.target.files[0]; if(!file) return
 const url = await uploadImage(file)
-if (url) setEditingPlace(p=>({...p,content:(p.content?p.content+'\n':'')+'!['+']('+url+')'}))
+if (url) setEditingPlace(p=>({...p,content:(p.content?p.content+'\n':'')+'![]('+url+')'}))
 e.target.value=''
 }} />
 </label>
 </div>
 <textarea value={editingPlace.content||''} onChange={e=>setEditingPlace(p=>({...p,content:e.target.value}))} placeholder="상세 설명 (영업시간, 서비스 등 자세한 정보)" rows={4} style={{...S.input,marginBottom:10,resize:'vertical'}} />
+<div style={{borderTop:'1px solid #333',marginTop:6,paddingTop:14,marginBottom:10}}>
+<h4 style={{color:'#d4af37',fontSize:14,marginBottom:6}}>🖼 이 업소의 사진첩 ({placeImages.length}장)</h4>
+<p style={{color:'#888',fontSize:12,marginBottom:10}}>여기에 등록한 사진은 이 업소 상세페이지에만 노출됩니다. · 권장 800 × 600px 이상</p>
+<div style={{display:'flex',gap:10,marginBottom:12,flexWrap:'wrap',alignItems:'center'}}>
+<div style={{flex:'2 1 260px',minWidth:220}}>
+<ImageInput value={newPlaceImage.image_url} onChange={url=>setNewPlaceImage(p=>({...p,image_url:url}))} placeholder="사진 URL 또는 업로드" uploadImage={uploadImage} />
+</div>
+<input value={newPlaceImage.caption} onChange={e=>setNewPlaceImage(p=>({...p,caption:e.target.value}))} placeholder="설명 (선택)" style={{...S.input,flex:'1 1 160px',width:'auto'}} />
+<button type="button" onClick={addPlaceImage} style={{background:'#d4af37',color:'#000',border:'none',padding:'10px 18px',borderRadius:8,fontWeight:'bold',cursor:'pointer',whiteSpace:'nowrap'}}>+ 사진 추가</button>
+</div>
+<div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(120px,1fr))',gap:10}}>
+{placeImages.map(img=>(
+<div key={img.id} style={{position:'relative'}}>
+<img src={img.image_url} alt={img.caption||''} style={{width:'100%',height:100,objectFit:'cover',borderRadius:8}} />
+{img.caption && <p style={{color:'#888',fontSize:11,marginTop:2,textAlign:'center'}}>{img.caption}</p>}
+<button type="button" onClick={()=>deletePlaceImage(img.id)} style={{position:'absolute',top:4,right:4,background:'rgba(255,0,0,0.85)',color:'#fff',border:'none',borderRadius:6,width:22,height:22,cursor:'pointer',fontSize:12,lineHeight:'22px',padding:0}}>×</button>
+</div>
+))}
+</div>
+{placeImages.length===0 && <p style={{color:'#666',textAlign:'center',padding:20}}>등록된 사진이 없습니다.</p>}
+</div>
 <div style={{display:'flex',gap:8}}>
 <button onClick={updatePlace} style={{background:'#d4af37',color:'#000',border:'none',padding:'10px 20px',borderRadius:8,fontWeight:'bold',cursor:'pointer'}}>💾 저장</button>
-<button onClick={()=>setEditingPlace(null)} style={{background:'#555',color:'#fff',border:'none',padding:'10px 20px',borderRadius:8,cursor:'pointer'}}>취소</button>
+<button onClick={()=>{setEditingPlace(null);setPlaceImages([])}} style={{background:'#555',color:'#fff',border:'none',padding:'10px 20px',borderRadius:8,cursor:'pointer'}}>취소</button>
 </div>
 </div>
 ) : (
 <div style={{...S.card,marginBottom:24}}>
 <h3 style={{color:'#d4af37',marginBottom:16}}>+ 새 업소 등록 ({PLACE_CATEGORIES.find(p=>p.key===placeCat)?.label})</h3>
+<p style={{color:'#888',fontSize:12,marginBottom:14}}>먼저 업소를 등록한 뒤, 목록에서 "✏️ 수정"을 눌러 해당 업소의 사진첩을 관리할 수 있습니다.</p>
 <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
 <input value={newPlace.name} onChange={e=>setNewPlace(p=>({...p,name:e.target.value}))} placeholder="업소명 *" style={S.input} />
 <input value={newPlace.address} onChange={e=>setNewPlace(p=>({...p,address:e.target.value}))} placeholder="주소" style={S.input} />
@@ -473,6 +472,7 @@ e.target.value=''
 </div>
 <div style={{marginBottom:10}}>
 <label style={{color:'#888',fontSize:12,display:'block',marginBottom:4}}>대표 이미지</label>
+<p style={{color:'#666',fontSize:11,margin:'0 0 6px'}}>권장 사이즈: 800 × 600px (4:3 비율) · 최대 2MB · JPG/PNG</p>
 <ImageInput value={newPlace.banner_url} onChange={url=>setNewPlace(p=>({...p,banner_url:url}))} placeholder="대표 이미지 URL 또는 업로드" uploadImage={uploadImage} />
 </div>
 <textarea value={newPlace.description} onChange={e=>setNewPlace(p=>({...p,description:e.target.value}))} placeholder="업소 소개 (한 줄 요약)" rows={2} style={{...S.input,marginBottom:10,resize:'vertical'}} />
@@ -483,7 +483,7 @@ e.target.value=''
 <input type="file" accept="image/*" style={{display:'none'}} onChange={async e=>{
 const file=e.target.files[0]; if(!file) return
 const url = await uploadImage(file)
-if (url) setNewPlace(p=>({...p,content:(p.content?p.content+'\n':'')+'!['+']('+url+')'}))
+if (url) setNewPlace(p=>({...p,content:(p.content?p.content+'\n':'')+'![]('+url+')'}))
 e.target.value=''
 }} />
 </label>
@@ -507,7 +507,7 @@ e.target.value=''
 </div>
 <div style={{display:'flex',gap:6,flexShrink:0}}>
 <button onClick={()=>togglePlaceStatus(p)} style={{background:p.status==='노출중'?'#22c55e':'#555',color:'#fff',border:'none',padding:'6px 14px',borderRadius:6,cursor:'pointer',fontSize:13,whiteSpace:'nowrap'}}>{p.status==='노출중'?'노출중':'비공개'}</button>
-<button onClick={()=>setEditingPlace(p)} style={{background:'#333',color:'#d4af37',border:'1px solid #d4af37',padding:'6px 12px',borderRadius:6,cursor:'pointer',fontSize:13}}>✏️ 수정</button>
+<button onClick={()=>startEditPlace(p)} style={{background:'#333',color:'#d4af37',border:'1px solid #d4af37',padding:'6px 12px',borderRadius:6,cursor:'pointer',fontSize:13}}>✏️ 수정</button>
 <button onClick={()=>deletePlace(p.id)} style={{background:'#ff4444',color:'#fff',border:'none',padding:'6px 12px',borderRadius:6,cursor:'pointer',fontSize:13}}>🗑 삭제</button>
 </div>
 </div>
