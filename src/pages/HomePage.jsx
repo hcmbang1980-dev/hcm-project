@@ -190,7 +190,7 @@ const sectionOrder = (settings.main_sections_order || 'hero,stats,notice,board,b
 
 const sectionMap = {
 hero: !user && (
-<section key="hero" className={\`hero hero-\${settings.hero_layout || 'default'}\`}>
+<section key="hero" className={`hero hero-${settings.hero_layout || 'default'}`}>
 <div className="hero-bg"></div>
 <div className="hero-content">
 <h1 className="hero-title"><span className="gold-text">호치민 방앗간</span><br />NO.1 커뮤니티</h1>
@@ -207,7 +207,7 @@ notice: settings.notice_visible !== 'false' && (
 <section key="notice" className="places-section">
 <div className="places-grid">
 {PLACES.map(place => (
-<div key={place.key} className={\`place-card\${activePlace?.key === place.key ? ' active' : ''}\`} onClick={() => setActivePlace(activePlace?.key === place.key ? null : place)}>
+<div key={place.key} className={`place-card${activePlace?.key === place.key ? ' active' : ''}`} onClick={() => setActivePlace(activePlace?.key === place.key ? null : place)}>
 <span className="place-icon">{place.icon}</span>
 <span className="place-name">{place.name}</span>
 </div>
@@ -235,15 +235,15 @@ board: (
 <div className="board-grid">
 <div className="board-col">
 <div className="board-col-header"><h3>📢 공지사항</h3><Link to="/board/notice" className="more-link">더보기</Link></div>
-{posts.notice.map(p => <Link key={p.id} to={\`/post/\${p.id}\`} className="post-item"><span className="post-title">{p.title}</span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span></Link>)}
+{posts.notice.map(p => <Link key={p.id} to={`/post/${p.id}`} className="post-item"><span className="post-title">{p.title}</span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span></Link>)}
 </div>
 <div className="board-col">
 <div className="board-col-header"><h3>🎉 이벤트</h3><Link to="/board/event" className="more-link">더보기</Link></div>
-{posts.event.map(p => <Link key={p.id} to={\`/post/\${p.id}\`} className="post-item"><span className="post-title">{p.title}</span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span></Link>)}
+{posts.event.map(p => <Link key={p.id} to={`/post/${p.id}`} className="post-item"><span className="post-title">{p.title}</span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span></Link>)}
 </div>
 <div className="board-col">
 <div className="board-col-header"><h3>💬 자유게시판</h3><Link to="/board/free" className="more-link">더보기</Link></div>
-{posts.free.map(p => <Link key={p.id} to={\`/post/\${p.id}\`} className="post-item"><span className="post-title">{p.title}</span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span></Link>)}
+{posts.free.map(p => <Link key={p.id} to={`/post/${p.id}`} className="post-item"><span className="post-title">{p.title}</span><span className="post-date">{new Date(p.created_at).toLocaleDateString('ko-KR')}</span></Link>)}
 </div>
 </div>
 </section>
